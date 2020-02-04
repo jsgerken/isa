@@ -14,8 +14,6 @@ class Manufacturer(models.Model):
     name = models.CharField(max_length=50)
     web_url = models.CharField(max_length=100)
     phone_num = models.CharField(max_length=14)
-    
-
 
 class Product(models.Model):
     product_id = models.CharField(max_length=50)
