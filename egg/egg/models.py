@@ -6,6 +6,7 @@ class User(models.Model):
     username = models.Charfield(max_length=50)
     password = models.Charfield(max_length=50)
     numReviews = models.intergerField()
+    phoneNum = models.Charfield(max_length=14)
     
     #TODO : Default CreditCard option, favorites/wishlist,
 
