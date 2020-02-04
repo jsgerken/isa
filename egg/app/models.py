@@ -24,7 +24,6 @@ class Product(models.Model):
     price = models.IntegerField()
     warrenty = models.IntegerField()
 
-
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""
 #     COMPONENT_TYPE = [
