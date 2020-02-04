@@ -1,40 +1,28 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 class User(models.Model):
-    """General user of the system. aka Customer/viewers."""
-    userID = models.CharField(max_length=20)
+    user_id = models.CharField(max_length=20)
     username = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
-    #numReviews = models.intergerField()
-    phoneNum = models.CharField(max_length=14)
+    phone_number = models.CharField(max_length=14)
     
     #TODO : Default CreditCard option, Default Shipping Address, favorites/wishlist, email-unique, First & Last name, deleted bool
-
-#TODO : Address : addr id, user id, first and last name, addr1, addr2, post code, city, phone
+    #TODO : Address : addr id, user id, first and last name, addr1, addr2, post code, city, phone
 
 class Manufacturer(models.Model):
-    """Product sellers aka other users. Perhaps this can just be a boolean flag?"""
-    manID = models.CharField(max_length=20)
+    man_id = models.CharField(max_length=20)
     name = models.CharField(max_length=50)
-    web_URL = models.CharField(max_length=100)
-    phoneNum = models.CharField(max_length=14)
-    
-
+    web_url = models.CharField(max_length=100)
+    phone_num = models.CharField(max_length=14)
 
 class Product(models.Model):
-    """Where every product will be categorized under."""
-    productID = models.CharField(max_length=50)
-    productType = models.CharField(max_length=50)
-    manID = models.CharField(max_length=20)
+    product_id = models.CharField(max_length=50)
+    product_type = models.CharField(max_length=50)
+    man_id = models.CharField(max_length=20)
     name = models.CharField()
     description = models.CharField(max_length=500)
-    #reviewCount = models.intergerField()
     price = models.IntegerField()
     warrenty = models.IntegerField()
-
 
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""
