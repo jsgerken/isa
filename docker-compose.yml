@@ -5,12 +5,15 @@ services:
     external_links:
       - mysql:db
     volumes:
-      - ./egg:/egg
+      - ./egg:/app
     ports:
       - "8001:8000"
     networks:
       - backend
-    command: bash -c "mod_wsgi-express start-server --working-directory /egg --reload-on-changes /egg/egg/wsgi.py"
+    command: >
+      bash -c "python manage.py makemigrations
+      && python manage.py migrate
+      && mod_wsgi-express start-server --working-directory ./ --reload-on-changes ./egg/wsgi.py"
 
 networks:
   backend:
