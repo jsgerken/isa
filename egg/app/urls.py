@@ -1,5 +1,4 @@
 from django.urls import path
-from egg import settings
 from . import views
 
 urlpatterns = [

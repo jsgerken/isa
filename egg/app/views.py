@@ -1,6 +1,5 @@
 from app.models import Manufacturer
 from django.http import JsonResponse, HttpResponse
-import json
 
 def get_all_manufacturers(request):
     if request.method == 'GET':
