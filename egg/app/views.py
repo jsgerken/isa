@@ -29,12 +29,12 @@ def get_or_update_manufacturer(request, id):
             man_object['man_name'] = manufacturer.man_name
             man_object['web_url'] = manufacturer.web_url
             man_object['phone_num'] = manufacturer.phone_num
+            return JsonResponse(man_object)
         except ObjectDoesNotExist:
             error_object = {}
             error_object['status'] = 'error';
             error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
             return JsonResponse(error_object)
-        return JsonResponse(man_object)
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
@@ -49,12 +49,12 @@ def get_or_update_manufacturer(request, id):
                 'web_url': manufacturer.web_url,
                 'phone_num': manufacturer.phone_num,
             }
+            return JsonResponse(updated_man)
         except ObjectDoesNotExist:
             error_object = {}
             error_object['status'] = 'error';
             error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
-            return JsonResponse(error_object)
-        return JsonResponse(updated_man)
+            return JsonResponse(error_object)   
     else:
         return HttpResponse(status=405)
 
