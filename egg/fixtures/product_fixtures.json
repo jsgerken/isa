@@ -1,0 +1,38 @@
+[
+    {
+        "model": "app.product",
+        "pk": 3,
+        "fields": {
+            "type": "Monitor",
+            "man_id": 2,
+            "name": "VG248 144Hz",
+            "description": "",
+            "price": 300,
+            "warranty": ""
+        }
+    },
+    {
+        "model": "app.product",
+        "pk": 4,
+        "fields": {
+            "type": "GPU",
+            "man_id": 4,
+            "name": "RTX 2080ti",
+            "description": "",
+            "price": 450,
+            "warranty": ""
+        }
+    },
+    {
+        "model": "app.product",
+        "pk": 3,
+        "fields": {
+            "type": "GPU",
+            "man_id": 1,
+            "name": "GeForce 1070 TI",
+            "description": "",
+            "price": 500,
+            "warranty": ""
+        }
+    },  
+]
