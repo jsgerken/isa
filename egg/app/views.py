@@ -42,18 +42,18 @@ def get_or_update_manufacturer(request, id):
             manufacturer.man_name = request.POST.get('man_name', 'Error')
             manufacturer.web_url = request.POST.get('web_url', 'Error')
             manufacturer.phone_num= request.POST.get('phone_num', 'Error')
+            manufacturer.save()
+            updated_man = {
+                'status': 'success',
+                'man_name': manufacturer.man_name,
+                'web_url': manufacturer.web_url,
+                'phone_num': manufacturer.phone_num,
+            }
         except ObjectDoesNotExist:
             error_object = {}
             error_object['status'] = 'error';
             error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
             return JsonResponse(error_object)
-        manufacturer.save()
-        updated_man = {
-            'status': 'success',
-            'man_name': manufacturer.man_name,
-            'web_url': manufacturer.web_url,
-            'phone_num': manufacturer.phone_num,
-        }
         return JsonResponse(updated_man)
     else:
         return HttpResponse(status=405)
@@ -68,13 +68,13 @@ def delete_manufacturer(request, id):
             deleted_object['man_name'] = manufacturer.man_name
             deleted_object['web_url'] = manufacturer.web_url
             deleted_object['phone_num'] = manufacturer.phone_num
+            Manufacturer.objects.get(man_id=id).delete()
+            return JsonResponse(deleted_object)
         except ObjectDoesNotExist:
             error_object = {}
             error_object['status'] = 'error';
             error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
             return JsonResponse(error_object)
-        Manufacturer.objects.get(man_id=id).delete()
-        return JsonResponse(deleted_object)
     else:
         return HttpResponse(status=405)
 
