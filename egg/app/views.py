@@ -18,7 +18,10 @@ def get_all_manufacturers(request):
             response.append(man_object)
         return JsonResponse(response, safe=False)
     else:
-        return HttpResponse(status=405)
+        error_object = {
+            'error': 'HTTP method error: endpoint expects a GET request'
+        }
+        return JsonResponse(error_object)
 
 def get_or_update_manufacturer(request, id):
     if request.method == 'GET':
@@ -60,7 +63,10 @@ def get_or_update_manufacturer(request, id):
             }
             return JsonResponse(error_object) 
     else:
-        return HttpResponse(status=405)
+        error_object = {
+            'error': 'HTTP method error: endpoint expects a GET or POST request'
+        }
+        return JsonResponse(error_object)
 
 def delete_manufacturer(request, id):
     if request.method == 'POST':
@@ -79,7 +85,10 @@ def delete_manufacturer(request, id):
             }
             return JsonResponse(error_object)
     else:
-        return HttpResponse(status=405)
+        error_object = {
+            'error': 'HTTP method error: endpoint expects a POST request'
+        }
+        return JsonResponse(error_object)
 
 def create_manufacturer(request):
     if request.method == 'POST':
@@ -102,7 +111,10 @@ def create_manufacturer(request):
             }
             return JsonResponse(error_object)         
     else:
-        return HttpResponse(status=405)
+        error_object = {
+            'error': 'HTTP method error: endpoint expects a POST request'
+        }
+        return JsonResponse(error_object)
 
 # Product methods
 def get_all_products(request):
