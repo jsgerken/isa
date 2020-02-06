@@ -2,6 +2,7 @@ from app.models import Manufacturer, Product
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.datastructures import MultiValueDictKeyError
 
 # Manufacturer methods
 def get_all_manufacturers(request):
@@ -77,25 +78,24 @@ def delete_manufacturer(request, id):
 
 def create_manufacturer(request):
     if request.method == 'POST':
-        manufacturer = Manufacturer()
-        manufacturer.man_name = request.POST.get('man_name', 'Error')
-        manufacturer.web_url = request.POST.get('web_url', 'Error')
-        manufacturer.phone_num = request.POST.get('phone_num', 'Error')
-        if 'Error' in (manufacturer.man_name, manufacturer.web_url, manufacturer.phone_num):
-            error_object = {}
-            error_object['status'] = 'error';
-            error_object['errorMessage'] = 'You must provide man_name, web_url, and phone_num in your POST body'
-            return JsonResponse(error_object)
-        else:
+        try:
+            manufacturer = Manufacturer()
+            manufacturer.man_name = request.POST.__getitem__('man_name')
+            manufacturer.web_url = request.POST.__getitem__('web_url')
+            manufacturer.phone_num = request.POST.__getitem__('phone_num')
             manufacturer.save()
             new_man = {
-                'status': 'success',
                 'man_id': manufacturer.man_id,
                 'man_name' : manufacturer.man_name,
                 'web_url' : manufacturer.web_url,
                 'phone_num' : manufacturer.phone_num,
             }
             return JsonResponse(new_man)
+        except MultiValueDictKeyError:
+            error_object = {}
+            error_object['status'] = 'error';
+            error_object['errorMessage'] = 'You must provide man_name, web_url, and phone_num in your POST body'
+            return JsonResponse(error_object)         
     else:
         return HttpResponse(status=405)
 
