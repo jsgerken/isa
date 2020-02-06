@@ -1,5 +1,6 @@
-from app.models import Manufacturer
+from app.models import Manufacturer, Product
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404
 
 def get_all_manufacturers(request):
     if request.method == 'GET':
@@ -72,5 +73,87 @@ def create_manufacturer(request):
             'phone_num' : manufacturer.phone_num,
         }
         return JsonResponse(created_man)
+    else:
+        return HttpResponse(status=405)
+
+
+def get_all_products(request):
+    if request.method == 'GET':
+        products_list = Product.objects.all()
+        response = []
+        for product in products_list:
+            prod_object = {}
+            prod_object['prod_id'] = product.product_id
+            prod_object['type'] = product.type
+            man = get_object_or_404(Manufacturer, man_id = product.man_id)
+            prod_object['man_name'] = man.man_name
+            prod_object['name'] = product.name
+            prod_object['price'] = product.price
+            response.append(prod_object)
+        return JsonResponse(response, safe=False)
+    elif request.method == 'POST':
+        return HttpResponse(status=405)
+        
+def get_or_update_product(request, id):
+    if request.method == 'GET':
+        products_list = Product.objects.filter(product_id=id)
+        response = []
+        for product in products_list:
+            prod_object = {}
+            prod_object['prod_id']=product.product_id
+            prod_object['type']=product.type
+            man = get_object_or_404(Manufacturer, man_id = product.man_id)
+            prod_object['man_name'] = man.man_name
+            prod_object['name']=product.name
+            prod_object['price']=product.price
+            response.append(prod_object)
+        return JsonResponse(response, safe=False)
+    elif request.method == 'POST':
+        products_list = Product.objects.filter(product_id=id)
+        updated_prod = {}
+        for product in products_list:
+            product.type= request.POST.get('type', 'Error')
+            product.man_id= request.POST.get('man_id', 'Error')
+            product.name= request.POST.get('name', 'Error')
+            product.price = request.POST.get('price', 'Error')
+            product.save()
+            updated_prod = {
+                'prod_id' : product.product_id,
+                'type' : product.type,
+                'man_id' : product.man_id,
+                'name' : product.name,
+                'price' : product.price
+            }
+        return JsonResponse(updated_prod)
+    else:
+        return HttpResponse(status=405)
+
+def delete_product(request, id):
+    if request.method == 'POST':
+        product_list = Product.objects.filter(product_id=id)
+        prod_object = {}
+        for product in product_list:
+            prod_object['prod_id'] = product.product_id
+        Product.objects.filter(product_id=id).delete()
+        return JsonResponse(prod_object)
+    else:
+        return HttpResponse(status=405)
+
+def create_product(request):
+    if request.method == 'POST':
+        product = Product()
+        product.type= request.POST.get('type', 'Error')
+        product.man_id= request.POST.get('man_id', 'Error')
+        product.name= request.POST.get('name', 'Error')
+        product.price = request.POST.get('price', 'Error')
+        product.save()
+        created_prod = {
+            'prod_id' : product.product_id,
+            'type' : product.type,
+            'man_id' : product.man_id,
+            'name' : product.name,
+            'price' : product.price
+        }
+        return JsonResponse(created_prod)
     else:
         return HttpResponse(status=405)
