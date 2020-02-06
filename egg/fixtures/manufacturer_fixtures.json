@@ -43,5 +43,31 @@
             "web_url": "https://www.nvidia.com/",
             "phone_num": "1-800-797-6530"
         }
-    }
+    },
+
+    //PRODUCTS BELOW
+    {
+        "model": "app.product",
+        "pk": 3,
+        "fields": {
+            "type": "CPU",
+            "man_id": 2,
+            "name": "i5 9500-K",
+            "description": "",
+            "price": 450,
+            "warranty": ""
+        }
+    },
+    {
+        "model": "app.product",
+        "pk": 4,
+        "fields": {
+            "type": "GPU",
+            "man_id": 4,
+            "name": "Nvidia RTX 2080ti",
+            "description": "",
+            "price": 450,
+            "warranty": ""
+        }
+    },
 ]
