@@ -14,8 +14,13 @@ class User(models.Model):
 #    addr id, user id, first and last name, addr1, addr2, post code, city, phone
 
 class Manufacturer(models.Model):
+<<<<<<< HEAD
     man_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
+=======
+    man_id = models.AutoField(primary_key=True)
+    man_name = models.CharField(max_length=50)
+>>>>>>> master
     web_url = models.CharField(max_length=100)
     phone_num = models.CharField(max_length=14)
 
