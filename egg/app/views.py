@@ -31,9 +31,9 @@ def get_or_update_manufacturer(request, id):
             man_object['phone_num'] = manufacturer.phone_num
             return JsonResponse(man_object)
         except ObjectDoesNotExist:
-            error_object = {}
-            error_object['status'] = 'error';
-            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            error_object = {
+                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            }
             return JsonResponse(error_object)
     elif request.method == 'POST':
         try:
@@ -50,9 +50,9 @@ def get_or_update_manufacturer(request, id):
             }
             return JsonResponse(updated_man)
         except ObjectDoesNotExist:
-            error_object = {}
-            error_object['status'] = 'error';
-            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            error_object = {
+                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            }
             return JsonResponse(error_object)   
     else:
         return HttpResponse(status=405)
@@ -69,9 +69,9 @@ def delete_manufacturer(request, id):
             manufacturer.delete()
             return JsonResponse(deleted_object)
         except ObjectDoesNotExist:
-            error_object = {}
-            error_object['status'] = 'error';
-            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            error_object = {
+                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            }
             return JsonResponse(error_object)
     else:
         return HttpResponse(status=405)
@@ -92,9 +92,9 @@ def create_manufacturer(request):
             }
             return JsonResponse(new_man)
         except MultiValueDictKeyError:
-            error_object = {}
-            error_object['status'] = 'error';
-            error_object['errorMessage'] = 'You must provide man_name, web_url, and phone_num in your POST body'
+            error_object = {
+                'error': 'You must provide man_name, web_url, and phone_num in your POST body'
+            }
             return JsonResponse(error_object)         
     else:
         return HttpResponse(status=405)
