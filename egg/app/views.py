@@ -59,12 +59,13 @@ def get_or_update_manufacturer(request, id):
 def delete_manufacturer(request, id):
     if request.method == 'POST':
         try:
-            manufacturer= Manufacturer.objects.get(man_id=id).delete()
+            manufacturer= Manufacturer.objects.get(man_id=id)
             deleted_object = {}
             deleted_object['man_id'] = manufacturer.man_id
             deleted_object['man_name'] = manufacturer.man_name
             deleted_object['web_url'] = manufacturer.web_url
             deleted_object['phone_num'] = manufacturer.phone_num
+            manufacturer.delete()
             return JsonResponse(deleted_object)
         except ObjectDoesNotExist:
             error_object = {}
