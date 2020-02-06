@@ -20,13 +20,13 @@ class Manufacturer(models.Model):
     phone_num = models.CharField(max_length=14)
 
 class Product(models.Model):
-    product_id = models.IntegerField(primary_key = True)
-    product_type = models.CharField(max_length=15)
-    man_id = models.CharField(max_length=20)
+    product_id = models.AutoField(primary_key = True)
+    type = models.CharField(max_length=15)
+    man_id = models.IntegerField()
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=500)
     price = models.IntegerField()
-    warrenty = models.IntegerField()
+    warranty = models.CharField(max_length=50)
 
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""
