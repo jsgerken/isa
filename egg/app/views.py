@@ -32,16 +32,16 @@ def get_or_update_manufacturer(request, id):
             return JsonResponse(man_object)
         except ObjectDoesNotExist:
             error_object = {
-                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+                'error': 'Get failed: manufacturer with man_id ' + str(id) + ' does not exist'
             }
             return JsonResponse(error_object)
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
             updated_man = {}
-            manufacturer.man_name = request.POST.get('man_name', 'Error')
-            manufacturer.web_url = request.POST.get('web_url', 'Error')
-            manufacturer.phone_num= request.POST.get('phone_num', 'Error')
+            manufacturer.man_name = request.POST.__getitem__('man_name')
+            manufacturer.web_url = request.POST.__getitem__('web_url')
+            manufacturer.phone_num= request.POST.__getitem__('phone_num')
             manufacturer.save()
             updated_man = {
                 'man_name': manufacturer.man_name,
@@ -51,9 +51,14 @@ def get_or_update_manufacturer(request, id):
             return JsonResponse(updated_man)
         except ObjectDoesNotExist:
             error_object = {
-                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+                'error': 'Update failed: manufacturer with man_id ' + str(id) + ' does not exist'
             }
             return JsonResponse(error_object)   
+        except MultiValueDictKeyError:
+            error_object = {
+                'error': 'Update failed: you must provide man_name, web_url, and phone_num in your POST body'
+            }
+            return JsonResponse(error_object) 
     else:
         return HttpResponse(status=405)
 
@@ -70,7 +75,7 @@ def delete_manufacturer(request, id):
             return JsonResponse(deleted_object)
         except ObjectDoesNotExist:
             error_object = {
-                'error': 'Manufacturer with man_id ' + str(id) + ' does not exist'
+                'error': 'Delete failed: manufacturer with man_id ' + str(id) + ' does not exist'
             }
             return JsonResponse(error_object)
     else:
@@ -93,7 +98,7 @@ def create_manufacturer(request):
             return JsonResponse(new_man)
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'You must provide man_name, web_url, and phone_num in your POST body'
+                'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body'
             }
             return JsonResponse(error_object)         
     else:
