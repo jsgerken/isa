@@ -1,7 +1,9 @@
 from app.models import Manufacturer, Product
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
+# Manufacturer methods
 def get_all_manufacturers(request):
     if request.method == 'GET':
         manufacturers_list = Manufacturer.objects.all()
@@ -19,44 +21,60 @@ def get_all_manufacturers(request):
 
 def get_or_update_manufacturer(request, id):
     if request.method == 'GET':
-        manufacturers_list = Manufacturer.objects.filter(man_id=id)
-        response = []
-        for manufacturer in manufacturers_list:
+        try:
+            manufacturer = Manufacturer.objects.get(man_id=id)
             man_object = {}
+            man_object['status'] = 'success'
             man_object['man_id'] = manufacturer.man_id
             man_object['man_name'] = manufacturer.man_name
             man_object['web_url'] = manufacturer.web_url
             man_object['phone_num'] = manufacturer.phone_num
-            response.append(man_object)
-        return JsonResponse(response, safe=False)
+        except ObjectDoesNotExist:
+            error_object = {}
+            error_object['status'] = 'error';
+            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            return JsonResponse(error_object)
+        return JsonResponse(man_object)
     elif request.method == 'POST':
-        manufacturers_list = Manufacturer.objects.filter(man_id=id)
-        updated_man = {}
-        for manufacturer in manufacturers_list:
+        try:
+            manufacturer = Manufacturer.objects.get(man_id=id)
+            updated_man = {}
             manufacturer.man_name = request.POST.get('man_name', 'Error')
             manufacturer.web_url = request.POST.get('web_url', 'Error')
             manufacturer.phone_num= request.POST.get('phone_num', 'Error')
-            manufacturer.save()
-            updated_man = {
-                'man_name' : manufacturer.man_name,
-                'web_url' : manufacturer.web_url,
-                'phone_num' : manufacturer.phone_num,
-            }
+        except ObjectDoesNotExist:
+            error_object = {}
+            error_object['status'] = 'error';
+            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            return JsonResponse(error_object)
+        manufacturer.save()
+        updated_man = {
+            'status': 'success',
+            'man_name': manufacturer.man_name,
+            'web_url': manufacturer.web_url,
+            'phone_num': manufacturer.phone_num,
+        }
         return JsonResponse(updated_man)
     else:
         return HttpResponse(status=405)
 
 def delete_manufacturer(request, id):
-    if request.method == 'GET':
-        manufacturers_list = Manufacturer.objects.filter(man_id=id)
-        man_object = {}
-        for manufacturer in manufacturers_list:
-            man_object['man_id'] = manufacturer.man_id
-            man_object['man_name'] = manufacturer.man_name
-            man_object['web_url'] = manufacturer.web_url
-            man_object['phone_num'] = manufacturer.phone_num
-        Manufacturer.objects.filter(man_id=id).delete()
-        return JsonResponse(man_object)
+    if request.method == 'POST':
+        try:
+            manufacturer= Manufacturer.objects.get(man_id=id)
+            deleted_object = {}
+            deleted_object['status'] = 'success';
+            deleted_object['man_id'] = manufacturer.man_id
+            deleted_object['man_name'] = manufacturer.man_name
+            deleted_object['web_url'] = manufacturer.web_url
+            deleted_object['phone_num'] = manufacturer.phone_num
+        except ObjectDoesNotExist:
+            error_object = {}
+            error_object['status'] = 'error';
+            error_object['errorMessage'] = 'Manufacturer with man_id ' + str(id) + ' does not exist'
+            return JsonResponse(error_object)
+        Manufacturer.objects.get(man_id=id).delete()
+        return JsonResponse(deleted_object)
     else:
         return HttpResponse(status=405)
 
@@ -65,18 +83,26 @@ def create_manufacturer(request):
         manufacturer = Manufacturer()
         manufacturer.man_name = request.POST.get('man_name', 'Error')
         manufacturer.web_url = request.POST.get('web_url', 'Error')
-        manufacturer.phone_num= request.POST.get('phone_num', 'Error')
-        manufacturer.save()
-        created_man = {
-            'man_name' : manufacturer.man_name,
-            'web_url' : manufacturer.web_url,
-            'phone_num' : manufacturer.phone_num,
-        }
-        return JsonResponse(created_man)
+        manufacturer.phone_num = request.POST.get('phone_num', 'Error')
+        if 'Error' in (manufacturer.man_name, manufacturer.web_url, manufacturer.phone_num):
+            error_object = {}
+            error_object['status'] = 'error';
+            error_object['errorMessage'] = 'You must provide man_name, web_url, and phone_num in your POST body'
+            return JsonResponse(error_object)
+        else:
+            manufacturer.save()
+            new_man = {
+                'status': 'success',
+                'man_id': manufacturer.man_id,
+                'man_name' : manufacturer.man_name,
+                'web_url' : manufacturer.web_url,
+                'phone_num' : manufacturer.phone_num,
+            }
+            return JsonResponse(new_man)
     else:
         return HttpResponse(status=405)
 
-
+# Product methods
 def get_all_products(request):
     if request.method == 'GET':
         products_list = Product.objects.all()

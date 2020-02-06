@@ -1,7 +1,7 @@
 [
     {
         "model": "app.product",
-        "pk": 3,
+        "pk": 1,
         "fields": {
             "type": "Monitor",
             "man_id": 2,
@@ -13,7 +13,7 @@
     },
     {
         "model": "app.product",
-        "pk": 4,
+        "pk": 2,
         "fields": {
             "type": "GPU",
             "man_id": 4,
@@ -34,5 +34,5 @@
             "price": 500,
             "warranty": ""
         }
-    },  
+    }
 ]

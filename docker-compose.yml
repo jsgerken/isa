@@ -10,8 +10,7 @@ services:
       - "8001:8000"
     networks:
       - backend
-    command: >
-      bash -c "python manage.py makemigrations
+    command: bash -c "python manage.py makemigrations
       && python manage.py migrate
       && python manage.py loaddata ./fixtures/manufacturer_fixtures.json
       && python manage.py loaddata ./fixtures/product_fixtures.json
