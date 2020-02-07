@@ -6,9 +6,9 @@
             "type": "Monitor",
             "man_id": 2,
             "name": "VG248 144Hz",
-            "description": "",
+            "description": "So crisp",
             "price": 300,
-            "warranty": ""
+            "warranty": "1 week"
         }
     },
     {
@@ -18,9 +18,9 @@
             "type": "GPU",
             "man_id": 4,
             "name": "RTX 2080ti",
-            "description": "",
+            "description": "Epicly powerful",
             "price": 450,
-            "warranty": ""
+            "warranty": "3 weeks"
         }
     },
     {
@@ -30,9 +30,9 @@
             "type": "GPU",
             "man_id": 1,
             "name": "GeForce 1070 TI",
-            "description": "",
+            "description": "Cool and powerful GPU",
             "price": 500,
-            "warranty": ""
+            "warranty": "2 weeks"
         }
     }
 ]

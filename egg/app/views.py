@@ -34,9 +34,9 @@ def get_all_products(request):
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
-                'description': product.name,
-                'price': product.name,
-                'warranty': product.name,
+                'description': product.description,
+                'price': product.price,
+                'warranty': product.warranty,
             }
             response.append(prod_object)
         return JsonResponse(response, safe=False)
@@ -105,7 +105,7 @@ def get_or_update_product(request, id):
                 'price': product.price,
                 'warranty': product.warranty,
             }
-            return JsonResponse(man_object)
+            return JsonResponse(prod_object)
         except ObjectDoesNotExist:
             error_object = {
                 'error': 'Get failed: product with product_id ' + str(id) + ' does not exist'
@@ -124,9 +124,9 @@ def get_or_update_product(request, id):
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
-                'description': product.name,
-                'price': product.name,
-                'warranty': product.name,
+                'description': product.description,
+                'price': product.price,
+                'warranty': product.warranty,
             }
             return JsonResponse(updated_prod)
         except ObjectDoesNotExist:
@@ -180,9 +180,9 @@ def delete_product(request, id):
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
-                'description': product.name,
-                'price': product.name,
-                'warranty': product.name,
+                'description': product.description,
+                'price': product.price,
+                'warranty': product.warranty,
             }
             product.delete()
             return JsonResponse(deleted_product)
