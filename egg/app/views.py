@@ -20,7 +20,7 @@ def get_all_manufacturers(request):
         return JsonResponse(response, safe=False)
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a GET request'
+            'error': 'HTTP method error: get all manufacturers endpoint expects a GET request'
         }
         return JsonResponse(error_object)
 
@@ -42,7 +42,7 @@ def get_all_products(request):
         return JsonResponse(response, safe=False)
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a GET request'
+            'error': 'HTTP method error: get all products endpoint expects a GET request'
         }
 
 #--------------------------------------------------------------------------------------------------------------
@@ -83,12 +83,12 @@ def get_or_update_manufacturer(request, id):
             return JsonResponse(error_object)   
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'Update failed: you must provide man_name, web_url, and phone_num in your POST body'
+                'error': 'Update failed: you must provide man_name, web_url, and phone_num in your POST body to update a manufacturer'
             }
             return JsonResponse(error_object) 
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a GET or POST request'
+            'error': 'HTTP method error: manufacturer endpoint expects a GET or POST request'
         }
         return JsonResponse(error_object)
 
@@ -136,12 +136,12 @@ def get_or_update_product(request, id):
             return JsonResponse(error_object)   
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body'
+                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to update a product'
             }
             return JsonResponse(error_object) 
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a GET or POST request'
+            'error': 'HTTP method error: product endpoint expects a GET or POST request'
         }
         return JsonResponse(error_object)
 
@@ -149,7 +149,7 @@ def get_or_update_product(request, id):
 
 # Delete Methods
 def delete_manufacturer(request, id):
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
             deleted_man = {
@@ -167,12 +167,12 @@ def delete_manufacturer(request, id):
             return JsonResponse(error_object)
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a POST request'
+            'error': 'HTTP method error: delete manufacturer endpoint expects a DELETE request'
         }
         return JsonResponse(error_object)
 
 def delete_product(request, id):
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         try:
             product = Product.objects.get(product_id=id)
             deleted_product = {
@@ -193,7 +193,7 @@ def delete_product(request, id):
             return JsonResponse(error_object)
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a POST request'
+            'error': 'HTTP method error: delete product endpoint expects a DELETE request'
         }
         return JsonResponse(error_object)
 
@@ -217,12 +217,12 @@ def create_manufacturer(request):
             return JsonResponse(new_man)
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body'
+                'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body to create a manufacturer'
             }
             return JsonResponse(error_object)         
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a POST request'
+            'error': 'HTTP method error: create manufacturer endpoint expects a POST request'
         }
         return JsonResponse(error_object)
 
@@ -249,12 +249,12 @@ def create_product(request):
             return JsonResponse(created_prod)
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body'
+                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to create a product'
             }
             return JsonResponse(error_object)
     else:
         error_object = {
-            'error': 'HTTP method error: endpoint expects a POST request'
+            'error': 'HTTP method error: create product endpoint expects a POST request'
         }
         return JsonResponse(error_object)
 
