@@ -30,7 +30,7 @@ def get_all_products(request):
         response = []
         for product in products_list:
             prod_object = {
-                'product_id': product.product_id
+                'product_id': product.product_id,
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
@@ -120,7 +120,7 @@ def get_or_update_product(request, id):
             product.price = request.POST.__getitem__('price')
             product.save()
             updated_prod = {
-                'product_id': product.product_id
+                'product_id': product.product_id,
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
@@ -176,7 +176,7 @@ def delete_product(request, id):
         try:
             product = Product.objects.get(product_id=id)
             deleted_product = {
-                'product_id': product.product_id
+                'product_id': product.product_id,
                 'type': product.type,
                 'man_id': product.man_id,
                 'name': product.name,
