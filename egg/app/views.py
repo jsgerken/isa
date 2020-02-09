@@ -117,7 +117,9 @@ def get_or_update_product(request, id):
             product.type= request.POST.__getitem__('type')
             product.man_id= request.POST.__getitem__('man_id')
             product.name= request.POST.__getitem__('name')
+            product.description = request.POST.__getitem__('description')
             product.price = request.POST.__getitem__('price')
+            product.warranty = request.POST.__getitem__('warranty')
             product.save()
             updated_prod = {
                 'product_id': product.product_id,

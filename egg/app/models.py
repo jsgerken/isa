@@ -13,17 +13,17 @@ class User(models.Model):
 #class Address(models.Model):
 #    addr id, user id, first and last name, addr1, addr2, post code, city, phone
 
-class Manufacturer(models.Model):
-    man_id = models.AutoField(primary_key=True)
-    man_name = models.CharField(max_length=50)
-    web_url = models.CharField(max_length=100)
-    phone_num = models.CharField(max_length=14)
+# class Manufacturer(models.Model):
+#     man_id = models.AutoField(primary_key=True)
+#     man_name = models.CharField(max_length=50)
+#     web_url = models.CharField(max_length=100)
+#     phone_num = models.CharField(max_length=14)
 
 class Product(models.Model):
     product_id = models.AutoField(primary_key = True)
-    type = models.CharField(max_length=15)
+    type = models.CharField(max_length=50)
     man_id = models.IntegerField()
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
