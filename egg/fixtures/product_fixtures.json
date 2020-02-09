@@ -3,9 +3,9 @@
         "model": "app.product",
         "pk": 1,
         "fields": {
-            "type": "Monitor",
-            "man_id": 2,
-            "name": "VG248 144Hz",
+            "type": "CPU",
+            "man_id": 1,
+            "name": "Intel Core i5-9600K",
             "description": "So crisp",
             "price": 300,
             "warranty": "1 week"
@@ -16,10 +16,10 @@
         "pk": 2,
         "fields": {
             "type": "GPU",
-            "man_id": 4,
-            "name": "RTX 2080ti",
+            "man_id": 5,
+            "name": "Nvidia GeForce RTX 2080 Ti",
             "description": "Epicly powerful",
-            "price": 450,
+            "price": 500,
             "warranty": "3 weeks"
         }
     },
@@ -27,11 +27,35 @@
         "model": "app.product",
         "pk": 3,
         "fields": {
-            "type": "GPU",
-            "man_id": 1,
-            "name": "GeForce 1070 TI",
-            "description": "Cool and powerful GPU",
-            "price": 500,
+            "type": "Monitor",
+            "man_id": 2,
+            "name": "Asus VG278QR 27' Full HD",
+            "description": "Crisp colors",
+            "price": 290,
+            "warranty": "2 weeks"
+        }
+    },
+    {
+        "model": "app.product",
+        "pk": 4,
+        "fields": {
+            "type": "Keyboard",
+            "man_id": 3,
+            "name": "Corsair Gaming K55",
+            "description": "Clickity clack",
+            "price": 50,
+            "warranty": "4 weeks"
+        }
+    },
+    {
+        "model": "app.product",
+        "pk": 5,
+        "fields": {
+            "type": "RAM",
+            "man_id": 4,
+            "name": "HyperX Fury 8GB DDR4 DRAM ",
+            "description": "So fast",
+            "price": 70,
             "warranty": "2 weeks"
         }
     }

@@ -3,8 +3,8 @@
         "model": "app.manufacturer",
         "pk": 1,
         "fields": {
-            "man_name": "Gigabyte",
-            "web_url": "https://www.gigabyte.com/",
+            "man_name": "Intel",
+            "web_url": "https://www.intel.com/",
             "phone_num": "1-626-854-9338"
         }
     },
@@ -21,8 +21,8 @@
         "model": "app.manufacturer",
         "pk": 3,
         "fields": {
-            "man_name": "MSI",
-            "web_url": "https://us.msi.com/",
+            "man_name": "Corsair",
+            "web_url": "https://corsair.com/",
             "phone_num": "1-626-271-1004"
         }
     },
