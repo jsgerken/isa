@@ -64,7 +64,7 @@ docker-compose up
   * **Description:**
     * Creates new Manufacturer with given params, returns newly created object as json
   * **URL:**
-    * api/v1/manufacturers/create/ (DOUBLE CHECK ME)
+    * api/v1/manufacturers/create/
   * **Method:**
     * `POST`
   * **Expected Body Parameters:**
@@ -112,7 +112,7 @@ docker-compose up
   * **Description:**
     * Deletes Manufacturer with specified id, returning the deleted object as json
   * **URL:**
-    * api/v1/manufacturers/<product_id>/delete/
+    * api/v1/products/<product_id>/delete/
   * **Method:**
     * `DELETE`
   * **Sample Curl:** 
@@ -121,7 +121,7 @@ docker-compose up
   * **Description:**
     * Creates new Manufacturer with given params, returns newly created object as json
   * **URL:**
-    * api/v1/manufacturers/create/ (DOUBLE CHECK ME)
+    * api/v1/products/create/
   * **Method:**
     * `POST`
   * **Expected Body Parameters:**
