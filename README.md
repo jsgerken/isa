@@ -15,6 +15,7 @@ docker network connect isa_backend mysql
 ```shell
 docker-compose up
 ```  
+6. Congratulations, you're now ready to access our project API
 
 ## API Endpoints
 
