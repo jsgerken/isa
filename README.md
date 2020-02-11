@@ -1,6 +1,6 @@
 # ISA Project 2: API Guide
 
-## Installation 
+## Setup
 1. Clone this repository
 2. Run the following comand to start the container and initialize the network
 ```shell
