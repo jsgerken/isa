@@ -76,7 +76,7 @@ docker-compose up
 ### Products
 - **Get all Products**
   * **Description:**
-    * Returns json data that list all Products
+    * Returns json array containing all Products
   * **URL:**
     * api/v1/products/
   * **Method:**
