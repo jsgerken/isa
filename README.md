@@ -20,7 +20,7 @@ docker-compose up
 ## API Endpoints
 - Docker compose up will open port at `http://localhost:8001/`
 ### Manufacturers
-- **Get All Users**
+- **Get all Manufacturers**
   * **Description:**
     * Returns json data that list all Manufacturers
   * **URL:**
@@ -29,23 +29,86 @@ docker-compose up
     * `GET`
   * **Sample Curl:** 
     * `curl http://localhost:8001/api/v1/manufacturers/`
-- **Get manufacturer by id**
+- **Get Manufacturer by id**
   * **Description:**
     * Returns json data for Manufacturer with specified id
   * **URL:**
-    * api/v1/manufacturers/<man_id>
+    * api/v1/manufacturers/<man_id>/
   * **Method:**
     * `GET`
   * **Sample Curl:** 
     * `curl http://localhost:8001/api/v1/manufacturers/1`
 - **Update Manufacturer by id**
   * **Description:**
-    * Returns json data for Manufacturer with specified id ???
+    * Updates passed in data for Manufacturer with specified id 
   * **URL:**
-    * api/v1/manufacturers/<man_id>
+    * api/v1/manufacturers/<man_id>/
   * **Method:**
     * `POST`
   * **Sample Curl:** 
     * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST`
+- **Delete a Manufacturer by id**
+  * **Description:**
+    * Deletes Manufacturer with specified id
+  * **URL:**
+    * api/v1/manufacturers/<man_id>/delete/
+  * **Method:**
+    * `DELETE`
+  * **Sample Curl:** 
+    * `curl -X DELETE http://localhost:8001/api/v1/manufacturers/1/delete/`
+- **Create a Manufacturer**
+  * **Description:**
+    * Creates new Manufacturer with given params 
+  * **URL:**
+    * api/v1/manufacturers/create/ (DOUBLE CHECK ME)
+  * **Method:**
+    * `POST`
+  * **Sample Curl:** 
+    * `(DOUBLE CHECK ME)`
 ### Products
+- **Get all Products**
+  * **Description:**
+    * Returns json data that list all Products
+  * **URL:**
+    * api/v1/products/
+  * **Method:**
+    * `GET`
+  * **Sample Curl:** 
+    * `curl http://localhost:8001/api/v1/products/`
+- **Get Product by id**
+  * **Description:**
+    * Returns json data for Product with specified id
+  * **URL:**
+    * api/v1/products/<man_id>/
+  * **Method:**
+    * `GET`
+  * **Sample Curl:** 
+    * `curl http://localhost:8001/api/v1/products/1`
+- **Update Product by id**
+  * **Description:**
+    * Updates passed in data for Product with specified id 
+  * **URL:**
+    * api/v1/products/<man_id>/
+  * **Method:**
+    * `POST`
+  * **Sample Curl:** 
+    * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST`
+- **Delete a Manufacturer by id**
+  * **Description:**
+    * Deletes Manufacturer with specified id
+  * **URL:**
+    * api/v1/manufacturers/<man_id>/delete/
+  * **Method:**
+    * `DELETE`
+  * **Sample Curl:** 
+    * `curl -X DELETE http://localhost:8001/api/v1/manufacturers/1/delete/`
+- **Create a Manufacturer**
+  * **Description:**
+    * Creates new Manufacturer with given params 
+  * **URL:**
+    * api/v1/manufacturers/create/ (DOUBLE CHECK ME)
+  * **Method:**
+    * `POST`
+  * **Sample Curl:** 
+    * `(DOUBLE CHECK ME)`
 
