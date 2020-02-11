@@ -1,23 +1,23 @@
 from django.db import models
 
-class User(models.Model):
-    user_id = models.IntegerField(primary_key = True)
-    email = models.CharField(max_length = 50, unique=True)
-    username = models.CharField(max_length = 50, unique = True)
-    password = models.CharField(max_length = 50)
-    phone_number = models.CharField(max_length = 14)
-    first_name = models.CharField(max_length = 30)
-    last_name = models.CharField(max_length = 30)
-    is_deleted = models.BooleanField(False)
+# class User(models.Model):
+#     user_id = models.IntegerField(primary_key = True)
+#     email = models.CharField(max_length = 50, unique=True)
+#     username = models.CharField(max_length = 50, unique = True)
+#     password = models.CharField(max_length = 50)
+#     phone_number = models.CharField(max_length = 14)
+#     first_name = models.CharField(max_length = 30)
+#     last_name = models.CharField(max_length = 30)
+#     is_deleted = models.BooleanField(False)
     
 #class Address(models.Model):
 #    addr id, user id, first and last name, addr1, addr2, post code, city, phone
 
-# class Manufacturer(models.Model):
-#     man_id = models.AutoField(primary_key=True)
-#     man_name = models.CharField(max_length=50)
-#     web_url = models.CharField(max_length=100)
-#     phone_num = models.CharField(max_length=14)
+class Manufacturer(models.Model):
+    man_id = models.AutoField(primary_key=True)
+    man_name = models.CharField(max_length=50)
+    web_url = models.CharField(max_length=100)
+    phone_num = models.CharField(max_length=14)
 
 class Product(models.Model):
     product_id = models.AutoField(primary_key = True)
