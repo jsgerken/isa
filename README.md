@@ -79,7 +79,7 @@ docker-compose up
   * **Description:**
     * Returns json data for Product with specified id
   * **URL:**
-    * api/v1/products/<man_id>/
+    * api/v1/products/<product_id>/
   * **Method:**
     * `GET`
   * **Sample Curl:** 
@@ -88,27 +88,27 @@ docker-compose up
   * **Description:**
     * Updates passed in data for Product with specified id 
   * **URL:**
-    * api/v1/products/<man_id>/
+    * api/v1/products/<product_id>/
   * **Method:**
     * `POST`
   * **Sample Curl:** 
-    * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST`
-- **Delete a Manufacturer by id**
+    * (DOUBLE CHECK ME)
+- **Delete a Product by id**
   * **Description:**
-    * Deletes Manufacturer with specified id
+    * Deletes Product with specified id
   * **URL:**
-    * api/v1/manufacturers/<man_id>/delete/
+    * api/v1/products/<product_id>/delete/
   * **Method:**
     * `DELETE`
   * **Sample Curl:** 
-    * `curl -X DELETE http://localhost:8001/api/v1/manufacturers/1/delete/`
-- **Create a Manufacturer**
+    * `curl -X DELETE http://localhost:8001/api/v1/products/1/delete/`
+- **Create a Product**
   * **Description:**
-    * Creates new Manufacturer with given params 
+    * Creates new Product with given params 
   * **URL:**
-    * api/v1/manufacturers/create/ (DOUBLE CHECK ME)
+    * api/v1/products/create/ (DOUBLE CHECK ME)
   * **Method:**
     * `POST`
   * **Sample Curl:** 
-    * `(DOUBLE CHECK ME)`
+    * `name=TestNameUpdate&type=TestTypet&price=123&description=TestDesc&warranty=TestWarranty&man_id=3" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/products/create/` (DOUBLE CHECK ME)
 
