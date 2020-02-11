@@ -19,6 +19,7 @@ docker-compose up
 
 ## API Endpoints
 - Docker compose up will open port at `http://localhost:8001/`
+- Five Product and five Manufacturer fixtures will be loaded into the database
 ### Manufacturers
 - **Get all Manufacturers**
   * **Description:**
