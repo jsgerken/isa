@@ -33,7 +33,7 @@ docker-compose up
   * **Description:**
     * Returns json data for Manufacturer with specified id
   * **URL:**
-    * api/v1/manufacturers/<man_id>/
+    * api/v1/manufacturers/<man_id>
   * **Method:**
     * `GET`
   * **Sample Curl:** 
@@ -42,7 +42,7 @@ docker-compose up
   * **Description:**
     * Updates passed in data for Manufacturer with specified id 
   * **URL:**
-    * api/v1/manufacturers/<man_id>/
+    * api/v1/manufacturers/<man_id>
   * **Method:**
     * `POST`
   * **Expected Body Parameters:**
@@ -50,7 +50,7 @@ docker-compose up
     * web_url: String
     * phone_num: Integer
   * **Sample Curl:** 
-    * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST`
+    * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/manufacturers/3`
 - **Delete a Manufacturer by id**
   * **Description:**
     * Deletes Manufacturer with specified id, returning the deleted object as json
@@ -72,7 +72,7 @@ docker-compose up
     * web_url: String
     * phone_num: Integer
   * **Sample Curl:** 
-    * `(DOUBLE CHECK ME)`
+    * `curl -d "man_name=Gigabyte&web_url=gigabyte.net&phone_num=54321" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/manufacturers/create/`
 ### Products
 - **Get all Products**
   * **Description:**
@@ -87,7 +87,7 @@ docker-compose up
   * **Description:**
     * Returns json data for Product with specified id
   * **URL:**
-    * api/v1/products/<man_id>/
+    * api/v1/products/<product_id>
   * **Method:**
     * `GET`
   * **Sample Curl:** 
@@ -96,7 +96,7 @@ docker-compose up
   * **Description:**
     * Updates passed in data for Product with specified id 
   * **URL:**
-    * api/v1/products/<man_id>/
+    * api/v1/products/<product_id>
   * **Method:**
     * `POST`
   * **Expected Body Parameters:**
@@ -112,7 +112,7 @@ docker-compose up
   * **Description:**
     * Deletes Manufacturer with specified id, returning the deleted object as json
   * **URL:**
-    * api/v1/manufacturers/<man_id>/delete/
+    * api/v1/manufacturers/<product_id>/delete/
   * **Method:**
     * `DELETE`
   * **Sample Curl:** 
