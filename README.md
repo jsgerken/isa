@@ -110,7 +110,7 @@ docker-compose up
     * `curl -d "name=TestNameUpd&type=TestTypeUpdt&price=123&description=TestDescUpd&warranty=TestWarrantyUpd&man_id=3" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/products/3`
 - **Delete a Product by id**
   * **Description:**
-    * Deletes Manufacturer with specified id, returning the deleted object as json
+    * Deletes Product with specified id, returning the deleted object as json
   * **URL:**
     * api/v1/products/<product_id>/delete/
   * **Method:**
@@ -119,7 +119,7 @@ docker-compose up
     * `curl -X DELETE http://localhost:8001/api/v1/products/1/delete/`
 - **Create a Product**
   * **Description:**
-    * Creates new Manufacturer with given params, returns newly created object as json
+    * Creates new Product with given params, returns newly created object as json
   * **URL:**
     * api/v1/products/create/
   * **Method:**
