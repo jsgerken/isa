@@ -116,7 +116,7 @@ docker-compose up
   * **Method:**
     * `DELETE`
   * **Sample Curl:** 
-    * `curl -X DELETE http://localhost:8001/api/v1/manufacturers/1/delete/`
+    * `curl -X DELETE http://localhost:8001/api/v1/products/1/delete/`
 - **Create a Product**
   * **Description:**
     * Creates new Manufacturer with given params, returns newly created object as json
