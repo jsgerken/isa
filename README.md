@@ -107,7 +107,7 @@ docker-compose up
     * warranty: String
     * man_id: Integer
   * **Sample Curl:** 
-    * `curl -d "name=TestNameUpd&type=TestTypeUpdt&price=123&description=TestDescUpd&warranty=TestWarrantyUpd&man_id=3" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/products/3/create/`
+    * `curl -d "name=TestNameUpd&type=TestTypeUpdt&price=123&description=TestDescUpd&warranty=TestWarrantyUpd&man_id=3" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8001/api/v1/products/3/update/`
 - **Delete a Product by id**
   * **Description:**
     * Deletes Manufacturer with specified id, returning the deleted object as json
