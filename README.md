@@ -18,5 +18,7 @@ docker-compose up
 6. Congratulations, you're now ready to access our project API
 
 ## API Endpoints
-
+### Manufacturers
+-  `http://localhost:8001/api/v1/manufacturers/<man_id>`
+### Products
 
