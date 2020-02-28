@@ -2,10 +2,11 @@ version: "3"
 services:
   models:
     image: tp33/django
+    container_name: models
     external_links:
       - mysql:db
     volumes:
-      - ./egg:/app
+      - ./models:/app
     ports:
       - "8001:8000"
     networks:
@@ -16,5 +17,30 @@ services:
       && python manage.py loaddata ./fixtures/product_fixtures.json
       && mod_wsgi-express start-server --working-directory ./ --reload-on-changes ./egg/wsgi.py"
 
+  services:
+    image: tp33/django
+    container_name: services
+    networks:
+      - service_mesh
+      - public
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./services:/app
+    command: "mod_wsgi-express start-server --reload-on-changes ./services/wsgi.py"
+
+  frontend:
+    image: tp33/django
+    container_name: frontend
+    networks:
+      - public
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend:/app
+    command: "mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+
 networks:
   backend:
+  service_mesh:
+  public:
