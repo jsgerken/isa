@@ -10,6 +10,7 @@ services:
     ports:
       - "8001:8000"
     networks:
+      - service_mesh
       - backend
     command: bash -c "python manage.py makemigrations
       && python manage.py migrate
