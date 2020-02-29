@@ -16,7 +16,7 @@ services:
       && python manage.py migrate
       && python manage.py loaddata ./fixtures/manufacturer_fixtures.json
       && python manage.py loaddata ./fixtures/product_fixtures.json
-      && mod_wsgi-express start-server --working-directory ./ --reload-on-changes ./egg/wsgi.py"
+      && mod_wsgi-express start-server --reload-on-changes ./models/wsgi.py"
 
   services:
     image: tp33/django

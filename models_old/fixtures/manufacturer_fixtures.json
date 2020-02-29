@@ -1,6 +1,6 @@
 [
     {
-        "model": "models_app.manufacturer",
+        "model": "app.manufacturer",
         "pk": 1,
         "fields": {
             "man_name": "Intel",
@@ -9,7 +9,7 @@
         }
     },
     {
-        "model": "models_app.manufacturer",
+        "model": "app.manufacturer",
         "pk": 2,
         "fields": {
             "man_name": "Asus",
@@ -18,7 +18,7 @@
         }
     },
     {
-        "model": "models_app.manufacturer",
+        "model": "app.manufacturer",
         "pk": 3,
         "fields": {
             "man_name": "Corsair",
@@ -27,7 +27,7 @@
         }
     },
     {
-        "model": "models_app.manufacturer",
+        "model": "app.manufacturer",
         "pk": 4,
         "fields": {
             "man_name": "HyperX",
@@ -36,7 +36,7 @@
         }
     },
     {
-        "model": "models_app.manufacturer",
+        "model": "app.manufacturer",
         "pk": 5,
         "fields": {
             "man_name": "Nvidia",

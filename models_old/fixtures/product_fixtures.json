@@ -1,6 +1,6 @@
 [
     {
-        "model": "models_app.product",
+        "model": "app.product",
         "pk": 1,
         "fields": {
             "type": "CPU",
@@ -12,7 +12,7 @@
         }
     },
     {
-        "model": "models_app.product",
+        "model": "app.product",
         "pk": 2,
         "fields": {
             "type": "GPU",
@@ -24,7 +24,7 @@
         }
     },
     {
-        "model": "models_app.product",
+        "model": "app.product",
         "pk": 3,
         "fields": {
             "type": "Monitor",
@@ -36,7 +36,7 @@
         }
     },
     {
-        "model": "models_app.product",
+        "model": "app.product",
         "pk": 4,
         "fields": {
             "type": "Keyboard",
@@ -48,7 +48,7 @@
         }
     },
     {
-        "model": "models_app.product",
+        "model": "app.product",
         "pk": 5,
         "fields": {
             "type": "RAM",

@@ -9,9 +9,10 @@ from django.db import models
 #     first_name = models.CharField(max_length = 30)
 #     last_name = models.CharField(max_length = 30)
 #     is_deleted = models.BooleanField(False)
-    
-#class Address(models.Model):
+
+# class Address(models.Model):
 #    addr id, user id, first and last name, addr1, addr2, post code, city, phone
+
 
 class Manufacturer(models.Model):
     man_id = models.AutoField(primary_key=True)
@@ -19,8 +20,9 @@ class Manufacturer(models.Model):
     web_url = models.CharField(max_length=100)
     phone_num = models.CharField(max_length=14)
 
+
 class Product(models.Model):
-    product_id = models.AutoField(primary_key = True)
+    product_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=50)
     man_id = models.IntegerField()
     name = models.CharField(max_length=50)
@@ -50,5 +52,3 @@ class Product(models.Model):
 #     transactionID = models.Charfield(max_length=20)
 #     productID = models.Charfield(max_length=20)
 #     userID = models.Charfield(max_length=20)
-    
-    

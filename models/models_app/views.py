@@ -1,4 +1,4 @@
-from app.models import Manufacturer, Product
+from models_app.models import Manufacturer, Product
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -45,10 +45,6 @@ def get_all_products(request):
         error_object = {
             'error': 'HTTP method error: get all products endpoint expects a GET request'
         }
-
-# --------------------------------------------------------------------------------------------------------------
-
-# Get/Update Methods
 
 
 def get_or_update_manufacturer(request, id):
@@ -151,10 +147,6 @@ def get_or_update_product(request, id):
         }
         return JsonResponse(error_object)
 
-# ---------------------------------------------------------------------------------------------------------------
-
-# Delete Methods
-
 
 def delete_manufacturer(request, id):
     if request.method == 'DELETE':
@@ -205,10 +197,6 @@ def delete_product(request, id):
             'error': 'HTTP method error: delete product endpoint expects a DELETE request'
         }
         return JsonResponse(error_object)
-
-# --------------------------------------------------------------------------------------------------------------
-
-# Create Methods
 
 
 def create_manufacturer(request):
@@ -269,5 +257,3 @@ def create_product(request):
             'error': 'HTTP method error: create product endpoint expects a POST request'
         }
         return JsonResponse(error_object)
-
-# --------------------------------------------------------------------------------------------------------------
