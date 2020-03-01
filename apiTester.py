@@ -13,17 +13,20 @@ headers = {
 }
 
 data = {
-    'email': "newUser1@virginia.edu",
-    'username': "TestJay",
+    'email': "jayishere4@virginia.edu",
+    'username': "newGuy3",
     'password': "12345",
     'phone_number': "123-455-3456",
-    'first_name': 'NotTA',
-    'last_name': 'Jay',
-    # 'is_deleted': 'false'
-
+    'first_name': 'NewGuy2',
+    'last_name': 'hi',
 }
 
+# response = requests.delete(
+#     'http://localhost:8001/api/v1/users/3/delete/', headers=headers, data=data)
 response = requests.post(
     'http://localhost:8001/api/v1/users/create/', headers=headers, data=data)
 
-print(response.json())
+try:
+    print(response.json())
+except:
+    print(repr(response))

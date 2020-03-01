@@ -2,14 +2,14 @@ from django.db import models
 
 
 class User(models.Model):
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.AutoField(primary_key=True)
     email = models.CharField(max_length=50, unique=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=14)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    is_deleted = models.BooleanField(blank=True)
+    is_deleted = models.BooleanField(default=False)
 
 # class Address(models.Model):
 #    addr id, user id, first and last name, addr1, addr2, post code, city, phone

@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/v1/users/', views.get_all_users),
     path('api/v1/users/<int:id>', views.get_or_update_user),
     path('api/v1/users/create/', views.create_user),
+    path('api/v1/users/<int:id>/delete/', views.delete_user),
 
 ]
