@@ -1,4 +1,4 @@
-from models_app.models import Manufacturer, Product
+from models_app.models import Manufacturer, Product, User
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -257,3 +257,90 @@ def create_product(request):
             'error': 'HTTP method error: create product endpoint expects a POST request'
         }
         return JsonResponse(error_object)
+
+
+def get_all_users(request):
+    try:
+        if request.method == 'GET':
+            user_list = User.objects.all()
+            response = []
+            for users in user_list.values():
+                response.append(users)
+            return JsonResponse(response, safe=False)
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get all users endpoint expects a GET request'
+            })
+    except Exception as e:  # for development purpose. can remove exception as e in production
+        return JsonResponse({
+            'error': 'Error while getting all Users from DB. Check errMessage for more info',
+            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def get_or_update_user(request, id):
+    try:
+        if request.method == 'GET':
+            # using the filter lets me leverage queryset methods
+            user_list = User.objects.filter(user_id=id)
+            # like this one that turns objects into dict
+            return JsonResponse(user_list.values()[0])
+        elif request.method == 'POST':
+            user_list = User.objects.filter(user_id=id)
+            new_values = request.POST.dict()
+            user_list.update(**new_values)
+            return JsonResponse(user_list.values()[0])
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: User endpoint expects a GET or POST request'
+            })
+    except IndexError:  # this is what filter throws if it does not find user with given id.
+        return JsonResponse({
+            'error': 'Get failed: user with user_id ' + str(id) + ' does not exist',
+        })
+    except Exception as e:  # for development purpose. can remove exception as e in production
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def create_user(request):
+    try:
+        if request.method == 'POST':
+            new_values = request.POST.dict()
+            user = User(**new_values)
+            user.save()
+            return JsonResponse(new_values)
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: User endpoint expects a GET or POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        }
+        )
+
+
+def delete_user(request, id):
+    try:
+        if request.method == 'DELETE':
+            user = User.objects.filter(user_id=id)
+            deleted_user = user.values()[0]
+            user.delete()
+            return JsonResponse(deleted_user)
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: User endpoint expects a GET or POST request'
+            })
+    except IndexError:
+        return JsonResponse({
+            'error': 'Delete failed: user with user_id ' + str(id) + ' does not exist',
+        })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
