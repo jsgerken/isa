@@ -18,9 +18,9 @@ services:
       && python manage.py loaddata ./fixtures/product_fixtures.json
       && mod_wsgi-express start-server --reload-on-changes ./models/wsgi.py"
 
-  services:
+  exp:
     image: tp33/django
-    container_name: services
+    container_name: exp
     networks:
       - service_mesh
       - public
