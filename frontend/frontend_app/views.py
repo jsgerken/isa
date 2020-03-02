@@ -3,6 +3,7 @@ import urllib.request
 import urllib.parse
 import json
 from django.shortcuts import render
+# from PIL import Image
 
 
 def index(request):
@@ -20,6 +21,11 @@ def home(request):
     args['newlyAddedGrouped'] = group(resp['newlyAddedSorted'], 4)
     # return JsonResponse({"test": str(args)})
     return render(request, 'home.html', args)
+
+    # url = "http://models:8000/static/models_app/ProductImages/RAM.jpg"
+    # # req = urllib.request.Request(url)
+    # img = Image.open(urllib.urlopen(url))
+    # return JsonResponse({"hi": str(img)})
 
 
 def group(l, n):

@@ -8,7 +8,9 @@
             "name": "Intel Core i5-9600K",
             "description": "So crisp",
             "price": 300,
-            "warranty": "1 week"
+            "warranty": "1 week",
+            "datetime_created": "2020-02-01 21:02:34.981315",
+            "datetime_modified": "2020-02-01 21:02:34.981315"
         }
     },
     {
@@ -20,7 +22,9 @@
             "name": "Nvidia RTX 2080 Ti",
             "description": "Epicly powerful",
             "price": 500,
-            "warranty": "3 weeks"
+            "warranty": "3 weeks",
+            "datetime_created": "2020-02-02 21:02:34.981315",
+            "datetime_modified": "2020-02-03 21:02:34.981315"
         }
     },
     {
@@ -32,7 +36,9 @@
             "name": "Asus VG278QR 27'",
             "description": "Crisp colors",
             "price": 290,
-            "warranty": "2 weeks"
+            "warranty": "2 weeks",
+            "datetime_created": "2020-02-04 21:02:34.981315",
+            "datetime_modified": "2020-02-04 21:02:34.981315"
         }
     },
     {
@@ -44,7 +50,9 @@
             "name": "Corsair Gaming K55",
             "description": "Clickity clack",
             "price": 50,
-            "warranty": "4 weeks"
+            "warranty": "4 weeks",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
         }
     },
     {
@@ -56,7 +64,9 @@
             "name": "HyperX Fury 8GB RAM ",
             "description": "So fast",
             "price": 70,
-            "warranty": "2 weeks"
+            "warranty": "2 weeks",
+            "datetime_created": "2020-01-03 21:02:34.981315",
+            "datetime_modified": "2020-01-03 21:02:34.981315"
         }
     }
 ]

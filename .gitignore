@@ -158,5 +158,6 @@ Temporary Items
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
-
+###Jacobo Files
+apiTester.py
 # End of https://www.gitignore.io/api/macos,django
