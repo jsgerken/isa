@@ -29,20 +29,9 @@ def get_all_products(request):
     if request.method == 'GET':
         products_list = Product.objects.all()
         response = []
-        for product in products_list:
-            prod_object = {
-                'product_id': product.product_id,
-                'type': product.type,
-                'man_id': product.man_id,
-                'views': product.views,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'warranty': product.warranty,
-                "img_url": product.img_url
-            }
-            response.append(prod_object)
-        return JsonResponse({'allProducts': response})
+        for product in products_list.values():
+            response.append(product)
+        return JsonResponse({"allProducts": response})
     else:
         error_object = {
             'error': 'HTTP method error: get all products endpoint expects a GET request'

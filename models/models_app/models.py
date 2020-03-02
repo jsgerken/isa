@@ -29,6 +29,8 @@ class Product(models.Model):
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
     img_url = models.CharField(max_length=500)
+    datetime_modified = models.DateTimeField(auto_now=True)
+    datetime_created = models.DateTimeField(auto_now_add=True)
 
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""

@@ -10,7 +10,9 @@
             "description": "So crisp",
             "price": 300,
             "warranty": "1 week",
-            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll300/19-117-959-V01.jpg?ex=2"
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll300/19-117-959-V01.jpg?ex=2",
+            "datetime_created": "2020-02-01 21:02:34.981315",
+            "datetime_modified": "2020-02-01 21:02:34.981315"
         }
     },
     {
@@ -24,7 +26,9 @@
             "description": "Epicly powerful",
             "price": 500,
             "warranty": "3 weeks",
-            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/A17P_1_201901291412355579.jpg?ex=2"
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/A17P_1_201901291412355579.jpg?ex=2",
+            "datetime_created": "2020-02-02 21:02:34.981315",
+            "datetime_modified": "2020-02-03 21:02:34.981315"
         }
     },
     {
@@ -38,7 +42,9 @@
             "description": "Crisp colors",
             "price": 290,
             "warranty": "2 weeks",
-            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/24-236-313-V01.jpg"
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/24-236-313-V01.jpg",
+            "datetime_created": "2020-02-04 21:02:34.981315",
+            "datetime_modified": "2020-02-04 21:02:34.981315"
         }
     },
     {
@@ -52,7 +58,9 @@
             "description": "Clickity clack",
             "price": 50,
             "warranty": "4 weeks",
-            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/23-816-083-V07.jpg?ex=2"
+            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/23-816-083-V07.jpg?ex=2",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
         }
     },
     {
@@ -66,7 +74,9 @@
             "description": "So fast",
             "price": 70,
             "warranty": "2 weeks",
-            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/A4YU_1_20190829514152450.jpg?ex=2"
+            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/A4YU_1_20190829514152450.jpg?ex=2",
+            "datetime_created": "2020-01-03 21:02:34.981315",
+            "datetime_modified": "2020-01-03 21:02:34.981315"
         }
     }
 ]
