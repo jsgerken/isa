@@ -19,20 +19,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-    <h1 class="text-center">Products</h1>
-    <div class="text-center dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Product Type:
-        </button>
-    </div>
+    <h1 class="text-center">Most Popular Products</h1>
     <div class="row d-flex justify-content-center">
         {% for product in products %}
         <div class="card mx-5 my-2 w-50">
             <div class="card-body ">
                 <div class="d-flex flex-row">
+                    <img width="150" height="110"
+                        src="https://c1.neweggimages.com/NeweggImage/ProductImage/24-236-313-V01.jpg?ex=2" />
                     <div class="d-flex flex-column">
-                        <h5 class="name jumbotron-heading">{{product.name}}</h5>
+                        <h5 class="name jumbotron-heading ml-4">{{product.name}}</h5>
                         <ul>
                             <li>Description: {{product.description}}</li>
                             <li>Warranty: {{product.warranty}}</li>
