@@ -1,0 +1,160 @@
+{%extends "base.html"%}
+
+{%block base%}
+{% load static %}
+
+<body>
+    <!-- consider between container-fluid or just container. fluid makes it full width -->
+    <div class="container">
+        <h2 style="font-size:32px; font-family: 'Tangerine', serif;" class="pt-2">
+            NEWLY ADDED ITEMS
+        </h2>
+        <div class="carousel slide" id="postsCarousel">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 text-md-right lead">
+                        <a class="btn btn-outline-secondary prev" href="" title="go back"><i
+                                class="fa fa-lg fa-chevron-left"></i></a>
+                        <a class="btn btn-outline-secondary next" href="" title="more"><i
+                                class="fa fa-lg fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="container p-1 mt-2 carousel-inner">
+                {% for group in newlyAddedGrouped %}
+                <!-- <li style="color:white">hi group</li> -->
+                {% if forloop.first %}
+                <div class="row row-equal carousel-item active card-deck">
+                    {% else %}
+                    <div class="row row-equal carousel-item card-deck">
+                        {% endif %}
+                        {% for object in group %}
+                        <!-- <li style="color:white">bye object.description </li> -->
+                        <div class="col-md-3 ">
+                            <div class="card">
+                                <div class="card-img-top card-img-top-250">
+                                    <img class="img-fluid"
+                                        src="http://localhost:8001/static/models_app/ProductImages/RAM.jpg"
+                                        alt="Carousel 1">
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">{{object.name}}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{object.type}}</h6>
+                                    <p class="card-text">{{object.description}}</p>
+                                    <h4 class="card-title">${{object.price}}</h4>
+                                    <!-- <a href="#" class="btn btn-primary">View Details</a> -->
+                                </div>
+
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>
+{%endblock base%}
+
+{% block scripts %}
+<script src="{% static 'frontend_app/app.js' %}"></script>
+
+{% endblock scripts %}
+<!-- 
+ <!-- this is the left part 
+ <div class="col-lg-3 col-md-4">
+    <h1>Hi</h1>
+</div>
+<!-- this is the middle part
+<div class="col-lg-6 col-md-8 ">
+    <h1>Hi</h1>
+</div>
+<!-- this is the right part, but when md to space is on the bottom 
+<div class="col-lg-3 ">
+    <h1>Hi</h1>
+</div> -->
+
+
+
+
+
+<!-- <section class="container p-t-3">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Bootstrap 4 Card Slider</h1>
+        </div>
+    </div>
+</section>
+<section class="carousel slide" data-ride="carousel" id="postsCarousel">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-md-right lead">
+                <a class="btn btn-outline-secondary prev" href="" title="go back"><i
+                        class="fa fa-lg fa-chevron-left"></i></a>
+                <a class="btn btn-outline-secondary next" href="" title="more"><i
+                        class="fa fa-lg fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="container p-t-0 m-t-2 carousel-inner">
+        <div class="row row-equal carousel-item active m-t-0">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="http://i.imgur.com/EW5FgJM.png" alt="Carousel 1">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="http://i.imgur.com/Hw7sWGU.png" alt="Carousel 2">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="http://i.imgur.com/g27lAMl.png" alt="Carousel 3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row row-equal carousel-item m-t-0">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="//visualhunt.com/photos/l/1/office-student-work-study.jpg"
+                            alt="Carousel 4">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="//visualhunt.com/photos/l/1/working-woman-technology-computer.jpg"
+                            alt="Carousel 5">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-3 fadeIn wow">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="//visualhunt.com/photos/l/1/people-office-team-collaboration.jpg"
+                            alt="Carousel 6">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section> -->

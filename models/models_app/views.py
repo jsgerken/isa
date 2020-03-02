@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
+# from django.utils import timezone
 
 
 def get_all_manufacturers(request):
@@ -29,18 +30,9 @@ def get_all_products(request):
     if request.method == 'GET':
         products_list = Product.objects.all()
         response = []
-        for product in products_list:
-            prod_object = {
-                'product_id': product.product_id,
-                'type': product.type,
-                'man_id': product.man_id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'warranty': product.warranty,
-            }
-            response.append(prod_object)
-        return JsonResponse(response, safe=False)
+        for product in products_list.values():
+            response.append(product)
+        return JsonResponse({"allProducts": response})
     else:
         error_object = {
             'error': 'HTTP method error: get all products endpoint expects a GET request'
@@ -266,7 +258,7 @@ def get_all_users(request):
             response = []
             for users in user_list.values():
                 response.append(users)
-            return JsonResponse(response, safe=False)
+            return JsonResponse({"allUsers": response})
         else:
             return JsonResponse({
                 'error': 'HTTP method error: get all users endpoint expects a GET request'

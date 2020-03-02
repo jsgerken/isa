@@ -27,6 +27,10 @@ class Product(models.Model):
     description = models.CharField(max_length=500)
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
+    # automatically set the field to now every time the object is saved (creation and updated) - UTC time
+    datetime_modified = models.DateTimeField(auto_now=True)
+    # automatically set the field to now when the object is first created only - UTC time
+    datetime_created = models.DateTimeField(auto_now_add=True)
 
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""
