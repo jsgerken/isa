@@ -23,13 +23,13 @@ class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=50)
     man_id = models.IntegerField()
+    views = models.IntegerField(default=0)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
-    # automatically set the field to now every time the object is saved (creation and updated) - UTC time
+    img_url = models.CharField(max_length=500)
     datetime_modified = models.DateTimeField(auto_now=True)
-    # automatically set the field to now when the object is first created only - UTC time
     datetime_created = models.DateTimeField(auto_now_add=True)
 
 # class SearchFilters(models.Model):
