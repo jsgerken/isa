@@ -5,6 +5,7 @@
         "fields": {
             "type": "CPU",
             "man_id": 1,
+            "views": 396,
             "name": "Intel Core i5-9600K",
             "description": "So crisp",
             "price": 300,
@@ -17,6 +18,7 @@
         "fields": {
             "type": "GPU",
             "man_id": 5,
+            "views": 200,
             "name": "Nvidia RTX 2080 Ti",
             "description": "Epicly powerful",
             "price": 500,
@@ -29,6 +31,7 @@
         "fields": {
             "type": "Monitor",
             "man_id": 2,
+            "views": 800,
             "name": "Asus VG278QR 27'",
             "description": "Crisp colors",
             "price": 290,
@@ -41,6 +44,7 @@
         "fields": {
             "type": "Keyboard",
             "man_id": 3,
+            "views": 670,
             "name": "Corsair Gaming K55",
             "description": "Clickity clack",
             "price": 50,
@@ -53,6 +57,7 @@
         "fields": {
             "type": "RAM",
             "man_id": 4,
+            "views": 100,
             "name": "HyperX Fury 8GB RAM ",
             "description": "So fast",
             "price": 70,

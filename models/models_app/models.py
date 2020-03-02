@@ -23,6 +23,7 @@ class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=50)
     man_id = models.IntegerField()
+    views = models.IntegerField(default=0)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     price = models.IntegerField()

@@ -1,4 +1,4 @@
-from models_app.models import Manufacturer, Product, User
+from .models import Manufacturer, Product, User
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -17,7 +17,7 @@ def get_all_manufacturers(request):
                 'phone_num': manufacturer.phone_num,
             }
             response.append(man_object)
-        return JsonResponse(response, safe=False)
+        return JsonResponse({'allManufacturers': response})
     else:
         error_object = {
             'error': 'HTTP method error: get all manufacturers endpoint expects a GET request'
@@ -34,13 +34,14 @@ def get_all_products(request):
                 'product_id': product.product_id,
                 'type': product.type,
                 'man_id': product.man_id,
+                'views': product.views,
                 'name': product.name,
                 'description': product.description,
                 'price': product.price,
                 'warranty': product.warranty,
             }
             response.append(prod_object)
-        return JsonResponse(response, safe=False)
+        return JsonResponse({'allProducts': response})
     else:
         error_object = {
             'error': 'HTTP method error: get all products endpoint expects a GET request'
@@ -266,7 +267,7 @@ def get_all_users(request):
             response = []
             for users in user_list.values():
                 response.append(users)
-            return JsonResponse(response, safe=False)
+            return JsonResponse({'allUsers': response})
         else:
             return JsonResponse({
                 'error': 'HTTP method error: get all users endpoint expects a GET request'
