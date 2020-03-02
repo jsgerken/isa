@@ -36,6 +36,7 @@ def get_all_products(request):
         error_object = {
             'error': 'HTTP method error: get all products endpoint expects a GET request'
         }
+        return JsonResponse(error_object)
 
 
 def get_or_update_manufacturer(request, id):

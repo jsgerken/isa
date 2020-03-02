@@ -12,15 +12,16 @@ services:
     networks:
       - service_mesh
       - backend
-    command: bash -c "python manage.py makemigrations
+    command: bash -c "pip install whitenoise
+      && python manage.py makemigrations
       && python manage.py migrate
       && python manage.py loaddata ./fixtures/manufacturer_fixtures.json
       && python manage.py loaddata ./fixtures/product_fixtures.json
       && mod_wsgi-express start-server --reload-on-changes ./models/wsgi.py"
 
-  exp:
+  services:
     image: tp33/django
-    container_name: exp
+    container_name: services
     networks:
       - service_mesh
       - public
@@ -39,7 +40,8 @@ services:
       - "8000:8000"
     volumes:
       - ./frontend:/app
-    command: "mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+    command: bash -c "pip install whitenoise
+      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
 networks:
   backend:
