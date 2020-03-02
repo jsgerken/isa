@@ -1,0 +1,214 @@
+body {
+    background-color: rgb(0, 42, 61);
+}
+#posts{
+    background-color: #f2f2f2; 
+}
+
+#in {
+    height:100%;
+    width: 100%;
+    /*background-color: white; */
+    background-color:  rgb(0, 42, 61);
+}
+.welcome-body {
+    background-color: rgb(0, 42, 61);
+}
+.welcome-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%); 
+    color: rgb(252, 252, 252);
+}
+.welcome-content img {
+    border: 8px solid white; 
+    border-radius: 100%; 
+}
+.welcome-content h2 {
+    margin:10px; 
+}
+
+hr.light{
+    border-top: 1px solid #d5d5d5; 
+    width: 75%; 
+    margin-top: .8rem; 
+    margin-bottom: 1rem; 
+}
+
+h1 {
+    font-size: 4rem;
+    color: rgb(252, 252, 252);
+}
+
+h2 {
+    font-size: 2rem;
+    color: rgb(252, 252, 252);
+}
+
+h3 {
+    font-size: 1rem;   
+    color: rgb(252, 252, 252);
+}
+
+#posts h1 {
+    font-size: 4rem;
+    color: black; 
+    
+}
+
+#posts h2 {
+    font-size: 2rem;
+    color: black; 
+}
+
+#posts h3 {
+    font-size: 1rem;
+    color: black;  
+
+}
+.intro-btn {
+    background-image: linear-gradient(to left, #00577F, #C67486);
+    color: rgb(252, 252, 252);
+    border-radius: 24px;
+    justify-content: center;
+    border: none;
+    margin-top: 20px;
+}
+
+.navbar{
+    padding: .2rem; 
+  }
+
+.navbar-nav li{
+    padding-right: 20px; 
+}
+.navbar-brand img{
+    border: 5px solid white; 
+    border-radius: 100%; 
+}
+.navbar .navbar-nav .nav-link {
+    font-size: 1.1em !important; 
+    color: rgb(35, 45, 75); 
+    
+  }
+  
+.navbar .navbar-nav .nav-item.active .nav-link  {
+    color: rgb(255, 255, 255); 
+}
+.navbar .navbar-nav .nav-link:hover {
+    color: rgb(170, 85, 0);
+}
+.user-img-nav {
+    border:5px solid rgb(0, 42, 61); 
+    border-radius: 50%;
+    
+}
+
+/* .card {
+    margin: 1rem; 
+}
+.card-img-top {
+    height: 40%;
+    width: 100%;
+} */
+.profile-pic img {
+    float: none; 
+    border: 5px solid white;  
+    border-radius: 100%; 
+    max-width: 45%;
+    max-height: 10%; 
+    transform: translateY(-35%);
+    margin: -15%; 
+}
+.profile-img .img-fluid {
+    border: 5px solid white;  
+    border-radius: 100%; 
+}
+.User-Profile .card-header {
+    background-color: #3500D3; 
+    padding: 13%; 
+}
+/* .card-footer {
+    color: blue; 
+} */
+
+.suggestions i {
+    float: right;
+    font-size: 20px; 
+   
+}
+.suggestion-user img {
+    border-radius: 100%; 
+}
+.container-margin{
+  margin-left: -7.5px;
+  margin-right: -7.5px;;
+}
+
+/* .card-image.img
+{
+  height:150px !important;
+} */
+
+.material-icons.md1::before{
+  content:"search"; 
+}
+
+.material-icons.md1:hover::before{
+  content:"navigate_next"; 
+}
+
+
+/* equal card height */
+.row-equal > div[class*='col-'] {
+    display: flex;
+    flex: 1 0 auto;
+}
+
+.row-equal .card {
+   width: 100%;
+}
+
+/* ensure equal card height inside carousel */
+.carousel-inner>.row-equal.active, 
+.carousel-inner>.row-equal.next, 
+.carousel-inner>.row-equal.prev {
+    display: flex;
+}
+
+/* prevent flicker during transition */
+/* .carousel-inner>.row-equal.active.left, 
+.carousel-inner>.row-equal.active.right {
+    opacity: 0.5;
+    display: flex;
+} */
+
+/* control image height */
+/* .card-img-top-250 {
+    max-height: 250px;
+    overflow:hidden;
+} */
+ 
+/* not using below  */
+/* .vert .carousel-item-next.carousel-item-left,
+.vert .carousel-item-prev.carousel-item-right {
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+} */
+/* 
+.carousel-indicators li {
+    display: block;
+    width: 100px;
+    height: 5px;
+    background-color:skyblue;
+}
+
+.carousel-indicators .active {
+    background-color: blue;
+} */
+
+
+  
+
