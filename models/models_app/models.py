@@ -28,6 +28,7 @@ class Product(models.Model):
     description = models.CharField(max_length=500)
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
+    img_url = models.CharField(max_length=500)
 
 # class SearchFilters(models.Model):
 #     """The many ways to sort through what is listed on the site to narrow down searches"""

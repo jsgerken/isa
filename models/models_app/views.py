@@ -39,6 +39,7 @@ def get_all_products(request):
                 'description': product.description,
                 'price': product.price,
                 'warranty': product.warranty,
+                "img_url": product.img_url
             }
             response.append(prod_object)
         return JsonResponse({'allProducts': response})

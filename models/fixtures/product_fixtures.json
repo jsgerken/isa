@@ -9,7 +9,8 @@
             "name": "Intel Core i5-9600K",
             "description": "So crisp",
             "price": 300,
-            "warranty": "1 week"
+            "warranty": "1 week",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll300/19-117-959-V01.jpg?ex=2"
         }
     },
     {
@@ -22,7 +23,8 @@
             "name": "Nvidia RTX 2080 Ti",
             "description": "Epicly powerful",
             "price": 500,
-            "warranty": "3 weeks"
+            "warranty": "3 weeks",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/A17P_1_201901291412355579.jpg?ex=2"
         }
     },
     {
@@ -35,7 +37,8 @@
             "name": "Asus VG278QR 27'",
             "description": "Crisp colors",
             "price": 290,
-            "warranty": "2 weeks"
+            "warranty": "2 weeks",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/24-236-313-V01.jpg"
         }
     },
     {
@@ -48,7 +51,8 @@
             "name": "Corsair Gaming K55",
             "description": "Clickity clack",
             "price": 50,
-            "warranty": "4 weeks"
+            "warranty": "4 weeks",
+            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/23-816-083-V07.jpg?ex=2"
         }
     },
     {
@@ -61,7 +65,8 @@
             "name": "HyperX Fury 8GB RAM ",
             "description": "So fast",
             "price": 70,
-            "warranty": "2 weeks"
+            "warranty": "2 weeks",
+            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/A4YU_1_20190829514152450.jpg?ex=2"
         }
     }
 ]
