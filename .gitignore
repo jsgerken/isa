@@ -1,3 +1,4 @@
+
 # Created by https://www.gitignore.io/api/macos,django
 # Edit at https://www.gitignore.io/?templates=macos,django
 
@@ -9,8 +10,8 @@ __pycache__/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media
 db/
+media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
@@ -147,17 +148,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-### VisualStudioCode ###
+#visual studios
 .vscode/
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
-###Jacobo Files
-apiTester.py
 # End of https://www.gitignore.io/api/macos,django
