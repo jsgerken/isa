@@ -44,4 +44,9 @@
             "phone_num": "1-800-797-6530"
         }
     }
+<<<<<<< Updated upstream:models/fixtures/manufacturer_fixtures.json
 ]
+=======
+    
+]
+>>>>>>> Stashed changes:egg/fixtures/manufacturer_fixtures.json
