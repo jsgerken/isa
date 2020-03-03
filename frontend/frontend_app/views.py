@@ -7,7 +7,7 @@ import json
 
 
 def home(request):
-    req = urllib.request.Request('http://services:8000/api/v1/type/all/')
+    req = urllib.request.Request('http://services:8000/api/v1/top/')
     top_json = urllib.request.urlopen(req).read().decode('utf-8')
     top_dict = json.loads(top_json)
 
