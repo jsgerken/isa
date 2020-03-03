@@ -107,16 +107,6 @@ class ExperienceTests(TestCase):
         products = new_dict['sorted']
         self.assertTrue(products[0]['price'] > products[1]['price'])
 
-    # tests user story 4
-    def test_sort_date(self):
-        req = urllib.request.Request(
-            'http://services:8000/api/v1/sort/datetime_created')
-        new_json = urllib.request.urlopen(req).read().decode('utf-8')
-        new_dict = json.loads(new_json)
-        products = new_dict['sorted']
-        self.assertTrue(products[0]['datetime_created']
-                        > products[1]['datetime_created'])
-
     #  tests user story 5
     def test_get_man_from_product(self):
         req = urllib.request.Request(
