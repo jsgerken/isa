@@ -26,3 +26,16 @@ def newly_added(request):
     resp_array = json.loads(resp_json)['allProducts']
     resp_sorted = sorted(resp_array, key=lambda i: i['datetime_created'])
     return JsonResponse({"newlyAddedSorted": resp_sorted})
+
+
+def product_details(request, id):
+    req_product = urllib.request.Request(
+        'http://models:8000/api/v1/products/' + str(id))
+    resp_product = json.loads(urllib.request.urlopen(
+        req_product).read().decode('utf-8'))
+    req_man = urllib.request.Request(
+        'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
+    resp_man = json.loads(urllib.request.urlopen(
+        req_man).read().decode('utf-8'))
+    resp_product['description'] = resp_product['description'].split('|')
+    return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
