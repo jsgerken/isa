@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template import loader
 import urllib.request
@@ -22,3 +22,10 @@ def home(request):
 def group(l, n):
     for i in range(0, len(l), n):
         yield l[i:i+n]
+
+
+def product_details(request, id):
+    req = urllib.request.Request(
+        'http://services:8000/api/v1/product-details/' + str(id))
+    resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    return render(request, 'frontend_app/product_details.html', resp)

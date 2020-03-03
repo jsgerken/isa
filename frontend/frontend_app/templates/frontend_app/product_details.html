@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block base %}
+
+<body>
+    <div class="container-full">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{%url 'home'%}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{resp_product.type}}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="container-fluid">
+        <!-- Portfolio Item Heading -->
+        <h2 class="my-4">{{resp_product.name}}
+            <small> Sold and Shipped by Newegg</small>
+        </h2>
+
+        <!-- Portfolio Item Row -->
+        <div class="row">
+            <div class="col-md-8">
+                <img class="img-fluid" src="{{resp_product.img_url}}" alt="" style="width:700px;height:450px;">
+            </div>
+
+            <div class=" col-md-4 m-0">
+                <div class="card" style=" height: 28rem;">
+                    <div class=" card-body">
+                        <h4 class="card-title">{{resp_product.name}}</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">Product Details</h6>
+
+                        <ul>
+                            {%for desp in resp_product.description%}
+                            <li>{{desp}}</li>
+                            {%endfor%}
+                        </ul>
+                        <h4 class="card-title">{{resp_man.man_name}}</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">Manufacturer Details</h6>
+                        <ul>
+                            {%if resp_man.phone_num%}
+                            <li>Phone Number : {{resp_man.phone_num}}</li>
+                            {%endif%}
+                            {%if resp_man.web_url%}
+                            <li> Website : <a href="{{resp_man.web_url}}">{{resp_man.web_url}}</a> </li>
+                            {%endif%}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</body>
+
+{% endblock base %}
+{% block scripts %}
+{% endblock scripts %}
+
+
+<!-- <div class="row mx-5">
+    <div class="col-md-8 text-right">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{image}}" class="img-fluid" alt="Responsive image">
+    </div>
+    <div class="col-md-4">
+        <h2>{{product.name}}</h2>
+        <h3>{{product.description}}</h3>
+        <h5>Warranty time: {{product.warranty}}</h3>
+    </div>
+    </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <div class="card text-center" style="width: 18rem;">
+            <div class="card-body">
+                <p class="card-text">Price ${{product.price}}
+                    <h3>Quantity:</h3>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            0
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">1</a>
+                            <a class="dropdown-item" href="#">2</a>
+                            <a class="dropdown-item" href="#">3</a>
+                            <a class="dropdown-item" href="#">4</a>
+                            <a class="dropdown-item" href="#">5</a>
+                            <a class="dropdown-item" href="#">6</a>
+                            <a class="dropdown-item" href="#">7</a>
+                            <a class="dropdown-item" href="#">8</a>
+                            <a class="dropdown-item" href="#">9</a>
+                        </div>
+                    </div>
+                </p>
+
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+    </div> -->
