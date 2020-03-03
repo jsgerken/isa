@@ -80,6 +80,7 @@ class UserTests(TestCase):
 
 class ExperienceTests(TestCase):
     client = Client()
+    # tests user story 2
 
     def test_get_top_viewed(self):
         req = urllib.request.Request(
@@ -89,9 +90,37 @@ class ExperienceTests(TestCase):
         products = top_dict['products']
         self.assertTrue(products[0]['views'] > products[1]['views'])
 
+    # tests user story 1
     def test_get_newest_grouping(self):
         req = urllib.request.Request(
             'http://services:8000/api/v1/newly-added/')
         new_json = urllib.request.urlopen(req).read().decode('utf-8')
         new_dict = json.loads(new_json)
         self.assertTrue('newlyAddedSorted' in new_dict)
+
+    # tests user story 4
+    def test_sort_price(self):
+        req = urllib.request.Request(
+            'http://services:8000/api/v1/sort/price')
+        new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        new_dict = json.loads(new_json)
+        products = new_dict['sorted']
+        self.assertTrue(products[0]['price'] > products[1]['price'])
+
+    # tests user story 4
+    def test_sort_date(self):
+        req = urllib.request.Request(
+            'http://services:8000/api/v1/sort/datetime_created')
+        new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        new_dict = json.loads(new_json)
+        products = new_dict['sorted']
+        self.assertTrue(products[0]['datetime_created']
+                        > products[1]['datetime_created'])
+
+    #  tests user story 5
+    def test_get_man_from_product(self):
+        req = urllib.request.Request(
+            'http://services:8000/api/v1/man/1')
+        new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        new_dict = json.loads(new_json)
+        self.assertEquals(new_dict['man_id'], 1)
