@@ -5,9 +5,9 @@
         "fields": {
             "type": "CPU",
             "man_id": 1,
-            "views": 396,
-            "name": "Intel Core i5-9600K",
-            "description": "So crisp",
+            "views": 244,
+            "name": "Intel Core i5-9600K Coffee Lake 6-Core 3.7 GHz (4.6 GHz Turbo) LGA 1151 (300 Series) 95W BX80684I59600K Desktop Processor Intel UHD Graphics 630 ",
+            "description": "9th Gen Intel Processor|Intel UHD Graphics 630|Only Compatible with Intel 300 Series Motherboard|Socket LGA 1151 (300 Series)|Processor Base Frequency 3.7 GHz|Unlocked Processor|DDR4 Support|Intel Optane Memory and SSD Supported|Cooling device not included - Processor Only|Intel Turbo Boost Technology 2.0 and Intel vPro technology offer powerful productivity, gaming, and overclocking",
             "price": 300,
             "warranty": "1 week",
             "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll300/19-117-959-V01.jpg?ex=2",
@@ -23,7 +23,7 @@
             "man_id": 5,
             "views": 200,
             "name": "Nvidia RTX 2080 Ti",
-            "description": "Epicly powerful",
+            "description": "Bundle Includes GeForce RTX 2080 Ti Founders Edition 11GB GDDR6 PCI Express 3.0 Graphics Card and Battlefield V Standard Edition Full Game Download Digital Code.|NVIDIA TURING. Powered by the Turing GPU architecture and the all-new RTX platform. This gives you up to 6X the performance of previous-generation graphics cards.|REINVENTING DESIGN. The factory overclocked GeForce RTX 2080 Ti Founders Edition graphics card features a next-gen 13-phase power supply for maximum overclocking and dual-axial 13-blade fans coupled with a new vapor chamber for ultra-cool and quiet |BROADCAST LIKE A PRO. GeForce RTX features a dedicated hardware encoder that unlocks the ability to game and stream simultaneously with superior quality.|FROM CONCEPT TO COMPLETION—FASTER. NVIDIA GPUs accelerate your work with incredible boosts in performance. Bigger workloads, more features, and faster than you ever imagined.",
             "price": 500,
             "warranty": "3 weeks",
             "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/A17P_1_201901291412355579.jpg?ex=2",
@@ -38,8 +38,8 @@
             "type": "Monitor",
             "man_id": 2,
             "views": 800,
-            "name": "Asus VG278QR 27'",
-            "description": "Crisp colors",
+            "name": "ASUS VG278QR 27\" Full HD 1920x1080 165Hz 0.5ms DisplayPort HDMI DVI-D G-SYNC Compatible Asus Eye Care Flciker-Free Technology Low Blue Light Built-in Speakers Backlit LED Gaming Monitor ",
+            "description": "1920 x 1080 Full HD Resolution|165Hz Refresh Rate|0.5ms Response Time for Smooth Gameplay|HDMI (1.4), DisplayPort (1.2), Dual-Link DVI-D Video Inputs|Built-in 2 Watt Stereo RMS Speakers|Free SYNC Technology Supported|G-SYNC Technology Compatible|Asus Eye Care with Ultra Low-Blue Light and Flicker Free Technology|Super Narrow Bezel Design|Tilt, Swivel, Pivot, Height Adjustable|VESA Mount Compatible",
             "price": 290,
             "warranty": "2 weeks",
             "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImage/24-236-313-V01.jpg",
@@ -54,8 +54,8 @@
             "type": "Keyboard",
             "man_id": 3,
             "views": 670,
-            "name": "Corsair Gaming K55",
-            "description": "Clickity clack",
+            "name": "Corsair Gaming K55 RGB Keyboard, Backlit RGB LED",
+            "description": "Three-zone dynamic RGB backlighting with 10+ preconfigured vivid RGB lighting modes allow you to choose immersive lighting effects|6 programmable macro keys enable powerful actions, key remaps and combos|Dedicated Volume and multimedia controls for direct Audio control without interrupting your game|Quiet and responsive keys give a satisfying feel|Multi-key anti-ghosting ensures the most accurate simultaneous key presses",
             "price": 50,
             "warranty": "4 weeks",
             "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/23-816-083-V07.jpg?ex=2",
@@ -70,13 +70,173 @@
             "type": "RAM",
             "man_id": 4,
             "views": 100,
-            "name": "HyperX Fury 8GB RAM ",
+            "name": "HyperX FURY 8GB (2 x 4GB) 240-Pin DDR3 SDRAM DDR3 1600 (PC3 12800) Desktop Memory Model HX316C10FBK2/8",
             "description": "DDR3 1600 (PC3 12800)|Timing 10-10-10|CAS Latency 10|Voltage 1.5V",
             "price": 70,
             "warranty": "2 weeks",
             "img_url": "https://c1.neweggimages.com/ProductImageCompressAll300/A4YU_1_20190829514152450.jpg?ex=2",
             "datetime_created": "2020-01-03 21:02:34.981315",
             "datetime_modified": "2020-01-03 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 6,
+        "fields": {
+            "type": "CPU",
+            "man_id": 1,
+            "views": 1023,
+            "name": "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 3.6 GHz (5.0 GHz Turbo) LGA 1151 (300 Series) 95W BX80684I99900K Desktop Processor Intel UHD Graphics 630 ",
+            "description": "9th Gen Intel Processor|Intel UHD Graphics 630|Only Compatible with Intel 300 Series Motherboard|Socket LGA 1151 (300 Series)|Max Turbo Frequency 5.0 GHz|Unlocked Processor|DDR4 Support|Intel Optane Memory and SSD Supported|Cooling device not included - Processor Only|Intel Turbo Boost Technology 2.0 and Intel vPro technology offer pro-level performance for gaming, creating, and overall productivity",
+            "price": 535,
+            "warranty": "1 week",
+            "img_url": "https://c1.neweggimages.com/ProductImageCompressAll1280/19-117-957-V01.jpg",
+            "datetime_created": "2020-02-01 19:02:34.981315",
+            "datetime_modified": "2020-02-01 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 7,
+        "fields": {
+            "type": "Motherboard",
+            "man_id": 2,
+            "views": 620,
+            "name": "ASUS Prime Z390-A LGA 1151 (300 Series) Intel Z390 SATA 6Gb/s ATX Intel Motherboard",
+            "description": "Designed for 9th and 8th generation Intel Core processors to maximize connectivity and speed with M.2, USB 3.1 Gen2 and ASUS OptiMem II for better DRAM overclocking stability|Revamped 5-Way Optimization that has the intelligence to overclock a CPU based on smart prediction and thermal telemetry|5X Protection III Hardware-level safeguards with SafeSlot Core, LANGuard and Overvoltage Protection provide component longevity and reliability while FanXpert 4 with AIO Pump Header delivers advanced fan control for dynamic system cooling|Unique SafeSlot Core fortified PCIe slots prevent damage caused by heavyweight GPUs|Realtek ALC S1220A 8-Channel High Definition Audio CODEC featuring Crystal Sound 3",
+            "price": 179,
+            "warranty": "2 months",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/13-119-152-V06.jpg",
+            "datetime_created": "2020-02-04 21:02:34.981315",
+            "datetime_modified": "2020-02-04 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 8,
+        "fields": {
+            "type": "Case",
+            "man_id": 3,
+            "views": 343,
+            "name": "Corsair Crystal Series 680X RGB CC-9011168-WW Black Steel / Plastic High Airflow Tempered Glass ATX Smart Case ",
+            "description": "Outstanding High Airflow Cooling: Four cooling fans and Direct Airflow Path layout delivers cool air to your PC’s hottest components|Three Included LL120 RGB Fans: Light up your system with a total of 48 customizable RGB LEDs.|Intelligent Control, Unlimited Possibilities: An included CORSAIR Lighting Node PRO turns the 680X RGB into a smart case, powered by CORSAIR iCUE software that brings your system to life with dynamic RGB lighting synchronized across all your iCUE compatible products, including fans, RGB LED light strips, DDR4 memory, keyboards, mice and more.|Dual-Chamber Layout: A distinctive dual-chamber design makes it incredibly easy to assemble an immaculate system that keeps cables tidy and out of view.|Three Crystal-Clear Tempered Glass Panels: Fitted in the front, roof, and a hinged easy-access side panel door, providing a stunning view of your PC’s high-profile components.|Massive Cooling Potential: Install up to 8x 120mm or 7x 140mm fans",
+            "price": 249,
+            "warranty": "4 weeks",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/11-139-137-V21.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 9,
+        "fields": {
+            "type": "Motherboard",
+            "man_id": 3,
+            "views": 343,
+            "name": "ASUS AMD AM4 ROG X570 Crosshair VIII Hero (Wi-Fi) ATX Motherboard with PCIe 4.0, Dual M.2, SATA 6Gb/s, USB3.2 Gen 2, 2.5Gbps LAN, WiFi 6 ",
+            "description": "AMD AM4 socket: Ready for 2nd, and 3rd Gen AMD Ryzen processors and up to two M.2 drives, USB 3.2 Gen2, and AMD StoreMI to maximize connectivity and speed.|Comprehensive thermal design: Active PCH heatsink, M.2 aluminum heatsink and ROG Cooling Zone.|High-performance networking: On-board Wi-Fi 6 (802.11 ax) with MU-MIMO support, 2.5Gbps Ethernet and Gigabit Ethernet, both with ASUS LANGuard protection, and support for GameFirst V software.|5-Way Optimization: Automated system-wide tuning, providing overclocking and cooling profiles that are tailor made for your rig.|DIY Friendly Design: Pre-mounted I/O shield, ASUS SafeSlot, BIOS flashback and premium components for maximum endurance.|Unmatched personalization: ASUS-exclusive Aura Sync RGB lighting, including RGB headers and Gen. 2 addressable headers.|Industry-leading ROG audio: ROG SupremeFX S1220 is combined with the venerable ESS ES9023P to deliver high-fidelity audio to headsets and exotic cans.",
+            "price": 379,
+            "warranty": "1 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/13-119-109-S09.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 10,
+        "fields": {
+            "type": "Motherboard",
+            "man_id": 3,
+            "views": 343,
+            "name": "ASUS TUF B450M-PLUS GAMING AM4 AMD B450 SATA 6Gb/s Micro ATX AMD Motherboard ",
+            "description": "2nd generation AMD Ryzen AM4 maximize connectivity and speed with NVMe M.2, USB 3.1 Gen2 and Gigabit LAN|Military-grade TUF components like TUF LANGuard, TUF Chokes, TUF Capacitors, and TUF MOSFETs maximize durability|TUF Protection with SafeSlot and Overvoltage protection ensures component stability and dependability|Unmatched personalization with ASUS exclusive Aura Sync RGB lighting and additional RGB header",
+            "price": 379,
+            "warranty": "1 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/13-119-141-V01.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 11,
+        "fields": {
+            "type": "CPU",
+            "man_id": 6,
+            "views": 1700,
+            "name": "AMD RYZEN 5 3600 6-Core 3.6 GHz (4.2 GHz Max Boost) Socket AM4 65W 100-100000031BOX Desktop Processor ",
+            "description": "3rd Gen Ryzen|Socket AM4|Max Boost Frequency 4.2 GHz|DDR4 Support|L2 Cache 3MB|L3 Cache 32MB|Thermal Design Power 65W|With Wraith Stealth cooler",
+            "price": 179,
+            "warranty": "1 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/19-113-569-V01.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 12,
+        "fields": {
+            "type": "CPU",
+            "man_id": 6,
+            "views": 1403,
+            "name": "AMD RYZEN 9 3900X 12-Core 3.8 GHz (4.6 GHz Max Boost) Socket AM4 105W 100-100000023BOX Desktop Processor ",
+            "description": "3rd Gen Ryzen|Socket AM4|Max Boost Frequency 4.6 GHz|DDR4 Support|L2 Cache 6MB|L3 Cache 64MB|Thermal Design Power 105W|With Wraith Prism cooler",
+            "price": 419,
+            "warranty": "1 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/19-113-103-V03.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 13,
+        "fields": {
+            "type": "GPU",
+            "man_id": 8,
+            "views": 303,
+            "name": "GIGABYTE AORUS GeForce RTX 2080 SUPER DirectX 12 GV-N208SAORUS W-8GC 8GB 256-Bit GDDR6 PCI Express 3.0 x16 SLI Support ATX Video Card ",
+            "description": "8GB 256-Bit GDDR6|Core Clock 1860 MHz|3 x HDMI 2.0b 3 x DisplayPort 1.4|3072 CUDA Cores|PCI Express 3.0 x16",
+            "price": 839,
+            "warranty": "1 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/14-932-206-V01.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 14,
+        "fields": {
+            "type": "GPU",
+            "man_id": 7,
+            "views": 567,
+            "name": "MSI MPG X570 GAMING PLUS Gaming Motherboard AMD AM4 SATA 6Gb/s M.2 USB 3.2 Gen 2 HDMI ATX ",
+            "description": "AMD X570|Supports 2nd and 3rd Gen AMD Ryzen / Ryzen with Radeon Vega Graphics and 2nd Gen AMD Ryzen with Radeon Graphics Desktop Processors for AM4 socket|3rd Gen AMD Ryzen Processors support DDR4 4400/ 4266/ 4133/ 4000/ 3866/ 3733/ 3600/ 3466/ 3200/ 3066/ 3000/ 2933/ 2800/ 2667 MHz by A-XMP OC MODE, and 3200/ 3066/ 3000/ 2933/ 2800/ 2667/ 2400/ 2133/ 1866 MHz by JEDEC|2nd Gen AMD Ryzen Processors, 1st and 2nd Gen AMD Ryzen with Radeon Vega Graphics Processors support DDR4 3466/ 3200/ 3066/ 3000/ 2933/ 2800/ 2667 MHz by A-XMP OC MODE, and 3200/ 3066/ 3000/ 2933/ 2800/ 2667/ 2400/ 2133/ 1866 MHz by JEDEC",
+            "price": 169,
+            "warranty": "2 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/13-144-262-V06.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
+        }
+    },
+    {
+        "model": "models_app.product",
+        "pk": 15,
+        "fields": {
+            "type": "GPU",
+            "man_id": 7,
+            "views": 233,
+            "name": "MSI MPG X570 GAMING PLUS Gaming Motherboard AMD AM4 SATA 6Gb/s M.2 USB 3.2 Gen 2 HDMI ATX ",
+            "description": "8GB 256-Bit GDDR6|Boost Clock 1620 MHz|1 x HDMI 2.0b 3 x DisplayPort 1.4|2304 CUDA Cores|PCI Express 3.0 x16",
+            "price": 399,
+            "warranty": "2 year",
+            "img_url": "https://c1.neweggimages.com/NeweggImage/ProductImageCompressAll1280/14-137-490-V01.jpg",
+            "datetime_created": "2020-03-02 21:02:34.981315",
+            "datetime_modified": "2020-03-02 21:02:34.981315"
         }
     }
 ]
