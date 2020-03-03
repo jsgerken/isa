@@ -18,32 +18,22 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed">
 </head>
 
-</body>
-<nav class=" navbar navbar-expand-md sticky-top" style="background-color: #50a6df;">
-    <div class="container-fluid text-center">
-        <a class="navbar-brand" href="{%url 'home'%}">
-            <img src="{% static 'frontend_app/navLogo.jpeg' %}" width="60" height="60">
-        </a>
-        <a class="navbar-brand" href="{%url 'home'%}">
-            <h2 class="mt-1">Oldn't Egg</h2>
-        </a>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-
-            </ul>
+<body>
+    <nav class=" navbar navbar-expand-md sticky-top" style="background-color: #50a6df;">
+        <div class="container-fluid text-center">
+            <a class="navbar-brand" href="{%url 'home'%}">
+                <img src="{% static 'frontend_app/navLogo.jpeg' %}" width="60" height="60">
+            </a>
+            <a class="navbar-brand" href="{%url 'home'%}">
+                <h2 class="mt-1">Oldn't Egg</h2>
+            </a>
+            <div class="collapse navbar-collapse" id="navbarResponsive"></div>
         </div>
-    </div>
-</nav>
-
-{% block base %}
-
-
-{% endblock base %}
-
+    </nav>
+    {% block base %}
+    {% endblock base %}
 </body>
 
-<!-- Optional JavaScript for Bootstrap -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.0.min.js"
     integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -53,8 +43,6 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
 {% block scripts %}
-
-
 {% endblock scripts %}
 
 </html>
