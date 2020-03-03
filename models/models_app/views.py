@@ -87,17 +87,8 @@ def get_or_update_manufacturer(request, id):
 def get_or_update_product(request, id):
     if request.method == 'GET':
         try:
-            product = Product.objects.get(product_id=id)
-            prod_object = {
-                'product_id': product.product_id,
-                'type': product.type,
-                'man_id': product.man_id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'warranty': product.warranty,
-            }
-            return JsonResponse(prod_object)
+            product = Product.objects.filter(product_id=id)
+            return JsonResponse(product.values()[0])
         except ObjectDoesNotExist:
             error_object = {
                 'error': 'Get failed: product with product_id ' + str(id) + ' does not exist'
