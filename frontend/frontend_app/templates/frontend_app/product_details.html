@@ -2,6 +2,7 @@
 {% block base %}
 
 <body>
+    {% if not error %}
     <div class="container-full">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -50,6 +51,12 @@
 
     </div>
 
+    {% else %}
+    <div>
+        <h2>No details for this product.</h2>
+    </div>
+    {% endif %}
+    
 </body>
 
 {% endblock base %}

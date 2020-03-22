@@ -33,6 +33,8 @@ def product_details(request, id):
         'http://models:8000/api/v1/products/' + str(id))
     resp_product = json.loads(urllib.request.urlopen(
         req_product).read().decode('utf-8'))
+    if 'error' in resp_product:
+        return JsonResponse(resp_product);
     req_man = urllib.request.Request(
         'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
     resp_man = json.loads(urllib.request.urlopen(

@@ -54,6 +54,8 @@ def get_or_update_manufacturer(request, id):
                 'error': 'Get failed: manufacturer with man_id ' + str(id) + ' does not exist'
             }
             return JsonResponse(error_object)
+
+            
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
@@ -94,6 +96,11 @@ def get_or_update_product(request, id):
                 'error': 'Get failed: product with product_id ' + str(id) + ' does not exist'
             }
             return JsonResponse(error_object)
+        except Exception as e:  # for development purpose. can remove exception as e in production
+            return JsonResponse({
+                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+                'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+            })
     elif request.method == 'POST':
         try:
             product = Product.objects.get(product_id=id)
