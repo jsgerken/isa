@@ -10,6 +10,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     is_deleted = models.BooleanField(default=False)
+    is_man = models.BooleanField(default=False)
 
 
 class Manufacturer(models.Model):

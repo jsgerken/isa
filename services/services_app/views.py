@@ -1,7 +1,8 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 import urllib.request
 import urllib.parse
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def get_top_viewed(request):
@@ -61,3 +62,33 @@ def get_man_from_product(request, product_id):
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     return JsonResponse(resp_man)
+
+@csrf_exempt
+def create_account(request): 
+# I wanted to do some redirection with the POST so that there was less code duplication
+# but HTTP does not like redirection of POST so I just grab data, encoded, and send
+    try:
+        if request.method == 'POST':
+            req_data = request.POST.dict()
+            data = urllib.parse.urlencode(req_data).encode()
+            req =  urllib.request.Request("http://models:8000/api/v1/users/create/", data=data)
+            resp_json = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+            return JsonResponse(resp_json)
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: User endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+def logout(requst): 
+    return; 
+
+def login(request): 
+    return; 
+
+def create_new_listing(request): 
+    return; 

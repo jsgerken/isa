@@ -55,7 +55,7 @@ def get_or_update_manufacturer(request, id):
             }
             return JsonResponse(error_object)
 
-            
+
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
@@ -304,7 +304,7 @@ def create_user(request):
             return JsonResponse(new_values)
         else:
             return JsonResponse({
-                'error': 'HTTP method error: User endpoint expects a GET or POST request'
+                'error': 'HTTP method error: User endpoint expects a POST request'
             })
     except Exception as e:
         return JsonResponse({
