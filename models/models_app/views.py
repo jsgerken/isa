@@ -346,12 +346,12 @@ def login(request):
         if request.method == 'POST':
             user_dict = request.POST.dict()
             username = user_dict['username']
-            user = User.objects.get(username=username)
             password = user_dict['password']
+            user = User.objects.get(username=username)
             user_id = user.user_id
-            auth = Authenticator.objects.filter(user_id=user_id)
-            if not auth:
-                if check_password(password, user.password):
+            if check_password(password, user.password):
+                auth = Authenticator.objects.filter(user_id=user_id)
+                if not auth:
                     authenticator = hmac.new(
                         key=settings.SECRET_KEY.encode('utf-8'),
                         msg=os.urandom(32),
@@ -362,13 +362,12 @@ def login(request):
                     new_auth.save()
                     return JsonResponse({'code': 'success', 'auth': authenticator})
                 else:
-                    return JsonResponse({'code': 'failure'})
+                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
             else:
-                return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
-
+                return JsonResponse({'code': 'failure'})
         else:
             return JsonResponse({
-                'error': 'HTTP method error: User endpoint expects a GET or POST request'
+                'error': 'HTTP method error: Login endpoint expects a POST request'
             })
     except Exception as e:
         return JsonResponse({
