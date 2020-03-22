@@ -373,5 +373,26 @@ def login(request):
         return JsonResponse({
             'error': 'Error',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
-        )
+        })
+
+
+def logout(request):
+    try:
+        if request.method == 'POST':
+            auth_dict = request.POST.dict()
+            authenticator = Authenticator.objects.get(
+                authenticator=auth_dict['auth'])
+            authenticator.delete()
+            return JsonResponse({
+                'code': 'success',
+                'deleted_auth': auth_dict['auth']
+            })
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: Login endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })

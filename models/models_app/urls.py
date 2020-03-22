@@ -18,5 +18,6 @@ urlpatterns = [
     path('api/v1/users/create/', views.create_user),
     path('api/v1/users/<int:id>/delete/', views.delete_user),
 
-    path('api/v1/login', views.login)
+    path('account/login', views.login),
+    path('account/logout', views.logout)
 ]
