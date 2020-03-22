@@ -350,7 +350,7 @@ def login(request):
             password = user_dict['password']
             user_id = user.user_id
             auth = Authenticator.objects.filter(user_id=user_id)
-            if auth is None:
+            if not auth:
                 if check_password(password, user.password):
                     authenticator = hmac.new(
                         key=settings.SECRET_KEY.encode('utf-8'),
@@ -364,7 +364,7 @@ def login(request):
                 else:
                     return JsonResponse({'code': 'failure'})
             else:
-                return JsonResponse({'code': 'success'})
+                return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
 
         else:
             return JsonResponse({
