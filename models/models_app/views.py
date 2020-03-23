@@ -1,8 +1,12 @@
-from .models import Manufacturer, Product, User
+from .models import Manufacturer, Product, User, Authenticator
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.hashers import make_password, check_password
+import os
+import hmac
+from django.conf import settings
 
 
 def get_all_manufacturers(request):
@@ -286,6 +290,8 @@ def create_user(request):
         if request.method == 'POST':
             new_values = request.POST.dict()
             user = User(**new_values)
+            user.password = make_password(
+                new_values['password'], salt='f1nd1ngn3m0', hasher='default')
             user.save()
             return JsonResponse(new_values)
         else:
@@ -318,5 +324,62 @@ def delete_user(request, id):
     except Exception as e:
         return JsonResponse({
             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def login(request):
+    try:
+        if request.method == 'POST':
+            user_dict = request.POST.dict()
+            username = user_dict['username']
+            password = user_dict['password']
+            user = User.objects.get(username=username)
+            user_id = user.user_id
+            if check_password(password, user.password):
+                auth = Authenticator.objects.filter(user_id=user_id)
+                if not auth:
+                    authenticator = hmac.new(
+                        key=settings.SECRET_KEY.encode('utf-8'),
+                        msg=os.urandom(32),
+                        digestmod='sha256',
+                    ).hexdigest()
+                    new_auth = Authenticator(
+                        authenticator=authenticator, user_id=user_id)
+                    new_auth.save()
+                    return JsonResponse({'code': 'success', 'auth': authenticator})
+                else:
+                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
+            else:
+                return JsonResponse({'code': 'failure'})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: Login endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def logout(request):
+    try:
+        if request.method == 'POST':
+            auth_dict = request.POST.dict()
+            authenticator = Authenticator.objects.get(
+                authenticator=auth_dict['auth'])
+            authenticator.delete()
+            return JsonResponse({
+                'code': 'success',
+                'deleted_auth': auth_dict['auth']
+            })
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: Login endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })

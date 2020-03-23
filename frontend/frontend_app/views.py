@@ -1,9 +1,10 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 import urllib.request
 import urllib.parse
 import json
+from .forms import ListingForm
 
 
 def home(request):
@@ -29,3 +30,17 @@ def product_details(request, id):
         'http://services:8000/api/v1/product-details/' + str(id))
     resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
     return render(request, 'frontend_app/product_details.html', resp)
+
+
+def create_listing(request):
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid():
+
+            return HttpResponseRedirect('/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ListingForm()
+
+    return render(request, 'create_listing.html', {'form': form})
