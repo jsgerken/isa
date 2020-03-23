@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block base %}
+<h1 class="d-flex justify-content-center">
+    User Account Creation
+</h1>
+<h3 class="d-flex justify-content-center">
+    Normal users cannot make listings. Please sign up as a <a href="/create-manufacturer" class="ml-2">Manufacturer </a> if you wish to do so.
+</h3>
+<div class="d-flex justify-content-center h-100 mt-3">
+   <form action="/create-user" method="post" class="bg-light px-5 py-1 rounded w-75">
+        {% csrf_token %}
+        <div class my-4>
+            {{ form|crispy }}
+        </div>
+        <div class ="justify-content-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form> 
+</div>
+
+
+
+{% endblock base %}
