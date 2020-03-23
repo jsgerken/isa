@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block base %}
-<div class="row d-flex justify-content-center text-center pt-4">
-    <form action="/create-listing" method="post">
+
+<div class="row d-flex justify-content-center pt-1 pb-5">
+    <h1 class="text-center mt-5">Create Listing</h1>
+    <form action="/create-listing" method="post" class="bg-light px-5 py-0 rounded w-75">
         {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Create Listing</button>
+        <div class="my-3">
+            {{ form|crispy }}
+        </div>
+        <div class="text-center pb-3">
+            <button type="submit" class="btn btn-primary btn-block">Create Listing</button>
+        </div>
     </form>
 </div>
+
 {% endblock base %}
