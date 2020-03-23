@@ -5,7 +5,7 @@
         "fields": {
             "man_name": "Intel",
             "web_url": "https://www.intel.com/",
-            "phone_num": "1-626-854-9338"
+            "phone_number": "1-626-854-9338"
         }
     },
     {
@@ -14,7 +14,7 @@
         "fields": {
             "man_name": "Asus",
             "web_url": "https://www.asus.com/us/",
-            "phone_num": "1-888-678-3688"
+            "phone_number": "1-888-678-3688"
         }
     },
     {
@@ -23,7 +23,7 @@
         "fields": {
             "man_name": "Corsair",
             "web_url": "https://corsair.com/",
-            "phone_num": "1-626-271-1004"
+            "phone_number": "1-626-271-1004"
         }
     },
     {
@@ -32,7 +32,7 @@
         "fields": {
             "man_name": "HyperX",
             "web_url": "https://www.hyperxgaming.com/us",
-            "phone_num": "1-714-445-2894"
+            "phone_number": "1-714-445-2894"
         }
     },
     {
@@ -41,7 +41,7 @@
         "fields": {
             "man_name": "Nvidia",
             "web_url": "https://www.nvidia.com/",
-            "phone_num": "1-800-797-6530"
+            "phone_number": "1-800-797-6530"
         }
     },
     {
@@ -50,7 +50,7 @@
         "fields": {
             "man_name": "AMD",
             "web_url": "https://www.amd.com/",
-            "phone_num": "1-877-284-1566"
+            "phone_number": "1-877-284-1566"
         }
     },
     {
@@ -59,7 +59,7 @@
         "fields": {
             "man_name": "MSI",
             "web_url": "https://us.msi.com/",
-            "phone_num": "1-626-271-1004"
+            "phone_number": "1-626-271-1004"
         }
     },
     {
@@ -68,7 +68,7 @@
         "fields": {
             "man_name": "Gigabyte",
             "web_url": "https://www.gigabyte.com/",
-            "phone_num": "1-626-854-9338"
+            "phone_number": "1-626-854-9338"
         }
     }
     

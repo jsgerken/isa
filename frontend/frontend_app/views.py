@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
 
@@ -7,6 +7,7 @@ from .forms import Login, CreateUser, CreateManufacturer
 import urllib.request
 import urllib.parse
 import json
+from .forms import ListingForm
 
 #data = parse.urlencode(<your data dict>).encode()
 #req = request.Request(<your url>, data=data) # this will make the method "POST"
@@ -95,3 +96,16 @@ def create_manufacturer(request):
     else:
         form = CreateManufacturer()
     return render (request, 'create_manufacturer.html', {'form':form})
+
+def create_listing(request):
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid():
+
+            return HttpResponseRedirect('/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ListingForm()
+
+    return render(request, 'create_listing.html', {'form': form})

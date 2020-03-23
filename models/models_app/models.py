@@ -5,7 +5,7 @@ class User(models.Model):
     user_id = models.AutoField(primary_key=True)  # changed this field to auto
     email = models.CharField(max_length=50, unique=True)
     username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=1000)
     phone_number = models.CharField(max_length=14)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -14,9 +14,10 @@ class User(models.Model):
 
 class Manufacturer(models.Model):
     man_id = models.AutoField(primary_key=True)
-    man_name = models.CharField(max_length=50)
+    man_name = models.CharField(max_length=50, unique=True)
     web_url = models.CharField(max_length=100)
-    phone_num = models.CharField(max_length=14)
+    phone_number = models.CharField(max_length=14)
+    password = models.CharField(max_length=50)
 
 
 class Product(models.Model):
@@ -31,3 +32,9 @@ class Product(models.Model):
     img_url = models.CharField(max_length=500)
     datetime_modified = models.DateTimeField(auto_now=True)
     datetime_created = models.DateTimeField(auto_now_add=True)
+
+
+class Authenticator(models.Model):
+    authenticator = models.CharField(max_length=1000)
+    user_id = models.IntegerField()
+    date_created = models.DateTimeField(auto_now_add=True)
