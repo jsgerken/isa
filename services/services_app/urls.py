@@ -7,5 +7,8 @@ urlpatterns = [
     path('api/v1/product-details/<int:id>', views.product_details),
     path('api/v1/sort/<str:attribute>', views.sort_products),
     path('api/v1/man/<int:product_id>', views.get_man_from_product),
-    path('api/v1/create-account', views.create_account)
+    path('api/v1/create-account', views.create_account),
+    path('api/v1/login', views.login),
+    path('api/v1/logout', views.logout),
+    path('api/v1/create-new-listing', views.create_new_listing)
 ]

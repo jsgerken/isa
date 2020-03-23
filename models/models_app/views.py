@@ -190,64 +190,50 @@ def delete_product(request, id):
 
 
 def create_manufacturer(request):
-    if request.method == 'POST':
-        try:
-            manufacturer = Manufacturer()
-            manufacturer.man_name = request.POST.__getitem__('man_name')
-            manufacturer.web_url = request.POST.__getitem__('web_url')
-            manufacturer.phone_num = request.POST.__getitem__('phone_num')
-            manufacturer.save()
-            new_man = {
-                'man_id': manufacturer.man_id,
-                'man_name': manufacturer.man_name,
-                'web_url': manufacturer.web_url,
-                'phone_num': manufacturer.phone_num,
-            }
-            return JsonResponse(new_man)
-        except MultiValueDictKeyError:
+    try:
+        if request.method == 'POST':
+            new_values = request.POST.dict()
+            man = Manufacturer(**new_values)
+            man.save()
+            return JsonResponse(new_values)
+        else:
             error_object = {
-                'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body to create a manufacturer'
+                'error': 'HTTP method error: create manufacturer endpoint expects a POST request'
             }
             return JsonResponse(error_object)
-    else:
+    except MultiValueDictKeyError:
         error_object = {
-            'error': 'HTTP method error: create manufacturer endpoint expects a POST request'
+            'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body to create a manufacturer'
         }
         return JsonResponse(error_object)
-
+    except Exception as e:  # for development purpose. can remove exception as e in production
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: man_name, web_url, phone_number, password, is_man',
+            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+        })
 
 def create_product(request):
-    if request.method == 'POST':
-        try:
-            product = Product()
-            product.type = request.POST.__getitem__('type')
-            product.man_id = request.POST.__getitem__('man_id')
-            product.name = request.POST.__getitem__('name')
-            product.description = request.POST.__getitem__('description')
-            product.price = request.POST.__getitem__('price')
-            product.warranty = request.POST.__getitem__('warranty')
+    try: 
+        if request.method == 'POST':
+            new_values = request.POST.dict()
+            product = Product(**new_values)
             product.save()
-            created_prod = {
-                'product_id': product.product_id,
-                'type': product.type,
-                'man_id': product.man_id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'warranty': product.warranty,
-            }
-            return JsonResponse(created_prod)
-        except MultiValueDictKeyError:
-            error_object = {
-                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to create a product'
-            }
-            return JsonResponse(error_object)
-    else:
+            return JsonResponse(new_values)
+        else:
+            return JsonResponse({
+                'error':  'HTTP method error: create product endpoint expects a POST request'
+            })
+    except MultiValueDictKeyError:
         error_object = {
-            'error': 'HTTP method error: create product endpoint expects a POST request'
+            'error': 'Create failed: you must provide type, man_id, name, description, price, and warranty in your POST body to create a product'
         }
         return JsonResponse(error_object)
-
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and img_url',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        }
+        )
 
 def get_all_users(request):
     try:

@@ -10,14 +10,14 @@ class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     is_deleted = models.BooleanField(default=False)
-    is_man = models.BooleanField(default=False)
 
 
 class Manufacturer(models.Model):
     man_id = models.AutoField(primary_key=True)
-    man_name = models.CharField(max_length=50)
+    man_name = models.CharField(max_length=50, unique=True)
     web_url = models.CharField(max_length=100)
-    phone_num = models.CharField(max_length=14)
+    phone_number = models.CharField(max_length=14)
+    password = models.CharField(max_length=50)
 
 
 class Product(models.Model):
