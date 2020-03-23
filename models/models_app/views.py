@@ -18,7 +18,7 @@ def get_all_manufacturers(request):
                 'man_id': manufacturer.man_id,
                 'man_name': manufacturer.man_name,
                 'web_url': manufacturer.web_url,
-                'phone_num': manufacturer.phone_num,
+                'phone_number': manufacturer.phone_number,
             }
             response.append(man_object)
         return JsonResponse({'allManufacturers': response})
@@ -51,7 +51,7 @@ def get_or_update_manufacturer(request, id):
             man_object['man_id'] = manufacturer.man_id
             man_object['man_name'] = manufacturer.man_name
             man_object['web_url'] = manufacturer.web_url
-            man_object['phone_num'] = manufacturer.phone_num
+            man_object['phone_number'] = manufacturer.phone_number
             return JsonResponse(man_object)
         except ObjectDoesNotExist:
             error_object = {
@@ -65,12 +65,12 @@ def get_or_update_manufacturer(request, id):
             manufacturer = Manufacturer.objects.get(man_id=id)
             manufacturer.man_name = request.POST.__getitem__('man_name')
             manufacturer.web_url = request.POST.__getitem__('web_url')
-            manufacturer.phone_num = request.POST.__getitem__('phone_num')
+            manufacturer.phone_number = request.POST.__getitem__('phone_number')
             manufacturer.save()
             updated_man = {
                 'man_name': manufacturer.man_name,
                 'web_url': manufacturer.web_url,
-                'phone_num': manufacturer.phone_num,
+                'phone_number': manufacturer.phone_number,
             }
             return JsonResponse(updated_man)
         except ObjectDoesNotExist:
@@ -80,7 +80,7 @@ def get_or_update_manufacturer(request, id):
             return JsonResponse(error_object)
         except MultiValueDictKeyError:
             error_object = {
-                'error': 'Update failed: you must provide man_name, web_url, and phone_num in your POST body to update a manufacturer'
+                'error': 'Update failed: you must provide man_name, web_url, and phone_number in your POST body to update a manufacturer'
             }
             return JsonResponse(error_object)
     else:
@@ -102,7 +102,7 @@ def get_or_update_product(request, id):
             return JsonResponse(error_object)
         except Exception as e:  # for development purpose. can remove exception as e in production
             return JsonResponse({
-                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
                 'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
             })
     elif request.method == 'POST':
@@ -150,7 +150,7 @@ def delete_manufacturer(request, id):
                 'man_id': manufacturer.man_id,
                 'man_name': manufacturer.man_name,
                 'web_url': manufacturer.web_url,
-                'phone_num': manufacturer.phone_num,
+                'phone_number': manufacturer.phone_number,
             }
             manufacturer.delete()
             return JsonResponse(deleted_man)
@@ -207,12 +207,12 @@ def create_manufacturer(request):
             return JsonResponse(error_object)
     except MultiValueDictKeyError:
         error_object = {
-            'error': 'Create failed: you must provide man_name, web_url, and phone_num in your POST body to create a manufacturer'
+            'error': 'Create failed: you must provide man_name, web_url, and phone_number in your POST body to create a manufacturer'
         }
         return JsonResponse(error_object)
     except Exception as e:  # for development purpose. can remove exception as e in production
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: man_name, web_url, phone_number, password, is_man',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: man_name, web_url, phone_numberber, password, is_man',
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -280,7 +280,7 @@ def get_or_update_user(request, id):
         })
     except Exception as e:  # for development purpose. can remove exception as e in production
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -300,7 +300,7 @@ def create_user(request):
             })
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
         )
@@ -323,7 +323,7 @@ def delete_user(request, id):
         })
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
 
