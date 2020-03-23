@@ -13,6 +13,7 @@ services:
       - service_mesh
       - backend
     command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
       && python manage.py makemigrations
       && python manage.py migrate
       && python manage.py loaddata ./fixtures/manufacturer_fixtures.json

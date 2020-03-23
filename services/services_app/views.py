@@ -1,7 +1,8 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 import urllib.request
 import urllib.parse
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def get_top_viewed(request):
@@ -61,3 +62,60 @@ def get_man_from_product(request, product_id):
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     return JsonResponse(resp_man)
+
+# I wanted to do some redirection with the POST so that there was less code duplication
+# but HTTP does not like redirection of POST so I just grab data, encoded, and send
+# action can equal: "create", "login"
+def authAndListingHelper(request, action):
+    try:
+        if request.method == 'POST':
+            url = ""
+            req_data = request.POST.dict()
+            # data = urllib.parse.urlencode(req_data).encode()
+            action = action.lower()
+            if action == "create":        
+                is_man = req_data.pop("is_man")
+                # if is_man is in the data, use it to decide between man and users. else, default to false
+                url = ("http://models:8000/api/v1/users/create/", "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
+            elif action == 'login':
+                url = "http://models:8000/account/login"
+            elif action == 'logout':
+                url = "http://models:8000/account/logout"
+            elif action == 'listing':
+                url = "http://models:8000/api/v1/products/create/"
+            # make sure that one of the above actions changed the url
+            if url: 
+                data = urllib.parse.urlencode(req_data).encode()
+                req =  urllib.request.Request(url, data=data)
+                resp_json = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+                return JsonResponse(resp_json)
+            else: 
+                return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+@csrf_exempt
+def create_account(request): 
+    return authAndListingHelper(request, 'create')
+
+# account/login
+@csrf_exempt
+def login(request): 
+    return authAndListingHelper(request, 'login')
+
+# account/logout
+@csrf_exempt
+def logout(request): 
+    return authAndListingHelper(request, 'logout')
+
+# a new listing is just a new product 
+@csrf_exempt
+def create_new_listing(request): 
+    return authAndListingHelper(request, 'listing')
