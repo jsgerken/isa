@@ -88,34 +88,43 @@ def authAndListingHelper(request, action):
                 data = urllib.parse.urlencode(req_data).encode()
                 req =  urllib.request.Request(url, data=data)
                 resp_json = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-                return JsonResponse(resp_json)
+                # return JsonResponse(resp_json)
+                return resp_json 
             else: 
-                return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
+                # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
+                return {"error": "Incorrect action. Action must be: create, login, logout, listing"}
         else:
-            return JsonResponse({
-                'error': 'HTTP method error: endpoint expects a POST request'
-            })
+            return {'error': 'HTTP method error: endpoint expects a POST request'}
+
     except Exception as e:
-        return JsonResponse({
+        return {
             'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        })
+        }
 
+#when you create an account ; we also call log in to give them an authenticator 
 @csrf_exempt
 def create_account(request): 
-    return authAndListingHelper(request, 'create')
+    resp_json_create = authAndListingHelper(request, 'create')
+    if ('error' in resp_json_create):
+        return JsonResponse(resp_json_create)
+    resp_json_login = authAndListingHelper(request, 'login')
+    if('error' in resp_json_login):
+        return JsonResponse(resp_json_login)
+    return JsonResponse({**resp_json_create, **resp_json_login})
+        
 
 # account/login
 @csrf_exempt
 def login(request): 
-    return authAndListingHelper(request, 'login')
+    return JsonResponse(authAndListingHelper(request, 'login'))
 
 # account/logout
 @csrf_exempt
 def logout(request): 
-    return authAndListingHelper(request, 'logout')
+    return JsonResponse(authAndListingHelper(request, 'logout'))
 
 # a new listing is just a new product 
 @csrf_exempt
 def create_new_listing(request): 
-    return authAndListingHelper(request, 'listing')
+    return JsonResponse(authAndListingHelper(request, 'listing'))
