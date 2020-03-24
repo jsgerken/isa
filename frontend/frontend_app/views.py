@@ -85,12 +85,17 @@ def login(request):
     if request.method == 'POST':
         form = Login(request.POST)
         if form.is_valid():
+            # #if form["is_man"]:
+            #     Dict = {"man_id" : form["username"], "password" : form["password"], "is_man" : form["is_man"]}
+            #     return JsonResponse(json.loads(json.dumps(Dict)))
+            
             cleanform = form.cleaned_data
-            data = urllib.parse.urlencode(cleanform).encode()
+            #cleanform.update({"man_id ": vari})
+            #return JsonResponse(cleanform)
+            data = urllib.parse.urlencode().encode()
             req = urllib.request.Request('http://services:8000/api/v1/login', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
-            return JsonResponse(new_dict)
             try:
                 if not new_dict["code"] == 'success':
                     return HttpResponseRedirect('/')

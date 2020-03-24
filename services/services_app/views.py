@@ -88,7 +88,7 @@ def authAndListingHelper(request, action):
                 data = urllib.parse.urlencode(req_data).encode()
                 req =  urllib.request.Request(url, data=data)
                 resp_json = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-                # return JsonResponse(resp_json)
+                JsonResponse(resp_json)
                 return resp_json 
             else: 
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
