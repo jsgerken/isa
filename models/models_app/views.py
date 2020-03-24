@@ -59,13 +59,13 @@ def get_or_update_manufacturer(request, id):
             }
             return JsonResponse(error_object)
 
-
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
             manufacturer.man_name = request.POST.__getitem__('man_name')
             manufacturer.web_url = request.POST.__getitem__('web_url')
-            manufacturer.phone_number = request.POST.__getitem__('phone_number')
+            manufacturer.phone_number = request.POST.__getitem__(
+                'phone_number')
             manufacturer.save()
             updated_man = {
                 'man_name': manufacturer.man_name,
@@ -219,8 +219,9 @@ def create_manufacturer(request):
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
+
 def create_product(request):
-    try: 
+    try:
         if request.method == 'POST':
             new_values = request.POST.dict()
             product = Product(**new_values)
@@ -242,6 +243,7 @@ def create_product(request):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
         )
+
 
 def get_all_users(request):
     try:
@@ -338,11 +340,13 @@ def login(request):
         if request.method == 'POST':
             req_data = request.POST.dict()
             is_man = req_data.pop("is_man")
-            authee_name = (req_data.get('username'), req_data.get('man_name'))[is_man.lower() == 'true']
+            authee_name = (req_data.get('username'), req_data.get('man_name'))[
+                is_man.lower() == 'true']
             password = req_data['password']
             obj = (User, Manufacturer)[is_man.lower() == 'true']
             # have to use lambda because python evaluates both then picks instead of only the one to pick , lame!
-            authee = (lambda:obj.objects.get(username=authee_name) , lambda:obj.objects.get(man_name=authee_name))[ is_man.lower() == 'true']()
+            authee = (lambda: obj.objects.get(username=authee_name), lambda: obj.objects.get(
+                man_name=authee_name))[is_man.lower() == 'true']()
             authee_id = authee.pk
             if check_password(password, authee.password):
                 auth = Authenticator.objects.filter(auth_id=authee_id)
@@ -355,9 +359,9 @@ def login(request):
                     new_auth = Authenticator(
                         authenticator=authenticator, auth_id=authee_id)
                     new_auth.save()
-                    return JsonResponse({'code': 'success', 'auth': authenticator})
+                    return JsonResponse({'code': 'success', 'is_man': is_man, 'auth': authenticator})
                 else:
-                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
+                    return JsonResponse({'code': 'success', 'is_man': is_man, 'auth': auth[0].authenticator})
             else:
                 return JsonResponse({'code': 'failure'})
         else:
@@ -369,6 +373,7 @@ def login(request):
             'error': 'Error',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
+
 
 def logout(request):
     try:

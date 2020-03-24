@@ -35,7 +35,7 @@ def product_details(request, id):
     resp_product = json.loads(urllib.request.urlopen(
         req_product).read().decode('utf-8'))
     if 'error' in resp_product:
-        return JsonResponse(resp_product);
+        return JsonResponse(resp_product)
     req_man = urllib.request.Request(
         'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
     resp_man = json.loads(urllib.request.urlopen(
@@ -66,6 +66,8 @@ def get_man_from_product(request, product_id):
 # I wanted to do some redirection with the POST so that there was less code duplication
 # but HTTP does not like redirection of POST so I just grab data, encoded, and send
 # action can equal: "create", "login"
+
+
 def authAndListingHelper(request, action):
     try:
         if request.method == 'POST':
@@ -73,10 +75,11 @@ def authAndListingHelper(request, action):
             req_data = request.POST.dict()
             # data = urllib.parse.urlencode(req_data).encode()
             action = action.lower()
-            if action == "create":        
+            if action == "create":
                 is_man = req_data.pop("is_man")
                 # if is_man is in the data, use it to decide between man and users. else, default to false
-                url = ("http://models:8000/api/v1/users/create/", "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
+                url = ("http://models:8000/api/v1/users/create/",
+                       "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
             elif action == 'login':
                 url = "http://models:8000/account/login"
             elif action == 'logout':
@@ -84,13 +87,14 @@ def authAndListingHelper(request, action):
             elif action == 'listing':
                 url = "http://models:8000/api/v1/products/create/"
             # make sure that one of the above actions changed the url
-            if url: 
+            if url:
                 data = urllib.parse.urlencode(req_data).encode()
-                req =  urllib.request.Request(url, data=data)
-                resp_json = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+                req = urllib.request.Request(url, data=data)
+                resp_json = json.loads(
+                    urllib.request.urlopen(req).read().decode('utf-8'))
                 # return JsonResponse(resp_json)
-                return resp_json 
-            else: 
+                return resp_json
+            else:
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
                 return {"error": "Incorrect action. Action must be: create, login, logout, listing"}
         else:
@@ -102,9 +106,9 @@ def authAndListingHelper(request, action):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
 
-#when you create an account ; we also call log in to give them an authenticator 
+# when you create an account ; we also call log in to give them an authenticator
 @csrf_exempt
-def create_account(request): 
+def create_account(request):
     resp_json_create = authAndListingHelper(request, 'create')
     if ('error' in resp_json_create):
         return JsonResponse(resp_json_create)
@@ -112,19 +116,19 @@ def create_account(request):
     if('error' in resp_json_login):
         return JsonResponse(resp_json_login)
     return JsonResponse({**resp_json_create, **resp_json_login})
-        
+
 
 # account/login
 @csrf_exempt
-def login(request): 
+def login(request):
     return JsonResponse(authAndListingHelper(request, 'login'))
 
 # account/logout
 @csrf_exempt
-def logout(request): 
+def logout(request):
     return JsonResponse(authAndListingHelper(request, 'logout'))
 
-# a new listing is just a new product 
+# a new listing is just a new product
 @csrf_exempt
-def create_new_listing(request): 
+def create_new_listing(request):
     return JsonResponse(authAndListingHelper(request, 'listing'))

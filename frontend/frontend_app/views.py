@@ -38,9 +38,10 @@ def create_listing(request):
         form = CreateListing(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'man_id' : 3} )
+            cleanform.update({'man_id': 3})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-new-listing', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-new-listing', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -54,9 +55,10 @@ def create_man(request):
         form = CreateManufacturer(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "true"} )
+            cleanform.update({'is_man': "true"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -70,9 +72,10 @@ def create_user(request):
         form = CreateUser(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "false"} )
+            cleanform.update({'is_man': "false"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -86,17 +89,19 @@ def login(request):
         form = Login(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
+            if cleanform['is_man']:
+                cleanform['man_name'] = cleanform.pop('username')
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/login', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/login', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
-            return JsonResponse(new_dict)
             try:
                 if not new_dict["code"] == 'success':
                     return HttpResponseRedirect('/')
             except Exception as e:
                 return HttpResponseRedirect('/')
-            authenticator = new_dict["auth"] 
+            authenticator = new_dict["auth"]
             response = HttpResponseRedirect('/home')
             response.set_cookie("auth", authenticator)
             return response
