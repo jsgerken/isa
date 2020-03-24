@@ -47,15 +47,17 @@ def login(request):
     #         return HttpResponseRedirect('/login')
     # else:
     #     form = CreateUser()
-    form = Login(request.GET)
+    
     if request.method == 'GET':
         # display the login form page
         next = request.GET.get('')
+        form = Login(request.GET)
         return render(request,'login.html',{'form':form})
+        #return HttpResponseRedirect('/login')
 
     # Creates a new instance of our login_form and gives it our POST data
     f = Login(request.POST)
-
+    
     # Check if the form instance is invalid
     if not f.is_valid():
       # Form was bad -- send them back to login page and show them an error
@@ -81,10 +83,16 @@ def login(request):
 def create_user(request):
     if request.method == 'POST':
         form = CreateUser(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect('/login')
+        if not form.is_valid():
+            return HttpResponseRedirect('/create-account')
+        else:
+            cleanform = form.cleaned_data
+            response = request.POST('http://services:8000/api/v1/create-account', cleanform)
+            return JsonResponse(resp_json) #HttpResponseRedirect('/login')
+
     else:
         form = CreateUser()
+        
     
     return render (request, 'create_user.html', {'form':form})
 

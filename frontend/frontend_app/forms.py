@@ -1,12 +1,14 @@
 from django import forms
 
 class Login(forms.Form):
-    username = forms.CharField(max_length=50)
-    password = forms.CharField(max_length=50)
+    username = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'placeholder': 'Username:'}))
+    password = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'placeholder': 'Password:'}))
     is_man = forms.BooleanField(required=False)
 
 class CreateUser(forms.Form):
-    man_name = forms.CharField(max_length=50)
+    username = forms.CharField(max_length=50)
     email = forms.CharField(max_length=100)
     password = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
