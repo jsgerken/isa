@@ -3,7 +3,13 @@
 {% block base %}
 
 <div class="flex-column d-flex justify-content-center align-items-center pt-1 pb-5">
-    <h1 class="text-center mt-5">Create Listing</h1>
+    <h1 class="text-center mt-5">User Signup</h1>
+    <h3 class="text-center">
+        NOTE: Normal users cannot post new products, please <a href="/create-manufacturer">sign up as a manufacturer</a>
+        if
+        you
+        wish to do so.
+    </h3>
     <form action="/create-listing" method="post" class="bg-light px-5 py-3 rounded w-75">
         {% csrf_token %}
         <div class="my-3">

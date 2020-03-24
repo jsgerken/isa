@@ -4,19 +4,17 @@ from django.template import loader
 import urllib.request
 import urllib.parse
 import json
-from .forms import ListingForm
+from .forms import CreateListing, CreateManufacturer, CreateUser, Login
 
 
 def home(request):
     req = urllib.request.Request('http://services:8000/api/v1/top/')
     top_json = urllib.request.urlopen(req).read().decode('utf-8')
     top_dict = json.loads(top_json)
-
     req = urllib.request.Request('http://services:8000/api/v1/newly-added/')
     new_json = urllib.request.urlopen(req).read().decode('utf-8')
     new_dict = json.loads(new_json)
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
-
     return render(request, 'home.html', top_dict)
 
 
@@ -34,13 +32,43 @@ def product_details(request, id):
 
 def create_listing(request):
     if request.method == 'POST':
-        form = ListingForm(request.POST)
+        form = CreateListing(request.POST)
         if form.is_valid():
 
-            return HttpResponseRedirect('/')
-
-    # if a GET (or any other method) we'll create a blank form
+            return HttpResponseRedirect('/home')
     else:
-        form = ListingForm()
-
+        form = CreateListing()
     return render(request, 'create_listing.html', {'form': form})
+
+
+def create_man(request):
+    if request.method == 'POST':
+        form = CreateManufacturer(request.POST)
+        if form.is_valid():
+
+            return HttpResponseRedirect('/home')
+    else:
+        form = CreateManufacturer()
+    return render(request, 'create_man.html', {'form': form})
+
+
+def create_user(request):
+    if request.method == 'POST':
+        form = CreateUser(request.POST)
+        if form.is_valid():
+
+            return HttpResponseRedirect('/home')
+    else:
+        form = CreateUser()
+    return render(request, 'create_user.html', {'form': form})
+
+
+def login(request):
+    if request.method == 'POST':
+        form = Login(request.POST)
+        if form.is_valid():
+
+            return HttpResponseRedirect('/home')
+    else:
+        form = Login()
+    return render(request, 'login.html', {'form': form})
