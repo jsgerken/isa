@@ -17,7 +17,7 @@ class Manufacturer(models.Model):
     man_name = models.CharField(max_length=50, unique=True)
     web_url = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=14)
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=1000)
 
 
 class Product(models.Model):
@@ -36,5 +36,5 @@ class Product(models.Model):
 
 class Authenticator(models.Model):
     authenticator = models.CharField(max_length=1000)
-    user_id = models.IntegerField()
+    auth_id = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)

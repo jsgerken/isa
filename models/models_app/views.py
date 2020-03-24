@@ -198,7 +198,10 @@ def create_manufacturer(request):
         if request.method == 'POST':
             new_values = request.POST.dict()
             man = Manufacturer(**new_values)
+            man.password = make_password(
+                new_values['password'], salt='f1nd1ngn3m0', hasher='default')
             man.save()
+            new_values[man._meta.pk.name] = man.pk
             return JsonResponse(new_values)
         else:
             error_object = {
@@ -222,6 +225,7 @@ def create_product(request):
             new_values = request.POST.dict()
             product = Product(**new_values)
             product.save()
+            new_values[product._meta.pk.name] = product.pk
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -293,6 +297,7 @@ def create_user(request):
             user.password = make_password(
                 new_values['password'], salt='f1nd1ngn3m0', hasher='default')
             user.save()
+            new_values[user._meta.pk.name] = user.pk
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -331,13 +336,16 @@ def delete_user(request, id):
 def login(request):
     try:
         if request.method == 'POST':
-            user_dict = request.POST.dict()
-            username = user_dict['username']
-            password = user_dict['password']
-            user = User.objects.get(username=username)
-            user_id = user.user_id
-            if check_password(password, user.password):
-                auth = Authenticator.objects.filter(user_id=user_id)
+            req_data = request.POST.dict()
+            is_man = req_data.pop("is_man")
+            authee_name = (req_data.get('username'), req_data.get('man_name'))[is_man.lower() == 'true']
+            password = req_data['password']
+            obj = (User, Manufacturer)[is_man.lower() == 'true']
+            # have to use lambda because python evaluates both then picks instead of only the one to pick , lame!
+            authee = (lambda:obj.objects.get(username=authee_name) , lambda:obj.objects.get(man_name=authee_name))[ is_man.lower() == 'true']()
+            authee_id = authee.pk
+            if check_password(password, authee.password):
+                auth = Authenticator.objects.filter(auth_id=authee_id)
                 if not auth:
                     authenticator = hmac.new(
                         key=settings.SECRET_KEY.encode('utf-8'),
@@ -345,7 +353,7 @@ def login(request):
                         digestmod='sha256',
                     ).hexdigest()
                     new_auth = Authenticator(
-                        authenticator=authenticator, user_id=user_id)
+                        authenticator=authenticator, auth_id=authee_id)
                     new_auth.save()
                     return JsonResponse({'code': 'success', 'auth': authenticator})
                 else:
@@ -361,7 +369,6 @@ def login(request):
             'error': 'Error',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
-
 
 def logout(request):
     try:
