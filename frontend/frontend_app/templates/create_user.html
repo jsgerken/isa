@@ -10,13 +10,13 @@
         you
         wish to do so.
     </h3>
-    <form action="/create-listing" method="post" class="bg-light px-5 py-3 rounded w-75">
+    <form action="/create-user" method="post" class="bg-light px-5 py-3 rounded w-75">
         {% csrf_token %}
         <div class="my-3">
             {{ form|crispy }}
         </div>
         <div class="text-center pb-3">
-            <button type="submit" class="btn btn-dark btn-block">Create Listing</button>
+            <button type="submit" class="btn btn-dark btn-block">Create Account</button>
         </div>
     </form>
 </div>

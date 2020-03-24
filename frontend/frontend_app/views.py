@@ -31,10 +31,18 @@ def product_details(request, id):
 
 
 def create_listing(request):
+    auth = request.COOKIES.get('auth')
+    if not auth:
+        return HttpResponseRedirect('/login')
     if request.method == 'POST':
         form = CreateListing(request.POST)
         if form.is_valid():
-
+            cleanform = form.cleaned_data
+            cleanform.update( {'man_id' : 3} )
+            data = urllib.parse.urlencode(cleanform).encode()
+            req = urllib.request.Request('http://services:8000/api/v1/create-new-listing', data=data)
+            new_json = urllib.request.urlopen(req).read().decode('utf-8')
+            new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
     else:
         form = CreateListing()
@@ -45,7 +53,12 @@ def create_man(request):
     if request.method == 'POST':
         form = CreateManufacturer(request.POST)
         if form.is_valid():
-
+            cleanform = form.cleaned_data
+            cleanform.update( {'is_man' : "true"} )
+            data = urllib.parse.urlencode(cleanform).encode()
+            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            new_json = urllib.request.urlopen(req).read().decode('utf-8')
+            new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
     else:
         form = CreateManufacturer()
@@ -56,7 +69,12 @@ def create_user(request):
     if request.method == 'POST':
         form = CreateUser(request.POST)
         if form.is_valid():
-
+            cleanform = form.cleaned_data
+            cleanform.update( {'is_man' : "false"} )
+            data = urllib.parse.urlencode(cleanform).encode()
+            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            new_json = urllib.request.urlopen(req).read().decode('utf-8')
+            new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
     else:
         form = CreateUser()
@@ -67,8 +85,21 @@ def login(request):
     if request.method == 'POST':
         form = Login(request.POST)
         if form.is_valid():
-
-            return HttpResponseRedirect('/home')
+            cleanform = form.cleaned_data
+            data = urllib.parse.urlencode(cleanform).encode()
+            req = urllib.request.Request('http://services:8000/api/v1/login', data=data)
+            new_json = urllib.request.urlopen(req).read().decode('utf-8')
+            new_dict = json.loads(new_json)
+            return JsonResponse(new_dict)
+            try:
+                if not new_dict["code"] == 'success':
+                    return HttpResponseRedirect('/')
+            except Exception as e:
+                return HttpResponseRedirect('/')
+            authenticator = new_dict["auth"] 
+            response = HttpResponseRedirect('/home')
+            response.set_cookie("auth", authenticator)
+            return response
     else:
         form = Login()
     return render(request, 'login.html', {'form': form})
