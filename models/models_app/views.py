@@ -340,9 +340,8 @@ def login(request):
             is_man = req_data.pop("is_man")
             authee_name = (req_data.get('username'), req_data.get('man_name'))[is_man.lower() == 'true']
             password = req_data['password']
-            obj = (User, Manufacturer)[is_man.lower() == 'true']
             # have to use lambda because python evaluates both then picks instead of only the one to pick , lame!
-            authee = (lambda:obj.objects.get(username=authee_name) , lambda:obj.objects.get(man_name=authee_name))[ is_man.lower() == 'true']()
+            authee = (lambda:User.objects.get(username=authee_name) , lambda:Manufacturer.objects.get(man_name=authee_name))[ is_man.lower() == 'true']()
             authee_id = authee.pk
             if check_password(password, authee.password):
                 auth = Authenticator.objects.filter(auth_id=authee_id)
@@ -355,11 +354,11 @@ def login(request):
                     new_auth = Authenticator(
                         authenticator=authenticator, auth_id=authee_id)
                     new_auth.save()
-                    return JsonResponse({'code': 'success', 'auth': authenticator})
+                    return JsonResponse({'code': 'success', 'auth': authenticator, 'auth_id': authee_id})
                 else:
-                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
+                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator, 'auth_id': authee_id})
             else:
-                return JsonResponse({'code': 'failure'})
+                return JsonResponse({'code': 'failure', 'errMessage': 'Incorrect Password'})
         else:
             return JsonResponse({
                 'error': 'HTTP method error: Login endpoint expects a POST request'

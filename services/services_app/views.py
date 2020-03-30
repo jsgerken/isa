@@ -3,6 +3,7 @@ import urllib.request
 import urllib.parse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 
 def get_top_viewed(request):
@@ -128,3 +129,14 @@ def logout(request):
 @csrf_exempt
 def create_new_listing(request): 
     return JsonResponse(authAndListingHelper(request, 'listing'))
+
+def sendEmail(request):
+    # try:
+    #     send_mail("Im in there",
+    #     "Our own smtp server for a class 😎. I'm cracked out of my mind.",
+    #     "Oldn'tEgg@no-reply.com",
+    #     ['dm8ca@virginia.edu', "aar2dk@virginia.edu"],
+    #     fail_silently=False)
+        return JsonResponse({"we": "in there"})
+    # except Exception as e: 
+    #     return JsonResponse({"not cracked": str(e)}) 

@@ -118,3 +118,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jacoboscholarships@gmail.com'
+EMAIL_HOST_PASSWORD = 'Qfz3J6WnRxhkLUEb'
+# EMAIL_USE_TLS = 
+# EMAIL_USE_SSL = 
