@@ -10,5 +10,6 @@ urlpatterns = [
     path('api/v1/create-account', views.create_account),
     path('api/v1/login', views.login),
     path('api/v1/logout', views.logout),
-    path('api/v1/create-new-listing', views.create_new_listing)
+    path('api/v1/create-new-listing', views.create_new_listing),
+    path('api/v1/send-email', views.sendEmail)
 ]
