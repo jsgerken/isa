@@ -4,7 +4,7 @@ from django.template import loader
 import urllib.request
 import urllib.parse
 import json
-from .forms import CreateListing, CreateManufacturer, CreateUser, Login
+from .forms import CreateListing, CreateManufacturer, CreateUser, Login, ForgotPassword, ResetPassword
 
 
 def home(request):
@@ -38,9 +38,10 @@ def create_listing(request):
         form = CreateListing(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'man_id' : 3} )
+            cleanform.update({'man_id': 3})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-new-listing', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-new-listing', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -54,9 +55,10 @@ def create_man(request):
         form = CreateManufacturer(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "true"} )
+            cleanform.update({'is_man': "true"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -70,15 +72,50 @@ def create_user(request):
         form = CreateUser(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "false"} )
+            cleanform.update({'is_man': "false"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
     else:
         form = CreateUser()
     return render(request, 'create_user.html', {'form': form})
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPassword(request.POST)
+        # if form.is_valid():
+        #     cleanform = form.cleaned_data
+        #     cleanform.update({'is_man': "false"})
+        #     data = urllib.parse.urlencode(cleanform).encode()
+        #     req = urllib.request.Request(
+        #         'http://services:8000/api/v1/create-account', data=data)
+        #     new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        #     new_dict = json.loads(new_json)
+        #     return HttpResponseRedirect('/home')
+    else:
+        form = ForgotPassword()
+    return render(request, 'forgot_password.html', {'form': form})
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        form = ResetPassword(request.POST)
+        # if form.is_valid():
+        #     cleanform = form.cleaned_data
+        #     cleanform.update({'is_man': "false"})
+        #     data = urllib.parse.urlencode(cleanform).encode()
+        #     req = urllib.request.Request(
+        #         'http://services:8000/api/v1/create-account', data=data)
+        #     new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        #     new_dict = json.loads(new_json)
+        #     return HttpResponseRedirect('/home')
+    else:
+        form = ResetPassword()
+    return render(request, 'reset_password.html', {'form': form})
 
 
 def login(request):
@@ -88,12 +125,13 @@ def login(request):
             # #if form["is_man"]:
             #     Dict = {"man_id" : form["username"], "password" : form["password"], "is_man" : form["is_man"]}
             #     return JsonResponse(json.loads(json.dumps(Dict)))
-            
+
             cleanform = form.cleaned_data
             #cleanform.update({"man_id ": vari})
-            #return JsonResponse(cleanform)
+            # return JsonResponse(cleanform)
             data = urllib.parse.urlencode().encode()
-            req = urllib.request.Request('http://services:8000/api/v1/login', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/login', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             try:
@@ -101,7 +139,7 @@ def login(request):
                     return HttpResponseRedirect('/')
             except Exception as e:
                 return HttpResponseRedirect('/')
-            authenticator = new_dict["auth"] 
+            authenticator = new_dict["auth"]
             response = HttpResponseRedirect('/home')
             response.set_cookie("auth", authenticator)
             return response

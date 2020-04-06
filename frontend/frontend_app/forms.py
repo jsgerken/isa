@@ -39,3 +39,15 @@ class CreateManufacturer(forms.Form):
     web_url = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
     password = forms.CharField(max_length=100)
+
+
+class ForgotPassword(forms.Form):
+    reset_info = forms.CharField(max_length=100, label="Email/Username")
+    is_man = forms.BooleanField(required=False, label="I am a manufactuer")
+
+
+class ResetPassword(forms.Form):
+    new_password = forms.CharField(
+        max_length=32, widget=forms.PasswordInput, label="New password")
+    confirm_password = forms.CharField(
+        max_length=32, widget=forms.PasswordInput, label="Confirm password")

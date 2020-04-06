@@ -7,6 +7,7 @@ urlpatterns = [
     path('product-details/<int:id>', views.product_details, name='productDetails'),
     path('create-listing', views.create_listing),
     path('create-manufacturer', views.create_man),
-    path('create-user', views.create_user)
-
+    path('create-user', views.create_user),
+    path('forgot-password', views.forgot_password),
+    path('reset-password', views.reset_password)
 ]
