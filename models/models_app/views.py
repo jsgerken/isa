@@ -142,6 +142,63 @@ def get_or_update_product(request, id):
         return JsonResponse(error_object)
 
 
+def get_or_update_user(request, id):
+    if request.method == 'GET':
+        try:
+
+            user = User.objects.get(user_id=id)
+            user_object = {}
+            user_object['user_id'] = user.user_id
+            user_object['first_name']= user.first_name
+            user_object['last_name']= user.last_name
+            user_object['phone_number']= user.phone_number
+            user_object['username']= user.username
+            return JsonResponse(user_object)
+        except ObjectDoesNotExist:
+            error_object = {
+                'error': 'Get failed: user with user_id ' + str(id) + ' does not exist'
+            }
+            return JsonResponse(error_object)
+        except Exception as e:  # for development purpose. can remove exception as e in production
+            return JsonResponse({
+                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+                'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+            })
+    elif request.method == 'POST':
+        try:
+            user = User.objects.get(user_id=id)
+            user.email = request.POST.__getitem__('email')
+           # user.man_id = request.POST.__getitem__('man_id')
+            user.first_name = request.POST.__getitem__('first_name')
+            user.last_name = request.POST.__getitem__('last_name')
+            user.phone_number = request.POST.__getitem__('phone_number')
+            user.username = request.POST.__getitem__('username')
+            user.save()
+            updated_prod = {
+                'user_id': user.user_id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': user.phone_number,
+                'username': user.username,
+            }
+            return JsonResponse(updated_prod)
+        except ObjectDoesNotExist:
+            error_object = {
+                'error': 'Update failed: user with user_id ' + str(id) + ' does not exist'
+            }
+            return JsonResponse(error_object)
+        except MultiValueDictKeyError:
+            error_object = {
+                'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to update a user'
+            }
+            return JsonResponse(error_object)
+    else:
+        error_object = {
+            'error': 'HTTP method error: user endpoint expects a GET or POST request'
+        }
+        return JsonResponse(error_object)
+
+
 def delete_manufacturer(request, id):
     if request.method == 'DELETE':
         try:
@@ -263,32 +320,33 @@ def get_all_users(request):
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
+#I messed up and accidentally created another one.
 
-def get_or_update_user(request, id):
-    try:
-        if request.method == 'GET':
-            # using the filter lets me leverage queryset methods
-            user_list = User.objects.filter(user_id=id)
-            # like this one that turns objects into dict
-            return JsonResponse(user_list.values()[0])
-        elif request.method == 'POST':
-            user_list = User.objects.filter(user_id=id)
-            new_values = request.POST.dict()
-            user_list.update(**new_values)
-            return JsonResponse(user_list.values()[0])
-        else:
-            return JsonResponse({
-                'error': 'HTTP method error: User endpoint expects a GET or POST request'
-            })
-    except IndexError:  # this is what filter throws if it does not find user with given id.
-        return JsonResponse({
-            'error': 'Get failed: user with user_id ' + str(id) + ' does not exist',
-        })
-    except Exception as e:  # for development purpose. can remove exception as e in production
-        return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
-            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
-        })
+# def get_or_update_user(request, id):
+#     try:
+#         if request.method == 'GET':
+#             # using the filter lets me leverage queryset methods
+#             user_list = User.objects.filter(user_id=id)
+#             # like this one that turns objects into dict
+#             return JsonResponse(user_list.values()[0])
+#         elif request.method == 'POST':
+#             user_list = User.objects.filter(user_id=id)
+#             new_values = request.POST.dict()
+#             user_list.update(**new_values)
+#             return JsonResponse(user_list.values()[0])
+#         else:
+#             return JsonResponse({
+#                 'error': 'HTTP method error: User endpoint expects a GET or POST request'
+#             })
+#     except IndexError:  # this is what filter throws if it does not find user with given id.
+#         return JsonResponse({
+#             'error': 'Get failed: user with user_id ' + str(id) + ' does not exist',
+#         })
+#     except Exception as e:  # for development purpose. can remove exception as e in production
+#         return JsonResponse({
+#             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+#             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+#         })
 
 
 def create_user(request):
