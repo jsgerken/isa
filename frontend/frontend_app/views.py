@@ -5,6 +5,7 @@ import urllib.request
 import urllib.parse
 import json
 from .forms import ListingForm
+from django.urls import reverse
 
 
 def home(request):
@@ -44,3 +45,22 @@ def create_listing(request):
         form = ListingForm()
 
     return render(request, 'create_listing.html', {'form': form})
+
+
+def password_reset(request):
+    # url_link = reverse('password_reset_confirm', args=[45, 21234])
+    # reverse the link with password arguments to be replaced in the service layer : __uid64__ and __token__
+    dataa = {"urlLink": request.scheme + "://" + request.META['HTTP_HOST'] + reverse(
+        'password_reset_confirm', args=['__uid64__', '__token__', '__addIsManHere__'])}
+    # data = urllib.parse.urlencode(dataa).encode()
+    # req = urllib.request.Request(
+    #     "http://services:8000/api/v1/send-email", data=data)
+    # resp_json = json.loads(
+    #     urllib.request.urlopen(req).read().decode('utf-8'))
+    # # return JsonResponse({"path": request.path, "pathInfo": request.path_info, "schema": request.scheme, "post": request.META['HTTP_HOST']})
+    # return JsonResponse(resp_json)
+    return JsonResponse({"hi": "wip"})
+
+
+def password_reset_confirm(request, uidb64, token):
+    return
