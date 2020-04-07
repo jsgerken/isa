@@ -83,7 +83,8 @@ def create_listing(request):
             cleanform.update({"man_id": request.get_signed_cookie('man_id')})
             #return JsonResponse(cleanform)
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-new-listing', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-new-listing', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             #return JsonResponse(new_dict)
@@ -98,9 +99,10 @@ def create_man(request):
         form = CreateManufacturer(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "true"} )
+            cleanform.update({'is_man': "true"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
@@ -114,15 +116,50 @@ def create_user(request):
         form = CreateUser(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            cleanform.update( {'is_man' : "false"} )
+            cleanform.update({'is_man': "false"})
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/create-account', data=data)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
             return HttpResponseRedirect('/home')
     else:
         form = CreateUser()
     return render(request, 'create_user.html', {'form': form})
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPassword(request.POST)
+        # if form.is_valid():
+        #     cleanform = form.cleaned_data
+        #     cleanform.update({'is_man': "false"})
+        #     data = urllib.parse.urlencode(cleanform).encode()
+        #     req = urllib.request.Request(
+        #         'http://services:8000/api/v1/create-account', data=data)
+        #     new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        #     new_dict = json.loads(new_json)
+        #     return HttpResponseRedirect('/home')
+    else:
+        form = ForgotPassword()
+    return render(request, 'forgot_password.html', {'form': form})
+
+
+def reset_password(request):
+    if request.method == 'POST':
+        form = ResetPassword(request.POST)
+        # if form.is_valid():
+        #     cleanform = form.cleaned_data
+        #     cleanform.update({'is_man': "false"})
+        #     data = urllib.parse.urlencode(cleanform).encode()
+        #     req = urllib.request.Request(
+        #         'http://services:8000/api/v1/create-account', data=data)
+        #     new_json = urllib.request.urlopen(req).read().decode('utf-8')
+        #     new_dict = json.loads(new_json)
+        #     return HttpResponseRedirect('/home')
+    else:
+        form = ResetPassword()
+    return render(request, 'reset_password.html', {'form': form})
 
 
 def login(request):
@@ -141,7 +178,7 @@ def login(request):
                     return HttpResponseRedirect('/')
             except Exception as e:
                 return HttpResponseRedirect('/')
-            authenticator = new_dict["auth"] 
+            authenticator = new_dict["auth"]
             response = HttpResponseRedirect('/home')
             #return JsonResponse(new_dict)
             response.set_signed_cookie("auth", authenticator)

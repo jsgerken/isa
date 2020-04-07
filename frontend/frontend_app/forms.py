@@ -51,3 +51,15 @@ class Profile(forms.Form):
         attrs={'placeholder': 'First Name:'}))
     last_name = forms.CharField(max_length=30, label="", widget=forms.TextInput(
         attrs={'placeholder': 'Last Name:'}))
+
+
+class ForgotPassword(forms.Form):
+    reset_info = forms.CharField(max_length=100, label="Email/Username")
+    is_man = forms.BooleanField(required=False, label="I am a manufactuer")
+
+
+class ResetPassword(forms.Form):
+    new_password = forms.CharField(
+        max_length=32, widget=forms.PasswordInput, label="New password")
+    confirm_password = forms.CharField(
+        max_length=32, widget=forms.PasswordInput, label="Confirm password")
