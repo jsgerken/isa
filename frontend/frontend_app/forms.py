@@ -39,3 +39,15 @@ class CreateManufacturer(forms.Form):
     web_url = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
     password = forms.CharField(max_length=100)
+
+class Profile(forms.Form):
+    username = forms.CharField(max_length=50, label="", widget=forms.TextInput(
+        attrs={'placeholder': 'Username:'}))
+    email = forms.CharField(max_length=100, label="", widget=forms.TextInput(
+        attrs={'placeholder': 'E-Mail:'}))
+    phone_number = forms.CharField(max_length=14, label="", widget=forms.TextInput(
+        attrs={'placeholder': 'Phone Number:'}))
+    first_name = forms.CharField(max_length=30, label="", widget=forms.TextInput(
+        attrs={'placeholder': 'First Name:'}))
+    last_name = forms.CharField(max_length=30, label="", widget=forms.TextInput(
+        attrs={'placeholder': 'Last Name:'}))

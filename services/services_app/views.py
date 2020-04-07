@@ -45,6 +45,16 @@ def product_details(request, id):
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
 
+def user_profile(request, id):
+    req_user = urllib.request.Request(
+        'http://models:8000/api/v1/users/' + str(id))
+    resp_user = json.loads(urllib.request.urlopen(
+        req_user).read().decode('utf-8'))
+    if 'error' in resp_user:
+        return JsonResponse(resp_user);
+    return JsonResponse({"resp_user": resp_user})
+
+
 def sort_products(request, attribute):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')

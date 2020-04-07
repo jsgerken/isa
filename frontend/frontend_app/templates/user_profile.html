@@ -1,0 +1,24 @@
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+{% extends "base.html" %}
+{% block base %}
+{% load static %}
+{% load crispy_forms_tags %}
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="well">
+    <ul class="nav nav-tabs">
+    </ul>
+    <div class=" card-body">
+        <h4 class="card-title">{{resp_user.username}}</h4>
+        <h4 class="card-title">{{resp_user.first_name}}</h4>
+        <h4 class="card-title">{{resp_user.last_name}}</h4>
+        <h4 class="card-title">{{resp_user.phone_number}}</h4>
+
+        <a href="{%url 'editUser'}"
+            class="btn btn-sm btn-outline-secondary">Edit
+        </a>
+    </div>
+
+  {% endblock base %}
