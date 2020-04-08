@@ -149,10 +149,10 @@ def get_or_update_user(request, id):
             user = User.objects.get(user_id=id)
             user_object = {}
             user_object['user_id'] = user.user_id
-            user_object['first_name']= user.first_name
-            user_object['last_name']= user.last_name
-            user_object['phone_number']= user.phone_number
-            user_object['username']= user.username
+            user_object['first_name'] = user.first_name
+            user_object['last_name'] = user.last_name
+            user_object['phone_number'] = user.phone_number
+            user_object['username'] = user.username
             return JsonResponse(user_object)
         except ObjectDoesNotExist:
             error_object = {
@@ -320,7 +320,7 @@ def get_all_users(request):
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
-#I messed up and accidentally created another one.
+# I messed up and accidentally created another one.
 
 # def get_or_update_user(request, id):
 #     try:
@@ -439,13 +439,16 @@ def login(request):
 def logout(request):
     try:
         if request.method == 'POST':
-            auth_dict = request.POST.dict()
+            req_data = request.POST.dict()
+            get_man = req_data.pop('is_man')
+            is_man = get_man.lower() == 'true'
+            get_auth_model = ('User', 'Manufacturer')[is_man]
             authenticator = Authenticator.objects.get(
-                authenticator=auth_dict['auth'])
+                authenticator=req_data['auth'], auth_model=get_auth_model)
             authenticator.delete()
             return JsonResponse({
                 'code': 'success',
-                'deleted_auth': auth_dict['auth']
+                'deleted_auth': req_data['auth']
             })
         else:
             return JsonResponse({
@@ -467,10 +470,10 @@ def get_user_id(request):
             user_username = user_info.get('username')
             if user_email:
                 user_object = User.objects.get(email=user_email)
-                return JsonResponse({"user_id": user_object.pk})
+                return JsonResponse({"user_id": user_object.pk, 'email': user_object.email})
             elif user_username:
                 user_object = User.objects.get(username=user_username)
-                return JsonResponse({"user_id": user_object.pk})
+                return JsonResponse({"user_id": user_object.pk, 'email': user_object.email})
             else:
                 return JsonResponse({"error": 'No email or username was provided to get_user_id'})
         else:
@@ -493,10 +496,10 @@ def get_man_id(request):
             man_name = man_info.get('man_name')
             if man_email:
                 man_object = Manufacturer.objects.get(email=man_email)
-                return JsonResponse({"man_id": man_object.pk})
+                return JsonResponse({"man_id": man_object.pk, 'email': man_object.email})
             elif man_name:
                 man_object = Manufacturer.objects.get(man_name=man_name)
-                return JsonResponse({"man_id": man_object.pk})
+                return JsonResponse({"man_id": man_object.pk, 'email': man_object.email})
             else:
                 return JsonResponse({"error": 'No email or username was provided to get_man_id'})
         else:
@@ -505,7 +508,7 @@ def get_man_id(request):
             })
     except Exception as e:
         return JsonResponse({
-            'error': 'Error in get_user_id in models',
+            'error': 'Error in get_man_id in models',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -546,7 +549,7 @@ def get_or_create_token(request):
             })
     except Exception as e:
         return JsonResponse({
-            'error': 'Error in get_user_id in models',
+            'error': 'Error in get_or_create_token in models layer',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
     # return JsonResponse({"auth": "1233"})

@@ -36,9 +36,11 @@ class CreateUser(forms.Form):
 
 class CreateManufacturer(forms.Form):
     man_name = forms.CharField(max_length=50, label="Company Name")
+    email = forms.CharField(max_length=100)
     web_url = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
     password = forms.CharField(max_length=100)
+
 
 class Profile(forms.Form):
     username = forms.CharField(max_length=50, label="", widget=forms.TextInput(
@@ -63,3 +65,12 @@ class ResetPassword(forms.Form):
         max_length=32, widget=forms.PasswordInput, label="New password")
     confirm_password = forms.CharField(
         max_length=32, widget=forms.PasswordInput, label="Confirm password")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError(
+                "New password and confirm password do not match"
+            )

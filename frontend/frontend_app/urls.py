@@ -10,10 +10,10 @@ urlpatterns = [
     path('create-listing', views.create_listing),
     path('create-manufacturer', views.create_man),
     path('create-user', views.create_user),
-    path('forgot-password', views.forgot_password),
-    path('reset-password', views.reset_password),
-    path('password-reset/', views.password_reset),
-    path('password-reset-confirm/<uidb64>/<token>/<is_user>/',  # need to add is_user to this
+    path('forgot-password', views.forgot_password, name='forgot-password'),
+    # path('reset-password', views.reset_password, name='reset-password'),
+    # path('password-reset/', views.password_reset),
+    path('password-reset-confirm/<uidb64>/<token>/<is_man>/',  # need to add is_user to this
          views.password_reset_confirm, name='password_reset_confirm')
     # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
 

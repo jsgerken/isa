@@ -56,7 +56,7 @@ def user_profile(request, id):
     resp_user = json.loads(urllib.request.urlopen(
         req_user).read().decode('utf-8'))
     if 'error' in resp_user:
-        return JsonResponse(resp_user);
+        return JsonResponse(resp_user)
     return JsonResponse({"resp_user": resp_user})
 
 
@@ -141,9 +141,12 @@ def create_account(request):
 def login(request):
     return JsonResponse(authAndListingHelper(request, 'login'))
 
+
 # account/logout
-
-
+# sample = {
+#   'auth' : token,
+#   'is_man':'true'
+# }
 @csrf_exempt
 def logout(request):
     return JsonResponse(authAndListingHelper(request, 'logout'))
@@ -185,7 +188,15 @@ def reset_password(request):
             req_query = {}
             req_resp = {}
             if is_man:
-                req_query['man_name'] = req_data.get('man_name')
+                # req_query['man_name'] = req_data.get('man_name')
+                get_man_name = req_data.get('man_name')
+                get_email = req_data.get('email')
+                if get_man_name:
+                    req_query['man_name'] = get_man_name
+                elif get_email:
+                    req_query['email'] = get_email
+                else:
+                    return JsonResponse({'error': 'In services layer – reset password – No man_name or email'})
                 req_resp = convert_and_call(
                     req_query, 'http://models:8000/api/v1/manufacturers/get-man-id/')
             elif not req_data.get('username') and not req_data.get('email'):
@@ -202,23 +213,23 @@ def reset_password(request):
                 return JsonResponse(req_resp)
             get_id = (req_resp.get('user_id'), req_resp.get('man_id'))[is_man]
             token_resp = convert_and_call(
-                {'autheeID': get_id, "create": "true", 'is_man': is_man}, 'http://models:8000/account/get-create-token/')
+                {'authee_id': get_id, "create": "true", 'is_man': is_man}, 'http://models:8000/account/get-create-token/')
             if 'error' in token_resp:
                 return JsonResponse(token_resp)
-            url_replace = req_data['urlLink'].replace(
+            url_replace = req_data['url_pattern'].replace(
                 "__uid64__", urlsafe_base64_encode(force_bytes(get_id)), 1)
             url_replace = url_replace.replace(
                 "__token__", token_resp['auth'], 1)
-            url_replace = url_replace + '/' + str(is_man).lower()
-            email_data = {'emailTo': req_data['email'],
+            email_data = {'emailTo': req_resp['email'],
                           "emailURL": url_replace, }
-            send_email(request, email_data)
+            # return JsonResponse(email_data)
+            return JsonResponse(send_email(request, email_data))
 
         else:
             return JsonResponse({'error': 'HTTP method error: endpoint expects a POST request'})
     except Exception as e:
         return JsonResponse({
-            'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
+            'error': 'In experience layer - reset-password. Double check param data for accepted fields and uniqueness and is_man is in data',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -231,17 +242,17 @@ def send_email(request, data):
             'reset_password_mail_template.html', {'emailURL': data['emailURL']})
         plain_message = strip_tags(html_message)
         from_email = "Oldn'tEgg@no-reply.com"
-        to = 'jacoboscholarships@gmail.com'
-        # to = data['emailTo']
+        # to = 'jacoboscholarships@gmail.com'
+        to = data['emailTo']
         send_mail(subject, plain_message, from_email,
                   [to], fail_silently=False, html_message=html_message)
-        return JsonResponse({"code": "success", "message": "email sent successfully"})
+        return {"code": "success", "message": "email sent successfully", 'emailTo': to}
         # return render(request, 'reset_password_mail_template.html', {"url_email_pattern": url_email_pattern})
     except Exception as e:
-        return JsonResponse({
+        return {
             'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        })
+        }
 
 
 @csrf_exempt
@@ -282,7 +293,14 @@ def helperConfirmChangePassword(request, is_change_password):
                 return {'error': 'invalid token'}
             if not is_change_password:
                 return {'code': 'success', 'message': 'token was verified with id. All good!'}
-            # if it got to this point, token is valid and change password is requested
+            # if it got to this point, token is valid and change password was requested
+            # lets delete the token first
+            delete_token_data = {"auth": get_token, 'is_man': is_man}
+            req_resp = convert_and_call(
+                delete_token_data, "http://models:8000/account/logout")
+            if 'error' in req_resp:
+                return {"error": "failed to delete token in reset password : service layer", **req_resp}
+            # now lets change the password
             get_new_password = req_data.pop('new_password')
             change_password_data = {}
             if is_man:
@@ -293,8 +311,6 @@ def helperConfirmChangePassword(request, is_change_password):
             req_resp = convert_and_call(
                 change_password_data, 'http://models:8000/account/change-password/')
             return req_resp
-
-            # check token by ID using the get_or_create by pass no alloc
 
         else:
             return {'error': 'HTTP method error: endpoint expects a POST request'}
