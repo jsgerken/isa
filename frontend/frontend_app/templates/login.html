@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "login_base.html" %}
 {% block base %}
 {% load static %}
 {% load crispy_forms_tags %}
@@ -13,6 +13,12 @@
             </div>
             <div class="d-flex justify-content-center form_container">
                 <form action="/" method="post" class="w-100 text-center">
+                    {% if failed %}
+                    <h3 class="text-danger">Incorrect username/password, please try again.</h3>
+                    {% endif %}
+                    {% if error%}
+                    <h3 class="text-danger">There was an error logging you in, please try again.</h3>
+                    {% endif %}
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="text-center">

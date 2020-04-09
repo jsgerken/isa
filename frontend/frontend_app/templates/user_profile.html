@@ -1,29 +1,23 @@
-
 {% extends "base.html" %}
 {% block base %}
 {% load static %}
 {% load crispy_forms_tags %}
-<!------ Include the above in your HEAD tag ---------->
 
-<div class = "container" >
+<div class="container">
     <h1 class="text-center">Profile Info</h1>
-        <div class="card" style="margin: 0 20%;" >
-            
-            <div class=" card-body" style="text-align: center;">
-                <img src = "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
-            width="20%" height="30%" style="border-radius: 50em;">
-                <h4 class="card-title">Username: {{resp_user.username}}</h4>
-                <h4 class="card-title">E-Mail: {{resp_user.email}}</h4>
-                <h4 class="card-title">First name: {{resp_user.first_name}}</h4>
-                <h4 class="card-title">Last name: {{resp_user.last_name}}</h4>
-                <h4 class="card-title">Phone-Number: {{resp_user.phone_number}}</h4>
-
-                <a href="{%url 'editUser'%}"
-                    class="btn btn-sm btn-outline-secondary">Edit
-                </a>
-            </div>
+    <div class="card" style="margin: 0 20%;">
+        <div class=" card-body" style="text-align: center;">
+            <img src="https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+                width="20%" height="30%" style="border-radius: 50em;">
+            <h4 class="card-title">Username: {{resp_user.username}}</h4>
+            <h4 class="card-title">E-Mail: {{resp_user.email}}</h4>
+            <h4 class="card-title">First name: {{resp_user.first_name}}</h4>
+            <h4 class="card-title">Last name: {{resp_user.last_name}}</h4>
+            <h4 class="card-title">Phone-Number: {{resp_user.phone_number}}</h4>
+            <a href="{%url 'editUser'%}" class="btn btn-sm btn-outline-secondary">Edit
+            </a>
         </div>
-
+    </div>
 </div>
 
-  {% endblock base %}
+{% endblock base %}

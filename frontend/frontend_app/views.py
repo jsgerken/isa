@@ -11,7 +11,15 @@ import re
 from django.views.decorators.csrf import csrf_exempt
 
 
+def group(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
+
+
 def home(request):
+    auth = request.get_signed_cookie('auth', -1)
+    if auth == -1:
+        return HttpResponseRedirect('/')
     req = urllib.request.Request('http://services:8000/api/v1/top/')
     top_json = urllib.request.urlopen(req).read().decode('utf-8')
     top_dict = json.loads(top_json)
@@ -19,15 +27,16 @@ def home(request):
     new_json = urllib.request.urlopen(req).read().decode('utf-8')
     new_dict = json.loads(new_json)
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
+    is_man = request.get_signed_cookie('is_man', -1)
+    if is_man == 'True':
+        top_dict['is_man'] = 'true'
     return render(request, 'home.html', top_dict)
 
 
-def group(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i+n]
-
-
 def product_details(request, id):
+    id = request.get_signed_cookie('user_id', -1)
+    if id == -1:
+        return HttpResponseRedirect('/')
     req = urllib.request.Request(
         'http://services:8000/api/v1/product-details/' + str(id))
     resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
@@ -35,16 +44,16 @@ def product_details(request, id):
 
 
 def user_profile(request):
-    
-    id = request.get_signed_cookie('user_id',-1)
+    id = request.get_signed_cookie('user_id', -1)
     if id == -1:
         return HttpResponseRedirect('/')
     if (request.method == 'POST'):
         if form.is_valid():
             cleanform = form.cleaned_data
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/users/'+ str(id), data=data)
-            #return JsonResponse(resp)
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/users/' + str(id), data=data)
+            # return JsonResponse(resp)
             return render(request, 'user_profile.html', resp)
     else:
         form = Profile()
@@ -54,9 +63,11 @@ def user_profile(request):
     # return JsonResponse(resp)
     return render(request, 'user_profile.html', resp)
 
+
 @csrf_exempt
 def edit_user(request):
-    id = request.get_signed_cookie('user_id',-1)
+    id = request.get_signed_cookie('user_id', -1)
+    is_man = request.get_signed_cookie('is_man', -1)
     if is_man == -1:
         return HttpResponseRedirect('/')
     if (request.method == 'POST'):
@@ -64,8 +75,10 @@ def edit_user(request):
         if form.is_valid():
             cleanform = form.cleaned_data
             data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request('http://services:8000/api/v1/users/'+ str(id), data=data)
-            resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+            req = urllib.request.Request(
+                'http://services:8000/api/v1/users/' + str(id), data=data)
+            resp = json.loads(urllib.request.urlopen(
+                req).read().decode('utf-8'))
             # return JsonResponse(resp)
             # return render(request, 'user_profile.html', resp)
             return HttpResponseRedirect('/users')
@@ -73,19 +86,18 @@ def edit_user(request):
         # form = Profile()
         # req = urllib.request.Request(
         #     'http://services:8000/api/v1/users/' + str(id))
-        #resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+        # resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
         profile = Profile()
-        return render(request, 'edit_user.html', {'profile':profile})
-    #return JsonResponse(resp)
-    
+        return render(request, 'edit_user.html', {'profile': profile})
+    # return JsonResponse(resp)
 
 
 def create_listing(request):
     # auth = request.get_signed_cookie('auth',)
-    is_man = request.get_signed_cookie('is_man', False)
+    is_man = request.get_signed_cookie('is_man', -1)
     # if not auth or not is_man:
     #     return HttpResponseRedirect('/')
-    if is_man =="False":
+    if is_man == -1:
         return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = CreateListing(request.POST)
@@ -232,9 +244,9 @@ def login(request):
             new_dict = json.loads(new_json)
             try:
                 if not new_dict["code"] == 'success':
-                    return HttpResponseRedirect('/')
+                    return render(request, 'login.html', {'form': form, 'failed': 'true'})
             except Exception as e:
-                return HttpResponseRedirect('/')
+                return render(request, 'login.html', {'form': form, 'error': 'true'})
             authenticator = new_dict["auth"]
             response = HttpResponseRedirect('/home')
             # return JsonResponse(new_dict)
@@ -249,11 +261,12 @@ def login(request):
         form = Login()
     return render(request, 'login.html', {'form': form})
 
+
 def logout(request):
     response = HttpResponseRedirect('/')
-    auth = request.get_signed_cookie('auth',-1)
+    auth = request.get_signed_cookie('auth', -1)
     is_man = request.get_signed_cookie('is_man', False)
-    if auth ==-1:
+    if auth == -1:
         return response
     cleanform = {}
     cleanform.update({"auth": auth})
