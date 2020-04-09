@@ -30,7 +30,8 @@ def product_details(request, id):
     return render(request, 'frontend_app/product_details.html', resp)
 
 
-def user_profile(request, id):
+def user_profile(request):
+    id = request.get_signed_cookie('user_id')
     if (request.method == 'POST'):
         if form.is_valid():
             cleanform = form.cleaned_data
