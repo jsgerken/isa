@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 
 
+
 def get_top_viewed(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     products_json = urllib.request.urlopen(req).read().decode('utf-8')
@@ -44,15 +45,18 @@ def product_details(request, id):
     resp_product['description'] = resp_product['description'].split('|')
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
-
+@csrf_exempt
 def user_profile(request, id):
+    req_data = request.POST.dict()
+    data = urllib.parse.urlencode(req_data).encode()
     req_user = urllib.request.Request(
-        'http://models:8000/api/v1/users/' + str(id))
+        'http://models:8000/api/v1/users/' + str(id), data=data)
     resp_user = json.loads(urllib.request.urlopen(
         req_user).read().decode('utf-8'))
     if 'error' in resp_user:
         return JsonResponse(resp_user);
     return JsonResponse({"resp_user": resp_user})
+
 
 
 def sort_products(request, attribute):

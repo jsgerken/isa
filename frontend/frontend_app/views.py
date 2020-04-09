@@ -5,6 +5,7 @@ import urllib.request
 import urllib.parse
 import json
 from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile
+from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -37,7 +38,7 @@ def user_profile(request):
             cleanform = form.cleaned_data
             data = urllib.parse.urlencode(cleanform).encode()
             req = urllib.request.Request('http://services:8000/api/v1/users/'+ str(id), data=data)
-            return JsonResponse(resp)
+            #return JsonResponse(resp)
             return render(request, 'user_profile.html', resp)
     else:
         form = Profile()
@@ -47,23 +48,28 @@ def user_profile(request):
     #return JsonResponse(resp)
     return render(request, 'user_profile.html', resp)
 
+@csrf_exempt
 def edit_user(request):
+    id = request.get_signed_cookie('user_id')
     if (request.method == 'POST'):
+        form = Profile(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
             data = urllib.parse.urlencode(cleanform).encode()
             req = urllib.request.Request('http://services:8000/api/v1/users/'+ str(id), data=data)
-            return JsonResponse({'eatass': 'ducks'})
+            resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+            # return JsonResponse(resp)
             # return render(request, 'user_profile.html', resp)
-            return HttpResponseRedirect('/users/'+ str(id))
+            return HttpResponseRedirect('/users')
     else:
-        form = Profile()
-        req = urllib.request.Request(
-            'http://services:8000/api/v1/users/' + str(id))
-        resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+        # form = Profile()
+        # req = urllib.request.Request(
+        #     'http://services:8000/api/v1/users/' + str(id))
+        #resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+        profile = Profile()
+        return render(request, 'edit_user.html', {'profile':profile})
     #return JsonResponse(resp)
-    profile = Profile()
-    return render(request, 'edit_user.html', {'profile':profile, 'resp':resp})
+    
 
 
 def create_listing(request):
@@ -147,6 +153,8 @@ def login(request):
             response.set_signed_cookie("is_man", cleanform["is_man"])
             if (cleanform["is_man"]):
                 response.set_signed_cookie("man_id", new_dict["auth_id"])
+            else:
+                response.set_signed_cookie("user_id", new_dict["auth_id"])
             return response
     else:
         form = Login()
