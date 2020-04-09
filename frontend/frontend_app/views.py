@@ -35,7 +35,10 @@ def product_details(request, id):
 
 
 def user_profile(request):
-    id = request.get_signed_cookie('user_id')
+    
+    id = request.get_signed_cookie('user_id',-1)
+    if id == -1:
+        return HttpResponseRedirect('/')
     if (request.method == 'POST'):
         if form.is_valid():
             cleanform = form.cleaned_data
@@ -53,7 +56,9 @@ def user_profile(request):
 
 @csrf_exempt
 def edit_user(request):
-    id = request.get_signed_cookie('user_id')
+    id = request.get_signed_cookie('user_id',-1)
+    if is_man == -1:
+        return HttpResponseRedirect('/')
     if (request.method == 'POST'):
         form = Profile(request.POST)
         if form.is_valid():
@@ -76,10 +81,12 @@ def edit_user(request):
 
 
 def create_listing(request):
-    auth = request.get_signed_cookie('auth')
-    is_man = request.get_signed_cookie('is_man')
-    if not auth or not is_man:
-        return HttpResponseRedirect('/login')
+    # auth = request.get_signed_cookie('auth',)
+    is_man = request.get_signed_cookie('is_man', False)
+    # if not auth or not is_man:
+    #     return HttpResponseRedirect('/')
+    if is_man =="False":
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = CreateListing(request.POST)
         if form.is_valid():
@@ -114,7 +121,7 @@ def create_man(request):
                 'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
-            return HttpResponseRedirect('/home')
+            return HttpResponseRedirect('/')
     else:
         form = CreateManufacturer()
     return render(request, 'create_man.html', {'form': form})
@@ -131,7 +138,7 @@ def create_user(request):
                 'http://services:8000/api/v1/create-account', data=data)
             new_json = urllib.request.urlopen(req).read().decode('utf-8')
             new_dict = json.loads(new_json)
-            return HttpResponseRedirect('/home')
+            return HttpResponseRedirect('/')
     else:
         form = CreateUser()
     return render(request, 'create_user.html', {'form': form})
@@ -241,6 +248,28 @@ def login(request):
     else:
         form = Login()
     return render(request, 'login.html', {'form': form})
+
+def logout(request):
+    response = HttpResponseRedirect('/')
+    auth = request.get_signed_cookie('auth',-1)
+    is_man = request.get_signed_cookie('is_man', False)
+    if auth ==-1:
+        return response
+    cleanform = {}
+    cleanform.update({"auth": auth})
+    cleanform.update({"is_man": is_man})
+    data = urllib.parse.urlencode(cleanform).encode()
+    req = urllib.request.Request(
+        'http://services:8000/api/v1/logout', data=data)
+    new_json = urllib.request.urlopen(req).read().decode('utf-8')
+    new_dict = json.loads(new_json)
+    # return JsonResponse(new_dict)
+    response.delete_cookie('man_id')
+    response.delete_cookie('user_id')
+    response.delete_cookie('user_id')
+    response.delete_cookie('auth')
+    response.delete_cookie('is_man')
+    return response
 
 # def profile(request):
 #     if request.method == 'GET':
