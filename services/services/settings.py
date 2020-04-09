@@ -54,7 +54,7 @@ ROOT_URLCONF = 'services.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "services_app/templates/"), os.path.join(BASE_DIR, "services_app/templates/services_app")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,11 +117,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'services_app/', 'static'),
+    os.path.join(BASE_DIR, 'static/'),
+]
+
 STATIC_URL = '/static/'
+
 
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jacoboscholarships@gmail.com'
-EMAIL_HOST_PASSWORD = 'Qfz3J6WnRxhkLUEb'
-# EMAIL_USE_TLS = 
-# EMAIL_USE_SSL = 
+EMAIL_HOST_PASSWORD = 'xsmtpsib-1443f9a5eb059ec6331c7dff4791fe7680921cfc74f5f1b4c8f9bc68a7a4ddc0-rI0HDcKApxUVsvPQ'
+# EMAIL_USE_TLS =
+# EMAIL_USE_SSL =
