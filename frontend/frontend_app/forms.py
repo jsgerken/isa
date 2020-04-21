@@ -19,7 +19,7 @@ class CreateListing(forms.Form):
 class Login(forms.Form):
     username = forms.CharField(max_length=50, label="", widget=forms.TextInput(
         attrs={'placeholder': 'Username:'}))
-    password = forms.CharField(max_length=50, label="", widget=forms.TextInput(
+    password = forms.CharField(max_length=50, label="", widget=forms.PasswordInput(
         attrs={'placeholder': 'Password:'}))
     is_man = forms.BooleanField(
         required=False, label="I am logging in as a manufacturer")
@@ -27,7 +27,7 @@ class Login(forms.Form):
 
 class CreateUser(forms.Form):
     username = forms.CharField(max_length=50)
-    password = forms.CharField(max_length=50)
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
     email = forms.CharField(max_length=100)
     phone_number = forms.CharField(max_length=14)
     first_name = forms.CharField(max_length=30)
@@ -39,7 +39,7 @@ class CreateManufacturer(forms.Form):
     email = forms.CharField(max_length=100)
     web_url = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
-    password = forms.CharField(max_length=100)
+    password = forms.CharField(max_length=100, widget=forms.PasswordInput)
 
 
 class Profile(forms.Form):
@@ -62,9 +62,9 @@ class ForgotPassword(forms.Form):
 
 class ResetPassword(forms.Form):
     new_password = forms.CharField(
-        max_length=32, widget=forms.PasswordInput, label="New password")
+        max_length=32, widget=forms.PasswordInput(), label="New password")
     confirm_password = forms.CharField(
-        max_length=32, widget=forms.PasswordInput, label="Confirm password")
+        max_length=32, widget=forms.PasswordInput(), label="Confirm password")
 
     def clean(self):
         cleaned_data = super().clean()

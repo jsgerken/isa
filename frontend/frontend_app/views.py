@@ -1,123 +1,71 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.template import loader
+from django.urls import reverse
+
+from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile, ForgotPassword, ResetPassword
+
 import urllib.request
 import urllib.parse
 import json
-from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile, ForgotPassword, ResetPassword
-# from .forms import ListingForm
-from django.urls import reverse
 import re
-from django.views.decorators.csrf import csrf_exempt
-
-
-def group(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i+n]
 
 
 def home(request):
-    auth = request.get_signed_cookie('auth', -1)
-    if auth == -1:
+    if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
-    req = urllib.request.Request('http://services:8000/api/v1/top/')
-    top_json = urllib.request.urlopen(req).read().decode('utf-8')
-    top_dict = json.loads(top_json)
-    req = urllib.request.Request('http://services:8000/api/v1/newly-added/')
-    new_json = urllib.request.urlopen(req).read().decode('utf-8')
-    new_dict = json.loads(new_json)
+    top_dict = fetch('http://services:8000/api/v1/top/')
+    new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
-    is_man = request.get_signed_cookie('is_man', -1)
-    if is_man == 'True':
+    if request.get_signed_cookie('is_man', False):
         top_dict['is_man'] = 'true'
     return render(request, 'home.html', top_dict)
 
 
 def product_details(request, id):
-    id = request.get_signed_cookie('user_id', -1)
-    if id == -1:
+    if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
-    req = urllib.request.Request(
-        'http://services:8000/api/v1/product-details/' + str(id))
-    resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-    return render(request, 'frontend_app/product_details.html', resp)
+    product_dict = fetch('http://services:8000/api/v1/product-details/' + str(id))
+    return render(request, 'frontend_app/product_details.html', product_dict)
 
 
 def user_profile(request):
-    id = request.get_signed_cookie('user_id', -1)
-    if id == -1:
+    user_id = request.get_signed_cookie('user_id', -1)
+    if user_id == -1:
         return HttpResponseRedirect('/')
-    if (request.method == 'POST'):
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/users/' + str(id), data=data)
-            # return JsonResponse(resp)
-            return render(request, 'user_profile.html', resp)
-    else:
-        form = Profile()
-        req = urllib.request.Request(
-            'http://services:8000/api/v1/users/' + str(id))
-        resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-    # return JsonResponse(resp)
+    resp = fetch('http://services:8000/api/v1/users/' + str(user_id))
     return render(request, 'user_profile.html', resp)
 
 
-@csrf_exempt
 def edit_user(request):
-    id = request.get_signed_cookie('user_id', -1)
-    is_man = request.get_signed_cookie('is_man', -1)
-    if is_man == -1:
+    user_id = request.get_signed_cookie('user_id', -1)
+
+    if user_id == -1:
         return HttpResponseRedirect('/')
-    if (request.method == 'POST'):
+
+    if request.method == 'POST':
         form = Profile(request.POST)
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/users/' + str(id), data=data)
-            resp = json.loads(urllib.request.urlopen(
-                req).read().decode('utf-8'))
-            # return JsonResponse(resp)
-            # return render(request, 'user_profile.html', resp)
-            return HttpResponseRedirect('/users')
+        if not form.is_valid():
+            return HttpResponseRedirect('/users/edit')
+        form_data = form.cleaned_data
+        post(form_data, 'http://services:8000/api/v1/users/' + str(user_id))
+        return HttpResponseRedirect('/users')
     else:
-        # form = Profile()
-        # req = urllib.request.Request(
-        #     'http://services:8000/api/v1/users/' + str(id))
-        # resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
         profile = Profile()
         return render(request, 'edit_user.html', {'profile': profile})
-    # return JsonResponse(resp)
 
 
 def create_listing(request):
-    # auth = request.get_signed_cookie('auth',)
-    is_man = request.get_signed_cookie('is_man', -1)
-    # if not auth or not is_man:
-    #     return HttpResponseRedirect('/')
-    if is_man == -1:
-        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = CreateListing(request.POST)
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            # Next few lines are used to for testing to see what has been added to the db
-            # req = urllib.request.Request('http://services:8000/api/v1/newly-added/')
-            # new_json = urllib.request.urlopen(req).read().decode('utf-8')
-            # new_dict = json.loads(new_json)
-            cleanform.update({"man_id": request.get_signed_cookie('man_id')})
-            # return JsonResponse(cleanform)
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/create-new-listing', data=data)
-            new_json = urllib.request.urlopen(req).read().decode('utf-8')
-            new_dict = json.loads(new_json)
-            # return JsonResponse(new_dict)
-            # product_details(request ,new_dict['product_id'])
-            return HttpResponseRedirect('product-details/'+str(new_dict['product_id']))
+        if not form.is_valid():
+            return HttpResponseRedirect('/create-listing')
+        form_data = form.cleaned_data
+        form_data['man_id'] = request.get_signed_cookie('man_id')
+        resp = post(form_data, 'http://services:8000/api/v1/create-new-listing')
+        return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
     else:
+        if not request.get_signed_cookie('is_man', False):
+            return HttpResponseRedirect('/')
         form = CreateListing()
     return render(request, 'create_listing.html', {'form': form})
 
@@ -125,15 +73,13 @@ def create_listing(request):
 def create_man(request):
     if request.method == 'POST':
         form = CreateManufacturer(request.POST)
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            cleanform.update({'is_man': "true"})
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/create-account', data=data)
-            new_json = urllib.request.urlopen(req).read().decode('utf-8')
-            new_dict = json.loads(new_json)
-            return HttpResponseRedirect('/')
+        if not form.is_valid():
+            return HttpResponseRedirect('/create-manufacturer')
+        form_data = form.cleaned_data
+        form_data['is_man'] = 'true'
+        resp = post(form_data, 'http://services:8000/api/v1/create-account')
+        # return JsonResponse(resp)
+        return HttpResponseRedirect('/')
     else:
         form = CreateManufacturer()
     return render(request, 'create_man.html', {'form': form})
@@ -142,31 +88,22 @@ def create_man(request):
 def create_user(request):
     if request.method == 'POST':
         form = CreateUser(request.POST)
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            cleanform.update({'is_man': "false"})
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/create-account', data=data)
-            new_json = urllib.request.urlopen(req).read().decode('utf-8')
-            new_dict = json.loads(new_json)
-            return HttpResponseRedirect('/')
+        if not form.is_valid():
+            return HttpResponseRedirect('/create-user')
+        form_data = form.cleaned_data
+        form_data['is_man'] = 'false'
+        resp = post(form_data, 'http://services:8000/api/v1/create-account')
+        return HttpResponseRedirect('/')
     else:
         form = CreateUser()
     return render(request, 'create_user.html', {'form': form})
 
 
 def forgot_password(request):
-    # req_resp = {'emailTo': "jp3dh@virginia.edu"}
-    # regex_test = r'(?!^).(?=[^@]+@)'
-    # email_asterisk = re.sub(regex_test, '*', req_resp['emailTo'])
-    # # if length before @ is less than or equal to 3
-    # return render(request, 'password_reset_done.html', {'emailTo': email_asterisk})
     if request.method == 'POST':
         form = ForgotPassword(request.POST)
         if form.is_valid():
             cleanform = form.cleaned_data
-            # return JsonResponse(cleanform)
             get_reset_info = cleanform['reset_info']
             if '@' in cleanform['reset_info']:
                 cleanform['email'] = get_reset_info
@@ -178,7 +115,7 @@ def forgot_password(request):
             cleanform['url_pattern'] = request.scheme + "://" + request.META['HTTP_HOST'] + \
                 reverse('password_reset_confirm', args=[
                         '__uid64__', '__token__', str(cleanform['is_man']).lower()])
-            req_resp = convert_and_call(
+            req_resp = post(
                 cleanform, 'http://services:8000/api/v1/reset-password/')
             # check error and redirect to some done and check email template
             if 'error' in req_resp:
@@ -202,7 +139,7 @@ def password_reset_confirm(request, uidb64, token, is_man):
         if form.is_valid():
             cleanform = form.cleaned_data
             check_link_data['new_password'] = cleanform['new_password']
-            req_resp = convert_and_call(
+            req_resp = post(
                 check_link_data, 'http://services:8000/api/v1/change-password/')
             # check error and redirect to logged in view or log them in yourself
             if 'error' in req_resp:
@@ -220,7 +157,7 @@ def password_reset_confirm(request, uidb64, token, is_man):
     else:
         # check the link and stuff here
         # check_link_data = {"uid64": uidb64, "token": token, "is_man": is_man}
-        req_resp = convert_and_call(
+        req_resp = post(
             check_link_data, 'http://services:8000/api/v1/reset-password-confirm/')
         if 'error' in req_resp:
             form = ForgotPassword()
@@ -233,50 +170,52 @@ def password_reset_confirm(request, uidb64, token, is_man):
 def login(request):
     if request.method == 'POST':
         form = Login(request.POST)
-        if form.is_valid():
-            cleanform = form.cleaned_data
-            if cleanform["is_man"]:
-                cleanform.update({"man_name": cleanform.pop("username")})
-            data = urllib.parse.urlencode(cleanform).encode()
-            req = urllib.request.Request(
-                'http://services:8000/api/v1/login', data=data)
-            new_json = urllib.request.urlopen(req).read().decode('utf-8')
-            new_dict = json.loads(new_json)
-            try:
-                if not new_dict["code"] == 'success':
-                    return render(request, 'login.html', {'form': form, 'failed': 'true'})
-            except Exception as e:
-                return render(request, 'login.html', {'form': form, 'error': 'true'})
-            authenticator = new_dict["auth"]
-            response = HttpResponseRedirect('/home')
-            # return JsonResponse(new_dict)
-            response.set_signed_cookie("auth", authenticator)
-            response.set_signed_cookie("is_man", cleanform["is_man"])
-            if (cleanform["is_man"]):
-                response.set_signed_cookie("man_id", new_dict["auth_id"])
-            else:
-                response.set_signed_cookie("user_id", new_dict["auth_id"])
-            return response
+
+        if not form.is_valid():
+            return HttpResponseRedirect('/')
+
+        login_data = form.cleaned_data
+
+        if login_data['is_man']:
+            login_data['man_name'] = login_data.pop('username')
+
+        try:
+            resp = post(login_data, 'http://services:8000/api/v1/login')
+            if not resp['code'] == 'success':
+                return render(request, 'login.html', {'form': form, 'failed': 'true'})
+        except:
+            return render(request, 'login.html', {'form': form, 'error': 'true'})
+
+        response = HttpResponseRedirect('/home')
+        response.set_signed_cookie('auth', resp['auth'])
+        response.set_signed_cookie('is_man', login_data['is_man'])
+
+        if (login_data['is_man']):
+            response.set_signed_cookie('man_id', resp['auth_id'])
+        else:
+            response.set_signed_cookie('user_id', resp["auth_id"])
+
+        return response
     else:
         form = Login()
-    return render(request, 'login.html', {'form': form})
+        return render(request, 'login.html', {'form': form})
 
 
 def logout(request):
     response = HttpResponseRedirect('/')
     auth = request.get_signed_cookie('auth', -1)
     is_man = request.get_signed_cookie('is_man', False)
+
     if auth == -1:
         return response
-    cleanform = {}
-    cleanform.update({"auth": auth})
-    cleanform.update({"is_man": is_man})
-    data = urllib.parse.urlencode(cleanform).encode()
-    req = urllib.request.Request(
-        'http://services:8000/api/v1/logout', data=data)
-    new_json = urllib.request.urlopen(req).read().decode('utf-8')
-    new_dict = json.loads(new_json)
-    # return JsonResponse(new_dict)
+
+    logout_data = {
+        'auth': auth,
+        'is_man': is_man
+    }
+
+    post(logout_data, 'http://services:8000/api/v1/logout')
+
     response.delete_cookie('man_id')
     response.delete_cookie('user_id')
     response.delete_cookie('user_id')
@@ -284,42 +223,31 @@ def logout(request):
     response.delete_cookie('is_man')
     return response
 
-# def profile(request):
-#     if request.method == 'GET':
-#         req = urllib.request.Request(
-#             'http://services:8000/api/v1/product-details/' + str(id))
-#         resp = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-#         return render(request, 'frontend_app/product_details.html', resp)
+
+def group(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
 
 
-# def password_reset(request):
-#     # url_link = reverse('password_reset_confirm', args=[45, 21234])
-#     # reverse the link with password arguments to be replaced in the service layer : __uid64__ and __token__
-#     dataa = {"urlLink": request.scheme + "://" + request.META['HTTP_HOST'] + reverse(
-#         'password_reset_confirm', args=['__uid64__', '__token__', '__addIsManHere__'])}
-#     # data = urllib.parse.urlencode(dataa).encode()
-#     # req = urllib.request.Request(
-#     #     "http://services:8000/api/v1/send-email", data=data)
-#     # resp_json = json.loads(
-#     #     urllib.request.urlopen(req).read().decode('utf-8'))
-#     # # return JsonResponse({"path": request.path, "pathInfo": request.path_info, "schema": request.scheme, "post": request.META['HTTP_HOST']})
-#     # return JsonResponse(resp_json)
-#     return JsonResponse({"hi": "wip"})
+def fetch(url):
+    try:
+        req = urllib.request.Request(url)
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    except Exception as e:
+        return {
+            'error': 'Failed to fetch from ' + url,
+            'errReason':  'Message: ' + str(e)
+        }
 
 
-# def password_reset_confirm(request, uidb64, token):
-#     return
-
-
-def convert_and_call(data, url):
+def post(data, url):
     try:
         data = urllib.parse.urlencode(data).encode()
         req = urllib.request.Request(url, data=data)
-        resp_json = json.loads(
-            urllib.request.urlopen(req).read().decode('utf-8'))
-        return resp_json
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
     except Exception as e:
         return {
-            'error': 'In experience layer. Failed in convert_and_call',
+            'error': 'Failed to post to ' + url,
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
+
