@@ -16,8 +16,9 @@ def home(request):
     top_dict = fetch('http://services:8000/api/v1/top/')
     new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
-    if request.get_signed_cookie('is_man', False):
-        top_dict['is_man'] = 'true'
+    
+    if request.get_signed_cookie('is_man', 'False') == 'True':
+        top_dict['is_man'] = 'True'
     return render(request, 'home.html', top_dict)
 
 
@@ -64,7 +65,7 @@ def create_listing(request):
         resp = post(form_data, 'http://services:8000/api/v1/create-new-listing')
         return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
     else:
-        if not request.get_signed_cookie('is_man', False):
+        if request.get_signed_cookie('is_man', 'False') == 'False':
             return HttpResponseRedirect('/')
         form = CreateListing()
     return render(request, 'create_listing.html', {'form': form})
@@ -77,8 +78,7 @@ def create_man(request):
             return HttpResponseRedirect('/create-manufacturer')
         form_data = form.cleaned_data
         form_data['is_man'] = 'true'
-        resp = post(form_data, 'http://services:8000/api/v1/create-account')
-        # return JsonResponse(resp)
+        post(form_data, 'http://services:8000/api/v1/create-account')
         return HttpResponseRedirect('/')
     else:
         form = CreateManufacturer()
@@ -92,7 +92,7 @@ def create_user(request):
             return HttpResponseRedirect('/create-user')
         form_data = form.cleaned_data
         form_data['is_man'] = 'false'
-        resp = post(form_data, 'http://services:8000/api/v1/create-account')
+        post(form_data, 'http://services:8000/api/v1/create-account')
         return HttpResponseRedirect('/')
     else:
         form = CreateUser()
@@ -190,7 +190,7 @@ def login(request):
         response.set_signed_cookie('auth', resp['auth'])
         response.set_signed_cookie('is_man', login_data['is_man'])
 
-        if (login_data['is_man']):
+        if login_data['is_man']:
             response.set_signed_cookie('man_id', resp['auth_id'])
         else:
             response.set_signed_cookie('user_id', resp["auth_id"])
@@ -204,7 +204,7 @@ def login(request):
 def logout(request):
     response = HttpResponseRedirect('/')
     auth = request.get_signed_cookie('auth', -1)
-    is_man = request.get_signed_cookie('is_man', False)
+    is_man = request.get_signed_cookie('is_man', 'False') == 'True'
 
     if auth == -1:
         return response

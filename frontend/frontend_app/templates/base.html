@@ -37,9 +37,11 @@
                     <a class="nav-link" href="{%url 'createListing'%}">Create Listing</a>
                 </li>
                 {% endif %}
+                {% if not is_man %}
                 <li class="nav-item active">
                     <a class="nav-link" href="users">Profile</a>
                 </li>
+                {% endif %}
                 <li class="nav-item active">
                     <a class="nav-link" href="/logout">Sign Out</a>
                 </li>
