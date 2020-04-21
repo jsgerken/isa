@@ -2,7 +2,20 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.login, name='login'),
+    path('home', views.home, name='home'),
     path('product-details/<int:id>', views.product_details, name='productDetails'),
-    path('create-listing', views.create_listing)
+    path('users', views.user_profile, name='userProfile'),
+    path('users/edit', views.edit_user, name='editUser'),
+    path('create-listing', views.create_listing, name='createListing'),
+    path('create-manufacturer', views.create_man),
+    path('create-user', views.create_user),
+    path('forgot-password', views.forgot_password, name='forgot-password'),
+    path('logout', views.logout),
+    # path('reset-password', views.reset_password, name='reset-password'),
+    # path('password-reset/', views.password_reset),
+    path('password-reset-confirm/<uidb64>/<token>/<is_man>/',  # need to add is_user to this
+         views.password_reset_confirm, name='password_reset_confirm')
+    # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+
 ]

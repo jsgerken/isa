@@ -1,75 +1,82 @@
 [
-    {
-        "model": "models_app.manufacturer",
-        "pk": 1,
-        "fields": {
-            "man_name": "Intel",
-            "web_url": "https://www.intel.com/",
-            "phone_number": "1-626-854-9338"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 2,
-        "fields": {
-            "man_name": "Asus",
-            "web_url": "https://www.asus.com/us/",
-            "phone_number": "1-888-678-3688"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 3,
-        "fields": {
-            "man_name": "Corsair",
-            "web_url": "https://corsair.com/",
-            "phone_number": "1-626-271-1004"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 4,
-        "fields": {
-            "man_name": "HyperX",
-            "web_url": "https://www.hyperxgaming.com/us",
-            "phone_number": "1-714-445-2894"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 5,
-        "fields": {
-            "man_name": "Nvidia",
-            "web_url": "https://www.nvidia.com/",
-            "phone_number": "1-800-797-6530"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 6,
-        "fields": {
-            "man_name": "AMD",
-            "web_url": "https://www.amd.com/",
-            "phone_number": "1-877-284-1566"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 7,
-        "fields": {
-            "man_name": "MSI",
-            "web_url": "https://us.msi.com/",
-            "phone_number": "1-626-271-1004"
-        }
-    },
-    {
-        "model": "models_app.manufacturer",
-        "pk": 8,
-        "fields": {
-            "man_name": "Gigabyte",
-            "web_url": "https://www.gigabyte.com/",
-            "phone_number": "1-626-854-9338"
-        }
+  {
+    "model": "models_app.manufacturer",
+    "pk": 1,
+    "fields": {
+      "man_name": "Intel",
+      "web_url": "https://www.intel.com/",
+      "phone_number": "1-626-854-9338",
+      "email": "IntelTest@gmail.com"
     }
-    
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 2,
+    "fields": {
+      "man_name": "Asus",
+      "web_url": "https://www.asus.com/us/",
+      "phone_number": "1-888-678-3688",
+      "email": "AsusTest@gmail.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 3,
+    "fields": {
+      "man_name": "Corsair",
+      "web_url": "https://corsair.com/",
+      "phone_number": "1-626-271-1004",
+      "email": "CorsairTest@email.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 4,
+    "fields": {
+      "man_name": "HyperX",
+      "web_url": "https://www.hyperxgaming.com/us",
+      "phone_number": "1-714-445-2894",
+      "email": "HyperXTest@email.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 5,
+    "fields": {
+      "man_name": "Nvidia",
+      "web_url": "https://www.nvidia.com/",
+      "phone_number": "1-800-797-6530",
+      "email": "NvidiaTest@gmail.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 6,
+    "fields": {
+      "man_name": "AMD",
+      "web_url": "https://www.amd.com/",
+      "phone_number": "1-877-284-1566",
+      "email": "AMDTest@gmail.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 7,
+    "fields": {
+      "man_name": "MSI",
+      "web_url": "https://us.msi.com/",
+      "phone_number": "1-626-271-1004",
+      "email": "MSITest@email.com"
+    }
+  },
+  {
+    "model": "models_app.manufacturer",
+    "pk": 8,
+    "fields": {
+      "man_name": "Gigabyte",
+      "web_url": "https://www.gigabyte.com/",
+      "phone_number": "1-626-854-9338",
+      "email": "GigabyeTest@email.com"
+    }
+  }
 ]

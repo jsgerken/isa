@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
 import os
 import hmac
 from django.conf import settings
@@ -59,13 +60,13 @@ def get_or_update_manufacturer(request, id):
             }
             return JsonResponse(error_object)
 
-
     elif request.method == 'POST':
         try:
             manufacturer = Manufacturer.objects.get(man_id=id)
             manufacturer.man_name = request.POST.__getitem__('man_name')
             manufacturer.web_url = request.POST.__getitem__('web_url')
-            manufacturer.phone_number = request.POST.__getitem__('phone_number')
+            manufacturer.phone_number = request.POST.__getitem__(
+                'phone_number')
             manufacturer.save()
             updated_man = {
                 'man_name': manufacturer.man_name,
@@ -142,6 +143,63 @@ def get_or_update_product(request, id):
         return JsonResponse(error_object)
 
 
+# def get_or_update_user(request, id):
+    # if request.method == 'GET':
+    #     try:
+
+    #         user = User.objects.get(user_id=id)
+    #         user_object = {}
+    #         user_object['user_id'] = user.user_id
+    #         user_object['first_name']= user.first_name
+    #         user_object['last_name']= user.last_name
+    #         user_object['phone_number']= user.phone_number
+    #         user_object['username']= user.username
+    #         return JsonResponse(user_object)
+    #     except ObjectDoesNotExist:
+    #         error_object = {
+    #             'error': 'Get failed: user with user_id ' + str(id) + ' does not exist'
+    #         }
+    #         return JsonResponse(error_object)
+    #     except Exception as e:  # for development purpose. can remove exception as e in production
+    #         return JsonResponse({
+    #             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+    #             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+    #         })
+    # elif request.method == 'POST':
+    #     try:
+    #         user = User.objects.get(user_id=id)
+    #         user.email = request.POST.__getitem__('email')
+    #        # user.man_id = request.POST.__getitem__('man_id')
+    #         user.first_name = request.POST.__getitem__('first_name')
+    #         user.last_name = request.POST.__getitem__('last_name')
+    #         user.phone_number = request.POST.__getitem__('phone_number')
+    #         user.username = request.POST.__getitem__('username')
+    #         user.save()
+    #         updated_prod = {
+    #             'user_id': user.user_id,
+    #             'first_name': user.first_name,
+    #             'last_name': user.last_name,
+    #             'phone_number': user.phone_number,
+    #             'username': user.username,
+    #         }
+    #         return JsonResponse(updated_prod)
+    #     except ObjectDoesNotExist:
+    #         error_object = {
+    #             'error': 'Update failed: user with user_id ' + str(id) + ' does not exist'
+    #         }
+    #         return JsonResponse(error_object)
+    #     except MultiValueDictKeyError:
+    #         error_object = {
+    #             'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to update a user'
+    #         }
+    #         return JsonResponse(error_object)
+    # else:
+    #     error_object = {
+    #         'error': 'HTTP method error: user endpoint expects a GET or POST request'
+    #     }
+    #     return JsonResponse(error_object)
+
+
 def delete_manufacturer(request, id):
     if request.method == 'DELETE':
         try:
@@ -198,7 +256,10 @@ def create_manufacturer(request):
         if request.method == 'POST':
             new_values = request.POST.dict()
             man = Manufacturer(**new_values)
+            man.password = make_password(
+                new_values['password'], salt='f1nd1ngn3m0', hasher='default')
             man.save()
+            new_values[man._meta.pk.name] = man.pk
             return JsonResponse(new_values)
         else:
             error_object = {
@@ -216,12 +277,14 @@ def create_manufacturer(request):
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
+
 def create_product(request):
-    try: 
+    try:
         if request.method == 'POST':
             new_values = request.POST.dict()
             product = Product(**new_values)
             product.save()
+            new_values[product._meta.pk.name] = product.pk
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -238,6 +301,7 @@ def create_product(request):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
         )
+
 
 def get_all_users(request):
     try:
@@ -258,6 +322,7 @@ def get_all_users(request):
         })
 
 
+@csrf_exempt
 def get_or_update_user(request, id):
     try:
         if request.method == 'GET':
@@ -293,6 +358,7 @@ def create_user(request):
             user.password = make_password(
                 new_values['password'], salt='f1nd1ngn3m0', hasher='default')
             user.save()
+            new_values[user._meta.pk.name] = user.pk
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -331,13 +397,20 @@ def delete_user(request, id):
 def login(request):
     try:
         if request.method == 'POST':
-            user_dict = request.POST.dict()
-            username = user_dict['username']
-            password = user_dict['password']
-            user = User.objects.get(username=username)
-            user_id = user.user_id
-            if check_password(password, user.password):
-                auth = Authenticator.objects.filter(user_id=user_id)
+            req_data = request.POST.dict()
+            get_man = req_data.pop("is_man")
+            is_man = get_man.lower() == 'true'
+            authee_name = (req_data.get('username'),
+                           req_data.get('man_name'))[is_man]
+            password = req_data['password']
+            # have to use lambda because python evaluates both then picks instead of only the one to pick , lame!
+            authee = (lambda: User.objects.get(username=authee_name), lambda: Manufacturer.objects.get(
+                man_name=authee_name))[is_man]()
+            authee_id = authee.pk
+            get_auth_model = ('User', 'Manufacturer')[is_man]
+            if check_password(password, authee.password):
+                auth = Authenticator.objects.filter(
+                    auth_id=authee_id, auth_model=get_auth_model)
                 if not auth:
                     authenticator = hmac.new(
                         key=settings.SECRET_KEY.encode('utf-8'),
@@ -345,13 +418,13 @@ def login(request):
                         digestmod='sha256',
                     ).hexdigest()
                     new_auth = Authenticator(
-                        authenticator=authenticator, user_id=user_id)
+                        authenticator=authenticator, auth_id=authee_id, auth_model=get_auth_model)
                     new_auth.save()
-                    return JsonResponse({'code': 'success', 'auth': authenticator})
+                    return JsonResponse({'code': 'success', 'auth': authenticator, 'auth_id': authee_id})
                 else:
-                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator})
+                    return JsonResponse({'code': 'success', 'auth': auth[0].authenticator, 'auth_id': authee_id})
             else:
-                return JsonResponse({'code': 'failure'})
+                return JsonResponse({'code': 'failure', 'errMessage': 'Incorrect Password'})
         else:
             return JsonResponse({
                 'error': 'HTTP method error: Login endpoint expects a POST request'
@@ -363,16 +436,20 @@ def login(request):
         })
 
 
+# fix logout to also query for auth_model
 def logout(request):
     try:
         if request.method == 'POST':
-            auth_dict = request.POST.dict()
+            req_data = request.POST.dict()
+            get_man = req_data.pop('is_man')
+            is_man = get_man.lower() == 'true'
+            get_auth_model = ('User', 'Manufacturer')[is_man]
             authenticator = Authenticator.objects.get(
-                authenticator=auth_dict['auth'])
+                authenticator=req_data['auth'], auth_model=get_auth_model)
             authenticator.delete()
             return JsonResponse({
                 'code': 'success',
-                'deleted_auth': auth_dict['auth']
+                'deleted_auth': req_data['auth']
             })
         else:
             return JsonResponse({
@@ -381,5 +458,159 @@ def logout(request):
     except Exception as e:
         return JsonResponse({
             'error': 'Error',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def get_user_id(request):
+    # will retrieve with either email or username
+    try:
+        if request.method == 'POST':
+            user_info = request.POST.dict()
+            user_email = user_info.get('email')
+            user_username = user_info.get('username')
+            if user_email:
+                user_object = User.objects.get(email=user_email)
+                return JsonResponse({"user_id": user_object.pk, 'email': user_object.email})
+            elif user_username:
+                user_object = User.objects.get(username=user_username)
+                return JsonResponse({"user_id": user_object.pk, 'email': user_object.email})
+            else:
+                return JsonResponse({"error": 'No email or username was provided to get_user_id'})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get_user_id endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error in get_user_id in models',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def get_man_id(request):
+    # will retrieve with either email or man_name
+    try:
+        if request.method == 'POST':
+            man_info = request.POST.dict()
+            man_email = man_info.get('email')
+            man_name = man_info.get('man_name')
+            if man_email:
+                man_object = Manufacturer.objects.get(email=man_email)
+                return JsonResponse({"man_id": man_object.pk, 'email': man_object.email})
+            elif man_name:
+                man_object = Manufacturer.objects.get(man_name=man_name)
+                return JsonResponse({"man_id": man_object.pk, 'email': man_object.email})
+            else:
+                return JsonResponse({"error": 'No email or username was provided to get_man_id'})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get_user_id endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error in get_man_id in models',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def get_or_create_token(request):
+    sample = {
+        'authee_id': 2,
+        'create': "true",  # if create is passed and true, will create token if one is not found
+        'is_man': 'true'
+    }
+    try:
+        if request.method == 'POST':
+            req_data = request.POST.dict()
+            is_create = req_data.get('create')
+            authee_id = req_data.pop('authee_id')
+            get_man = req_data.pop('is_man')
+            is_man = get_man.lower() == 'true'
+            get_auth_model = ('User', 'Manufacturer')[is_man]
+            auth = Authenticator.objects.filter(
+                auth_id=authee_id, auth_model=get_auth_model)
+            if auth:
+                return JsonResponse({'code': 'success', 'auth': auth[0].authenticator, 'auth_id': authee_id})
+            elif not auth and is_create and is_create.lower() == 'true':
+                authenticator = hmac.new(
+                    key=settings.SECRET_KEY.encode('utf-8'),
+                    msg=os.urandom(32),
+                    digestmod='sha256',
+                ).hexdigest()
+                new_auth = Authenticator(
+                    authenticator=authenticator, auth_id=authee_id, auth_model=get_auth_model)
+                new_auth.save()
+                return JsonResponse({'code': 'success', 'auth': authenticator, 'auth_id': authee_id})
+            else:
+                return JsonResponse({'error': 'Authenticator not found and not created'})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get_or_delete_token endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error in get_or_create_token in models layer',
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+    # return JsonResponse({"auth": "1233"})
+
+
+# def change_user_password(request):
+#     sample = {
+#         "user_id": 3,  # the users id that we can use to filter objects by
+#         "new_password": "newPassword!"
+#     }
+#     change_password_helper(User, request)
+#     # get by PK
+#     # call helper
+#     # user.password = make_password(
+#     #     new_values['password'], salt='f1nd1ngn3m0', hasher='default')
+#     # user.save()
+
+
+# def change_man_password(request):
+#     sample = {
+#         "man_id": 3,  # the users id that we can use to filter objects by
+#         "new_password": "newPassword!"
+#     }
+#     change_password_helper(Manu, request)
+#     # get man by pk
+#     # call helper
+#     # return
+
+
+def change_password(request):
+    sample = {
+        "user_id/man_id": 3,  # the users id that we can use to filter objects by
+        "new_password": "newPassword!"
+    }
+    try:
+        if request.method == 'POST':
+            req_data = request.POST.dict()
+            get_user_id = req_data.get('user_id')
+            get_man_id = req_data.get('man_id')
+            new_password = req_data.pop('new_password')
+            ret_string = 'changed password for '
+            change_object = None
+            if get_user_id:
+                change_object = User.objects.get(user_id=get_user_id)
+                ret_string += change_object.first_name + " " + change_object.last_name
+            elif get_man_id:
+                change_object = Manufacturer.objects.get(man_id=get_man_id)
+                ret_string += change_object.man_name
+            else:
+                return JsonResponse({"error": "No user_id or man_id was found in change_password request"})
+            change_object.password = make_password(
+                new_password, salt='f1nd1ngn3m0', hasher='default')
+            change_object.save()
+            return JsonResponse({'code': "success", 'message': ret_string})
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get_user_id endpoint expects a POST request'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'error': 'Error in get_user_id in models',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
