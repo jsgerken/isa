@@ -11,7 +11,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 
 
-
 def get_top_viewed(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     products_json = urllib.request.urlopen(req).read().decode('utf-8')
@@ -50,6 +49,7 @@ def product_details(request, id):
     resp_product['description'] = resp_product['description'].split('|')
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
+
 @csrf_exempt
 def user_profile(request, id):
     req_data = request.POST.dict()
@@ -61,7 +61,6 @@ def user_profile(request, id):
     if 'error' in resp_user:
         return JsonResponse(resp_user)
     return JsonResponse({"resp_user": resp_user})
-
 
 
 def sort_products(request, attribute):
@@ -241,7 +240,7 @@ def reset_password(request):
 # def send_email(request, authee_id, token_resp, url_pattern):
 def send_email(request, data):
     try:
-        subject = "Oldn't Egg – Reset Password Link (Testing)"
+        subject = "Oldn't Egg – Reset Password Link"
         html_message = render_to_string(
             'reset_password_mail_template.html', {'emailURL': data['emailURL']})
         plain_message = strip_tags(html_message)
