@@ -12,10 +12,5 @@ urlpatterns = [
     path('create-user', views.create_user),
     path('forgot-password', views.forgot_password, name='forgot-password'),
     path('logout', views.logout),
-    # path('reset-password', views.reset_password, name='reset-password'),
-    # path('password-reset/', views.password_reset),
-    path('password-reset-confirm/<uidb64>/<token>/<is_man>/',  # need to add is_user to this
-         views.password_reset_confirm, name='password_reset_confirm')
-    # accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
-
+    path('password-reset-confirm/<uidb64>/<token>/<is_man>/', views.password_reset_confirm, name='password_reset_confirm')
 ]
