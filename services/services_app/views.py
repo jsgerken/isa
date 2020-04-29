@@ -27,7 +27,6 @@ def search(request):
     }
     return JsonResponse(resp)
 
-
 def get_top_viewed(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     products_json = urllib.request.urlopen(req).read().decode('utf-8')
@@ -250,7 +249,7 @@ def reset_password(request):
 # def send_email(request, authee_id, token_resp, url_pattern):
 def send_email(request, data):
     try:
-        subject = "Oldn't Egg – Reset Password Link (Testing)"
+        subject = "Oldn't Egg – Reset Password Link"
         html_message = render_to_string(
             'reset_password_mail_template.html', {'emailURL': data['emailURL']})
         plain_message = strip_tags(html_message)
