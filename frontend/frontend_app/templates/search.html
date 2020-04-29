@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block base %}
+{% load static %}
+
+<body>
+    <div class="container my-4">
+        <h1 class="text-center">Search Results</h1>
+        <div class="row d-flex justify-content-center">
+            {% for result in results %}
+            <div class="card mx-5 my-2 w-75">
+                <div class="card-body ">
+                    <div class="d-flex flex-row">
+                        <img width="120" height="120" src="{{result.img_url}}" />
+                        <div class="d-flex flex-column">
+                            <h5 class="name jumbotron-heading mx-5">{{result.name}}</h5>
+                        </div>
+                        <div class="d-flex flex-column align-items-end ml-auto">
+                            <h5>${{result.price}}.00</h5>
+                            <a role="button" href="{%url 'productDetails' id=result.product_id%}">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">View Details</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+
+{% endblock base %}
+{% block scripts %}
+<script src="{% static 'frontend_app/app.js' %}"></script>
+{% endblock scripts %}

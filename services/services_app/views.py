@@ -9,7 +9,23 @@ from django.utils.html import strip_tags
 from django.shortcuts import render
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from kafka import KafkaProducer
+from elasticsearch import Elasticsearch
 
+@csrf_exempt
+def search(request):
+    es = Elasticsearch(['es'])
+    data = request.POST.dict()
+    query = data['query']
+    es_results = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}})
+    results = []
+    es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
+    for result in es_results['hits']['hits']:
+        results.append(result['_source'])
+    resp = {
+        'results': results
+    }
+    return JsonResponse(resp)
 
 
 def get_top_viewed(request):
@@ -50,6 +66,7 @@ def product_details(request, id):
     resp_product['description'] = resp_product['description'].split('|')
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
+
 @csrf_exempt
 def user_profile(request, id):
     req_data = request.POST.dict()
@@ -61,7 +78,6 @@ def user_profile(request, id):
     if 'error' in resp_user:
         return JsonResponse(resp_user)
     return JsonResponse({"resp_user": resp_user})
-
 
 
 def sort_products(request, attribute):
@@ -83,37 +99,30 @@ def get_man_from_product(request, product_id):
         req_man).read().decode('utf-8'))
     return JsonResponse(resp_man)
 
-# I wanted to do some redirection with the POST so that there was less code duplication
-# but HTTP does not like redirection of POST so I just grab data, encoded, and send
-# action can equal: "create", "login"
-
 
 def authAndListingHelper(request, action):
     try:
         if request.method == 'POST':
-            url = ""
+            url = ''
             req_data = request.POST.dict()
-            # data = urllib.parse.urlencode(req_data).encode()
             action = action.lower()
             if action == "create":
                 is_man = req_data.pop("is_man")
-                # if is_man is in the data, use it to decide between man and users. else, default to false
                 url = ("http://models:8000/api/v1/users/create/",
                        "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
             elif action == 'login':
-                url = "http://models:8000/account/login"
+                url = 'http://models:8000/account/login'
             elif action == 'logout':
-                url = "http://models:8000/account/logout"
+                url = 'http://models:8000/account/logout'
             elif action == 'listing':
-                url = "http://models:8000/api/v1/products/create/"
-            # make sure that one of the above actions changed the url
+                url = 'http://models:8000/api/v1/products/create/'
+                producer = KafkaProducer(bootstrap_servers='kafka:9092')  
             if url:
-                data = urllib.parse.urlencode(req_data).encode()
-                req = urllib.request.Request(url, data=data)
-                resp_json = json.loads(
-                    urllib.request.urlopen(req).read().decode('utf-8'))
-                # return JsonResponse(resp_json)
-                return resp_json
+                resp = post(req_data, url)   
+                if action == 'listing':
+                    producer.send('new-listings-topic', json.dumps(resp).encode('utf-8')) 
+                    producer.close(timeout=1000)                
+                return resp
             else:
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
                 return {"error": "Incorrect action. Action must be: create, login, logout, listing"}
@@ -264,8 +273,6 @@ def reset_password_confirm(request):
     return JsonResponse(helperConfirmChangePassword(request, False))
 
 
-# # later think of a way to keep this method safe
-# # will be called to change password: double checks token and ID
 @csrf_exempt
 def change_password(request):
     return JsonResponse(helperConfirmChangePassword(request, True))
@@ -338,8 +345,13 @@ def convert_and_call(data, url):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
 
-
-# uid = force_text(urlsafe_base64_decode(uidb64))
-# django.utils.http
-    # urlsafe_base64_encode(s):
-    # urlsafe_base64_decode(s):
+def post(data, url):
+    try:
+        data = urllib.parse.urlencode(data).encode()
+        req = urllib.request.Request(url, data=data)
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    except Exception as e:
+        return {
+            'error': 'Failed to post to ' + url,
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        }
