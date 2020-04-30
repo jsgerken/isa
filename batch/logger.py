@@ -1,27 +1,26 @@
 from kafka import KafkaConsumer
-from elasticsearch import Elasticsearch
 import json
 import time
+import csv
 
 
 def main():
-    print('Starting Kafka logger consumer loop')
-    es = Elasticsearch(['es'])
+    print('Starting Logger Consumer Loop')
     while True:
         try:
-            print('hello from logger')
-            time.sleep(10)
-            # consumer = KafkaConsumer(
-            #     'new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
-            # for message in consumer:
-            #     item = json.loads((message.value).decode('utf-8'))
-            #     index = es.index(
-            #         index='listing_index', doc_type='listing', id=item['product_id'], body=item)
-            #     es.indices.refresh(index="listing_index")
-            #     print(item)
-            #     print(index)
-        except:
-            print('Kafka server not online')
+            consumer = KafkaConsumer(
+                'new-logs-topic', group_id='logs-indexer', bootstrap_servers=['kafka:9092'])
+            for message in consumer:
+                item = json.loads((message.value).decode('utf-8'))
+                print('Updating Logs in logger for : ' + str(item))
+                # a+ means append to file
+                with open('viewLogs.csv', 'a') as logfile:
+                    csvwriter = csv.writer(logfile)
+                    csvwriter.writerow([item['user_id'], item['product_id']])
+                # sleep to wait for new logs
+                # time.sleep(5)
+        except Exception as e:
+            print('Kafka server not online - Logger: ' + str(e))
             time.sleep(5)
 
 

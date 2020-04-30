@@ -49,30 +49,30 @@ services:
     image: spotify/kafka
     container_name: kafka
     networks:
-      - batch_network
-      - service_mesh
+        - batch_network
+        - service_mesh
     environment:
-      ADVERTISED_HOST: kafka
-      ADVERTISED_PORT: 9092
+        ADVERTISED_HOST: kafka
+        ADVERTISED_PORT: 9092
     hostname: kafka
-
+    
   es:
     image: elasticsearch:7.4.0
     container_name: es
     environment:
-      - discovery.type=single-node
+        - discovery.type=single-node
     networks:
-      - service_mesh
-      - batch_network
+        - service_mesh
+        - batch_network
     ports:
-      - "9200:9200"
-
+        - "9200:9200"
+  
   batch:
     image: tp33/django
     container_name: batch
     networks:
-      - batch_network
-    command: bash -c "python -u batch.py"
+        - batch_network
+    command: bash -c "python -u logger.py & python -u count_logs.py & python -u batch.py && fg"
     volumes:
       - ./batch:/app
 

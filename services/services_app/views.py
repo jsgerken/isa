@@ -21,12 +21,12 @@ def get_all_es(request):
     results = []
     # es_results = sorted(
     #     es_results['hits']['hits'], key=lambda x: x['_score'], reverse=True)
-    for result in reversed(es_results['hits']['hits']):
-        results.append(result['_source'])
+    # for result in reversed(es_results['hits']['hits']):
+    #     results.append(result['_source'])
     resp = {
         'results': results
     }
-    return JsonResponse(resp)
+    return JsonResponse(es_results)
 
 
 @csrf_exempt
@@ -47,12 +47,20 @@ def search(request):
 
 
 def get_top_viewed(request):
-    req = urllib.request.Request('http://models:8000/api/v1/products/')
-    products_json = urllib.request.urlopen(req).read().decode('utf-8')
-    products_dict = json.loads(products_json)
-    products = products_dict['allProducts']
-    products.sort(key=lambda x: x['views'], reverse=True)
-    return JsonResponse({'products': products})
+    # req = urllib.request.Request('http://models:8000/api/v1/products/')
+    # products_json = urllib.request.urlopen(req).read().decode('utf-8')
+    # products_dict = json.loads(products_json)
+    # products = products_dict['allProducts']
+    # products.sort(key=lambda x: x['views'], reverse=True)
+    # return JsonResponse({'products': products})
+    es = Elasticsearch(['es'])
+    es_results = es.search(index='listing_index', body={"size": 10, "query": {"function_score": {"query": {
+                           "match_all": {}}, "field_value_factor": {"field": "views", "modifier": "log1p", "missing": 0.1}}}})
+    products_only = []
+    # used to remove extra metadata that es returns
+    for product in es_results['hits']['hits']:
+        products_only.append(product['_source'])
+    return JsonResponse({'products': products_only})
 
 
 def test(request):
@@ -71,6 +79,7 @@ def newly_added(request):
     return JsonResponse({"newlyAddedSorted": resp_sorted})
 
 
+@csrf_exempt
 def product_details(request, id):
     req_product = urllib.request.Request(
         'http://models:8000/api/v1/products/' + str(id))
@@ -83,6 +92,30 @@ def product_details(request, id):
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     resp_product['description'] = resp_product['description'].split('|')
+    # add that this product was clicked to Kafka Q if it was by a user and not manufacturer
+    try:
+        if request.method == 'POST':
+            req_data = request.POST.dict()
+            get_user_id = req_data.get('user_id', False)
+            if not get_user_id:
+                raise Exception(
+                    "Cannot add because user_id was not found in post data")
+            # if here there was a user_id in data to add to Q
+            producer = KafkaProducer(bootstrap_servers='kafka:9092')
+            message = {
+                'user_id': int(get_user_id),
+                'product_id': resp_product['product_id']
+            }
+            producer.send('new-logs-topic',
+                          json.dumps(message).encode('utf-8'))
+            producer.flush()
+            producer.close()
+
+    except Exception as e:
+        print(
+            'error: In experience layer. Could not add to view to Kafka Q \n' +
+            'errReason:  DEV_MODE_MESSAGE: ' + str(e)
+        )
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
 
@@ -143,6 +176,7 @@ def authAndListingHelper(request, action):
                                   json.dumps(resp).encode('utf-8'))
                     # producer.close(timeout=1000)
                     producer.flush()
+                    producer.close()
                 return resp
             else:
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})

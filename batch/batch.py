@@ -5,25 +5,23 @@ import time
 
 
 def main():
-    print('Starting Kafka listing consumer loop')
+    print('Starting Kafka Listing consumer loop')
     es = Elasticsearch(['es'])
     while True:
         try:
-            # print('hello from listing')
             consumer = KafkaConsumer(
                 'new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
-            print('consumer: ' + consumer)
             for message in consumer:
-                print('in messages')
                 item = json.loads((message.value).decode('utf-8'))
                 index = es.index(
                     index='listing_index', doc_type='listing', id=item['product_id'], body=item)
                 es.indices.refresh(index="listing_index")
                 print(item)
                 print(index)
-            print('at end')
-        except:
-            print('Kafka server not online')
+                # sleep to wait for new messages (temp fix)
+                # time.sleep(3)
+        except Exception as e:
+            print('Kafka server not online - ' + str(e))
             time.sleep(5)
 
 
