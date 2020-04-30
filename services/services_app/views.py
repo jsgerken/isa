@@ -15,17 +15,13 @@ from elasticsearch import Elasticsearch
 
 def get_all_es(request):
     es = Elasticsearch(['es'])
-    es_results = es.search(index='listing_index', body={"query": {
-        "match_all": {}
-    },  "size": 1000})
+    es_results = es.search(index='listing_index', body={'query': {
+        'match_all': {}
+        },  'size': 1000})
     results = []
-    # es_results = sorted(
-    #     es_results['hits']['hits'], key=lambda x: x['_score'], reverse=True)
-    # for result in reversed(es_results['hits']['hits']):
-    #     results.append(result['_source'])
     resp = {
-        'results': results
-    }
+            'results': results
+            }
     return JsonResponse(es_results)
 
 
@@ -34,28 +30,44 @@ def search(request):
     es = Elasticsearch(['es'])
     data = request.POST.dict()
     query = data['query']
-    es_results = es.search(index='listing_index', body={
-                           'query': {'query_string': {'query': query}}})
-    results = []
+    type = data['type']
+    if type == 'Most Popular':
+        es_results = es.search(
+            index='listing_index',
+            body=
+            {
+                'query': {
+                    'function_score': {
+                        'query': {
+                            'query_string': {
+                                'query': query + '*'
+                                }
+                            },
+                        'field_value_factor': {
+                            'field': 'views',
+                            'modifier': 'log1p',
+                            'missing': 0.1
+                        }
+                    }
+                }
+            }
+        )
+    else:
+        es_results = es.search(index='listing_index', body={
+            'query': {'query_string': {'query': query + '*'}}})
+        results = []
     es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
     for result in es_results['hits']['hits']:
         results.append(result['_source'])
     resp = {
-        'results': results
-    }
+            'results': results
+            }
     return JsonResponse(resp)
 
 
 def get_top_viewed(request):
-    # req = urllib.request.Request('http://models:8000/api/v1/products/')
-    # products_json = urllib.request.urlopen(req).read().decode('utf-8')
-    # products_dict = json.loads(products_json)
-    # products = products_dict['allProducts']
-    # products.sort(key=lambda x: x['views'], reverse=True)
-    # return JsonResponse({'products': products})
     es = Elasticsearch(['es'])
-    es_results = es.search(index='listing_index', body={"size": 10, "query": {"function_score": {"query": {
-                           "match_all": {}}, "field_value_factor": {"field": "views", "modifier": "log1p", "missing": 0.1}}}})
+    es_results = es.search(index='listing_index', body={"size": 10, "query": {"function_score": {"query": {"match_all": {}}, "field_value_factor": {"field": "views", "modifier": "log1p", "missing": 0.1}}}})
     products_only = []
     # used to remove extra metadata that es returns
     for product in es_results['hits']['hits']:
@@ -75,20 +87,20 @@ def newly_added(request):
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp_array = json.loads(resp_json)['allProducts']
     resp_sorted = sorted(
-        resp_array, key=lambda i: i['datetime_created'], reverse=True)
+            resp_array, key=lambda i: i['datetime_created'], reverse=True)
     return JsonResponse({"newlyAddedSorted": resp_sorted})
 
 
 @csrf_exempt
 def product_details(request, id):
     req_product = urllib.request.Request(
-        'http://models:8000/api/v1/products/' + str(id))
+            'http://models:8000/api/v1/products/' + str(id))
     resp_product = json.loads(urllib.request.urlopen(
         req_product).read().decode('utf-8'))
     if 'error' in resp_product:
         return JsonResponse(resp_product)
     req_man = urllib.request.Request(
-        'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
+            'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     resp_product['description'] = resp_product['description'].split('|')
@@ -99,24 +111,24 @@ def product_details(request, id):
             get_user_id = req_data.get('user_id', False)
             if not get_user_id:
                 raise Exception(
-                    "Cannot add because user_id was not found in post data")
-            # if here there was a user_id in data to add to Q
+                        "Cannot add because user_id was not found in post data")
+                # if here there was a user_id in data to add to Q
             producer = KafkaProducer(bootstrap_servers='kafka:9092')
             message = {
-                'user_id': int(get_user_id),
-                'product_id': resp_product['product_id']
-            }
+                    'user_id': int(get_user_id),
+                    'product_id': resp_product['product_id']
+                    }
             producer.send('new-logs-topic',
-                          json.dumps(message).encode('utf-8'))
+                    json.dumps(message).encode('utf-8'))
             producer.flush()
             producer.close()
 
     except Exception as e:
         print(
-            'error: In experience layer. Could not add to view to Kafka Q \n' +
-            'errReason:  DEV_MODE_MESSAGE: ' + str(e)
-        )
-    return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
+                'error: In experience layer. Could not add to view to Kafka Q \n' +
+                'errReason:  DEV_MODE_MESSAGE: ' + str(e)
+                )
+        return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
 
 @csrf_exempt
@@ -124,7 +136,7 @@ def user_profile(request, id):
     req_data = request.POST.dict()
     data = urllib.parse.urlencode(req_data).encode()
     req_user = urllib.request.Request(
-        'http://models:8000/api/v1/users/' + str(id), data=data)
+            'http://models:8000/api/v1/users/' + str(id), data=data)
     resp_user = json.loads(urllib.request.urlopen(
         req_user).read().decode('utf-8'))
     if 'error' in resp_user:
@@ -142,11 +154,11 @@ def sort_products(request, attribute):
 
 def get_man_from_product(request, product_id):
     req_product = urllib.request.Request(
-        'http://models:8000/api/v1/products/' + str(product_id))
+            'http://models:8000/api/v1/products/' + str(product_id))
     resp_product = json.loads(urllib.request.urlopen(
         req_product).read().decode('utf-8'))
     req_man = urllib.request.Request(
-        'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
+            'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     return JsonResponse(resp_man)
@@ -161,7 +173,7 @@ def authAndListingHelper(request, action):
             if action == "create":
                 is_man = req_data.pop("is_man")
                 url = ("http://models:8000/api/v1/users/create/",
-                       "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
+                        "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
             elif action == 'login':
                 url = 'http://models:8000/account/login'
             elif action == 'logout':
@@ -173,7 +185,7 @@ def authAndListingHelper(request, action):
                 resp = post(req_data, url)
                 if action == 'listing':
                     producer.send('new-listings-topic',
-                                  json.dumps(resp).encode('utf-8'))
+                            json.dumps(resp).encode('utf-8'))
                     # producer.close(timeout=1000)
                     producer.flush()
                     producer.close()
@@ -186,11 +198,11 @@ def authAndListingHelper(request, action):
 
     except Exception as e:
         return {
-            'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
+                'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
+                'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+                }
 
-# when you create an account ; we also call log in to give them an authenticator
+        # when you create an account ; we also call log in to give them an authenticator
 
 
 @csrf_exempt
@@ -242,12 +254,12 @@ def create_new_listing(request):
 @csrf_exempt
 def reset_password(request):
     possible = {
-        "is_man": "true",
-        "username": "guy14",
-        "email": "email@email.com",
-        "man_name": "nvidia14",
-        "url_pattern": "/password-reset-confirm/"
-    }
+            "is_man": "true",
+            "username": "guy14",
+            "email": "email@email.com",
+            "man_name": "nvidia14",
+            "url_pattern": "/password-reset-confirm/"
+            }
     try:
         if request.method == 'POST':
             req_data = request.POST.dict()
@@ -266,7 +278,7 @@ def reset_password(request):
                 else:
                     return JsonResponse({'error': 'In services layer – reset password – No man_name or email'})
                 req_resp = convert_and_call(
-                    req_query, 'http://models:8000/api/v1/manufacturers/get-man-id/')
+                        req_query, 'http://models:8000/api/v1/manufacturers/get-man-id/')
             elif not req_data.get('username') and not req_data.get('email'):
                 return JsonResponse({'error': "Service Layer Error. No username or email was provided"})
             else:
@@ -276,20 +288,20 @@ def reset_password(request):
                 else:
                     req_query['email'] = req_data.get('email')
                 req_resp = convert_and_call(
-                    req_query, 'http://models:8000/api/v1/users/get-user-id/')
-            if 'error' in req_resp:
-                return JsonResponse(req_resp)
+                        req_query, 'http://models:8000/api/v1/users/get-user-id/')
+                if 'error' in req_resp:
+                    return JsonResponse(req_resp)
             get_id = (req_resp.get('user_id'), req_resp.get('man_id'))[is_man]
             token_resp = convert_and_call(
-                {'authee_id': get_id, "create": "true", 'is_man': is_man}, 'http://models:8000/account/get-create-token/')
+                    {'authee_id': get_id, "create": "true", 'is_man': is_man}, 'http://models:8000/account/get-create-token/')
             if 'error' in token_resp:
                 return JsonResponse(token_resp)
             url_replace = req_data['url_pattern'].replace(
-                "__uid64__", urlsafe_base64_encode(force_bytes(get_id)), 1)
+                    "__uid64__", urlsafe_base64_encode(force_bytes(get_id)), 1)
             url_replace = url_replace.replace(
-                "__token__", token_resp['auth'], 1)
+                    "__token__", token_resp['auth'], 1)
             email_data = {'emailTo': req_resp['email'],
-                          "emailURL": url_replace, }
+                    "emailURL": url_replace, }
             # return JsonResponse(email_data)
             return JsonResponse(send_email(request, email_data))
 
@@ -299,31 +311,31 @@ def reset_password(request):
         return JsonResponse({
             'error': 'In experience layer - reset-password. Double check param data for accepted fields and uniqueness and is_man is in data',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        })
+            })
 
 
-# def send_email(request, authee_id, token_resp, url_pattern):
+        # def send_email(request, authee_id, token_resp, url_pattern):
 def send_email(request, data):
     try:
         subject = "Oldn't Egg – Reset Password Link"
         html_message = render_to_string(
-            'reset_password_mail_template.html', {'emailURL': data['emailURL']})
+                'reset_password_mail_template.html', {'emailURL': data['emailURL']})
         plain_message = strip_tags(html_message)
         from_email = "Oldn'tEgg@no-reply.com"
         # to = 'jacoboscholarships@gmail.com'
         to = data['emailTo']
         send_mail(subject, plain_message, from_email,
-                  [to], fail_silently=False, html_message=html_message)
+                [to], fail_silently=False, html_message=html_message)
         return {"code": "success", "message": "email sent successfully", 'emailTo': to}
-        # return render(request, 'reset_password_mail_template.html', {"url_email_pattern": url_email_pattern})
+    # return render(request, 'reset_password_mail_template.html', {"url_email_pattern": url_email_pattern})
     except Exception as e:
         return {
-            'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
+                'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
+                'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+                }
 
 
-@csrf_exempt
+        @csrf_exempt
 def reset_password_confirm(request):
     return JsonResponse(helperConfirmChangePassword(request, False))
 
@@ -336,11 +348,11 @@ def change_password(request):
 # will check password and return if valid or not
 def helperConfirmChangePassword(request, is_change_password):
     sample = {
-        'uid64': 'MTU=',  # 15
-        'token': 33432,
-        'is_man': 'true',
-        'new_password': 'newPass!'  # if is_change_password is true
-    }
+            'uid64': 'MTU=',  # 15
+            'token': 33432,
+            'is_man': 'true',
+            'new_password': 'newPass!'  # if is_change_password is true
+            }
     try:
         if request.method == 'POST':
             req_data = request.POST.dict()
@@ -350,9 +362,9 @@ def helperConfirmChangePassword(request, is_change_password):
             is_man = get_is_man.lower() == 'true'
             decoded_id = urlsafe_base64_decode(get_uid64)
             check_link_data = {'authee_id': decoded_id,
-                               'is_man': is_man, 'create': 'false'}
+                    'is_man': is_man, 'create': 'false'}
             req_resp = convert_and_call(
-                check_link_data, 'http://models:8000/account/get-create-token/')
+                    check_link_data, 'http://models:8000/account/get-create-token/')
             if 'error' in req_resp:
                 return req_resp
             if get_token != req_resp['auth']:
@@ -363,7 +375,7 @@ def helperConfirmChangePassword(request, is_change_password):
             # lets delete the token first
             delete_token_data = {"auth": get_token, 'is_man': is_man}
             req_resp = convert_and_call(
-                delete_token_data, "http://models:8000/account/logout")
+                    delete_token_data, "http://models:8000/account/logout")
             if 'error' in req_resp:
                 return {"error": "failed to delete token in reset password : service layer", **req_resp}
             # now lets change the password
@@ -375,39 +387,39 @@ def helperConfirmChangePassword(request, is_change_password):
                 change_password_data['user_id'] = decoded_id
             change_password_data['new_password'] = get_new_password
             req_resp = convert_and_call(
-                change_password_data, 'http://models:8000/account/change-password/')
+                    change_password_data, 'http://models:8000/account/change-password/')
             return req_resp
 
         else:
             return {'error': 'HTTP method error: endpoint expects a POST request'}
     except Exception as e:
         return {
-            'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
+                'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
+                'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+                }
 
 
-def convert_and_call(data, url):
-    try:
-        data = urllib.parse.urlencode(data).encode()
+        def convert_and_call(data, url):
+            try:
+                data = urllib.parse.urlencode(data).encode()
         req = urllib.request.Request(url, data=data)
         resp_json = json.loads(
-            urllib.request.urlopen(req).read().decode('utf-8'))
+                urllib.request.urlopen(req).read().decode('utf-8'))
         return resp_json
     except Exception as e:
         return {
-            'error': 'In experience layer. Failed in convert_and_call',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
+                'error': 'In experience layer. Failed in convert_and_call',
+                'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+                }
 
 
-def post(data, url):
-    try:
-        data = urllib.parse.urlencode(data).encode()
+        def post(data, url):
+            try:
+                data = urllib.parse.urlencode(data).encode()
         req = urllib.request.Request(url, data=data)
         return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
     except Exception as e:
         return {
-            'error': 'Failed to post to ' + url,
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
-        }
+                'error': 'Failed to post to ' + url,
+                'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+                }

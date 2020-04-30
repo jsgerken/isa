@@ -13,17 +13,17 @@ def main():
                 'new-listings-topic',
                 group_id='listing-indexer',
                 bootstrap_servers=['kafka:9092'],
-                consumer_timeout_ms=5500)
+                consumer_timeout_ms=5500
+            )
             for message in consumer:
                 item = json.loads((message.value).decode('utf-8'))
-                index = es.index(
-                    index='listing_index', doc_type='listing', id=item['product_id'], body=item)
+                index = es.index(index='listing_index', doc_type='listing', id=item['product_id'], body=item)
                 es.indices.refresh(index="listing_index")
                 print(item)
                 print(index)
                 # sleep to wait for new messages (temp fix)
                 # time.sleep(3)
-            print("closing consumer in Listing")
+            print("Closing consumer in Listing")
             consumer.close()
         except Exception as e:
             print('Kafka server not online - ' + str(e))
