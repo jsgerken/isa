@@ -75,6 +75,7 @@ services:
     depends_on: 
       - "es"
       - "kafka"
+    restart: on-failure
     command: 
       - /bin/bash
       - -c
