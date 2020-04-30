@@ -59,6 +59,8 @@ services:
   es:
     image: elasticsearch:7.4.0
     container_name: es
+    volumes:
+      - ./es:/app
     environment:
         - discovery.type=single-node
     networks:

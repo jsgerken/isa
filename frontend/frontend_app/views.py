@@ -38,8 +38,7 @@ def product_details(request, id):
     get_user_id = request.get_signed_cookie('user_id', False)
     if get_user_id:
         post_data = {'user_id': get_user_id}
-    product_dict = post(post_data,
-                        'http://services:8000/api/v1/product-details/' + str(id))
+    product_dict = post(post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
     return render(request, 'frontend_app/product_details.html', product_dict)

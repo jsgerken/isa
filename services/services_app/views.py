@@ -12,6 +12,26 @@ from django.utils.encoding import force_bytes
 from kafka import KafkaProducer
 from elasticsearch import Elasticsearch
 
+def fetch(url):
+    try:
+        req = urllib.request.Request(url)
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    except Exception as e:
+        return {
+            'error': 'Failed to fetch from ' + url,
+            'errReason':  'Message: ' + str(e)
+        }
+
+def es_index_fixtures(request):
+    prods = fetch('http://models:8000/api/v1/products/')
+    all_prods = prods['allProducts']
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')
+    for product in all_prods:
+        producer.send('new-listings-topic', json.dumps(product).encode('utf-8'))
+    producer.flush()
+    producer.close()
+    return JsonResponse({'status': 'good'})
+
 
 def get_all_es(request):
     es = Elasticsearch(['es'])
@@ -54,7 +74,7 @@ def search(request):
     else:
         es_results = es.search(index='listing_index', body={
             'query': {'query_string': {'query': query + '*'}}})
-    results = []
+        results = []
     es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
     for result in es_results['hits']['hits']:
         results.append(result['_source'])
@@ -92,16 +112,12 @@ def newly_added(request):
 
 @csrf_exempt
 def product_details(request, id):
-    req_product = urllib.request.Request(
-            'http://models:8000/api/v1/products/' + str(id))
-    resp_product = json.loads(urllib.request.urlopen(
-        req_product).read().decode('utf-8'))
+    req_product = urllib.request.Request('http://models:8000/api/v1/products/' + str(id))
+    resp_product = json.loads(urllib.request.urlopen(req_product).read().decode('utf-8'))
     if 'error' in resp_product:
         return JsonResponse(resp_product)
-    req_man = urllib.request.Request(
-            'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
-    resp_man = json.loads(urllib.request.urlopen(
-        req_man).read().decode('utf-8'))
+    req_man = urllib.request.Request('http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
+    resp_man = json.loads(urllib.request.urlopen(req_man).read().decode('utf-8'))
     resp_product['description'] = resp_product['description'].split('|')
     # add that this product was clicked to Kafka Q if it was by a user and not manufacturer
     try:
@@ -127,7 +143,7 @@ def product_details(request, id):
                 'error: In experience layer. Could not add to view to Kafka Q \n' +
                 'errReason:  DEV_MODE_MESSAGE: ' + str(e)
                 )
-        return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
+    return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
 
 @csrf_exempt
