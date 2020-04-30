@@ -72,6 +72,9 @@ services:
     container_name: batch
     networks:
         - batch_network
+    depends_on: 
+      - "es"
+      - "kafka"
     command: 
       - /bin/bash
       - -c

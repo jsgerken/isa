@@ -10,7 +10,10 @@ def main():
     while True:
         try:
             consumer = KafkaConsumer(
-                'new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
+                'new-listings-topic',
+                group_id='listing-indexer',
+                bootstrap_servers=['kafka:9092'],
+                consumer_timeout_ms=5500)
             for message in consumer:
                 item = json.loads((message.value).decode('utf-8'))
                 index = es.index(
@@ -20,9 +23,11 @@ def main():
                 print(index)
                 # sleep to wait for new messages (temp fix)
                 # time.sleep(3)
+            print("closing consumer in Listing")
+            consumer.close()
         except Exception as e:
             print('Kafka server not online - ' + str(e))
-            time.sleep(5)
+            time.sleep(10)
 
 
 if __name__ == "__main__":
