@@ -34,8 +34,7 @@ def search(request):
     if type == 'Most Popular':
         es_results = es.search(
             index='listing_index',
-            body=
-            {
+            body={
                 'query': {
                     'function_score': {
                         'query': {
@@ -55,7 +54,7 @@ def search(request):
     else:
         es_results = es.search(index='listing_index', body={
             'query': {'query_string': {'query': query + '*'}}})
-        results = []
+    results = []
     es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
     for result in es_results['hits']['hits']:
         results.append(result['_source'])
@@ -335,7 +334,7 @@ def send_email(request, data):
                 }
 
 
-        @csrf_exempt
+@csrf_exempt
 def reset_password_confirm(request):
     return JsonResponse(helperConfirmChangePassword(request, False))
 
@@ -399,23 +398,23 @@ def helperConfirmChangePassword(request, is_change_password):
                 }
 
 
-        def convert_and_call(data, url):
-            try:
-                data = urllib.parse.urlencode(data).encode()
-        req = urllib.request.Request(url, data=data)
-        resp_json = json.loads(
-                urllib.request.urlopen(req).read().decode('utf-8'))
-        return resp_json
-    except Exception as e:
-        return {
+def convert_and_call(data, url):
+        try:
+            data = urllib.parse.urlencode(data).encode()
+            req = urllib.request.Request(url, data=data)
+            resp_json = json.loads(
+                    urllib.request.urlopen(req).read().decode('utf-8'))
+            return resp_json
+        except Exception as e:
+            return {
                 'error': 'In experience layer. Failed in convert_and_call',
                 'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
                 }
 
 
-        def post(data, url):
-            try:
-                data = urllib.parse.urlencode(data).encode()
+def post(data, url):
+    try:
+        data = urllib.parse.urlencode(data).encode()
         req = urllib.request.Request(url, data=data)
         return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
     except Exception as e:
