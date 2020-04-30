@@ -20,7 +20,7 @@ def main():
                     product_to_views[row[1]] = get_cur_views + 1
             for product, views in product_to_views.items():
                 # print("updating logs for product_id: " +
-                    #   str(product) + " to views: " + str(views))
+                #       str(product) + " to views: " + str(views))
                 # print("<------------------->")
                 index = es.update(
                     index='listing_index', id=product, body={

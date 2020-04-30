@@ -72,7 +72,16 @@ services:
     container_name: batch
     networks:
         - batch_network
-    command: bash -c "python -u logger.py & python -u count_logs.py & python -u batch.py && fg"
+    command: 
+      - /bin/bash
+      - -c
+      - |
+          set -m
+          python -u logger.py &
+          python -u count_logs.py & 
+          python -u batch.py & 
+          wait $$!
+
     volumes:
       - ./batch:/app
 
