@@ -74,8 +74,8 @@ def search(request):
     else:
         es_results = es.search(index='listing_index', body={
             'query': {'query_string': {'query': query + '*'}}})
-        results = []
     es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
+    results = []
     for result in es_results['hits']['hits']:
         results.append(result['_source'])
     resp = {

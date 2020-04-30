@@ -215,6 +215,7 @@ def login(request):
 
         return response
     else:
+        fetch('http://services:8000/index-fixtures/')
         form = Login()
         return render(request, 'login.html', {'form': form})
 
