@@ -10,6 +10,7 @@ import urllib.parse
 import json
 import re
 
+
 def home(request):
     if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
@@ -17,20 +18,26 @@ def home(request):
     new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
     if request.get_signed_cookie('is_man', 'False') == 'True':
-        top_dict['is_man'] = 'True'
+        top_dict['is_man'] = True
     return render(request, 'home.html', top_dict)
+
 
 @csrf_exempt
 def search(request):
     form_data = request.POST.dict()
     resp = post(form_data, 'http://services:8000/api/v1/search/')
+    if request.get_signed_cookie('is_man', 'False') == 'True':
+        resp['is_man'] = True
     return render(request, 'search.html', resp)
 
 
 def product_details(request, id):
     if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
-    product_dict = fetch('http://services:8000/api/v1/product-details/' + str(id))
+    product_dict = fetch(
+        'http://services:8000/api/v1/product-details/' + str(id))
+    if request.get_signed_cookie('is_man', 'False') == 'True':
+        product_dict['is_man'] = True
     return render(request, 'frontend_app/product_details.html', product_dict)
 
 
@@ -258,4 +265,3 @@ def post(data, url):
             'error': 'Failed to post to ' + url,
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
-

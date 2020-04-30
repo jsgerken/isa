@@ -12,12 +12,30 @@ from django.utils.encoding import force_bytes
 from kafka import KafkaProducer
 from elasticsearch import Elasticsearch
 
+
+def get_all_es(request):
+    es = Elasticsearch(['es'])
+    es_results = es.search(index='listing_index', body={"query": {
+        "match_all": {}
+    },  "size": 1000})
+    results = []
+    # es_results = sorted(
+    #     es_results['hits']['hits'], key=lambda x: x['_score'], reverse=True)
+    for result in reversed(es_results['hits']['hits']):
+        results.append(result['_source'])
+    resp = {
+        'results': results
+    }
+    return JsonResponse(resp)
+
+
 @csrf_exempt
 def search(request):
     es = Elasticsearch(['es'])
     data = request.POST.dict()
     query = data['query']
-    es_results = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}})
+    es_results = es.search(index='listing_index', body={
+                           'query': {'query_string': {'query': query}}})
     results = []
     es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
     for result in es_results['hits']['hits']:
@@ -26,6 +44,7 @@ def search(request):
         'results': results
     }
     return JsonResponse(resp)
+
 
 def get_top_viewed(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
@@ -47,7 +66,8 @@ def newly_added(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp_array = json.loads(resp_json)['allProducts']
-    resp_sorted = sorted(resp_array, key=lambda i: i['datetime_created'])
+    resp_sorted = sorted(
+        resp_array, key=lambda i: i['datetime_created'], reverse=True)
     return JsonResponse({"newlyAddedSorted": resp_sorted})
 
 
@@ -115,12 +135,14 @@ def authAndListingHelper(request, action):
                 url = 'http://models:8000/account/logout'
             elif action == 'listing':
                 url = 'http://models:8000/api/v1/products/create/'
-                producer = KafkaProducer(bootstrap_servers='kafka:9092')  
+                producer = KafkaProducer(bootstrap_servers='kafka:9092')
             if url:
-                resp = post(req_data, url)   
+                resp = post(req_data, url)
                 if action == 'listing':
-                    producer.send('new-listings-topic', json.dumps(resp).encode('utf-8')) 
-                    producer.close(timeout=1000)                
+                    producer.send('new-listings-topic',
+                                  json.dumps(resp).encode('utf-8'))
+                    # producer.close(timeout=1000)
+                    producer.flush()
                 return resp
             else:
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
@@ -343,6 +365,7 @@ def convert_and_call(data, url):
             'error': 'In experience layer. Failed in convert_and_call',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
+
 
 def post(data, url):
     try:
