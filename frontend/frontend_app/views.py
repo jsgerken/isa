@@ -10,7 +10,6 @@ import urllib.parse
 import json
 import re
 
-
 def home(request):
     if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
@@ -215,7 +214,7 @@ def login(request):
 
         return response
     else:
-        fetch('http://services:8000/index-fixtures/')
+        fix = fetch('http://services:8000/index-fixtures/')
         form = Login()
         return render(request, 'login.html', {'form': form})
 

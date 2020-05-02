@@ -4,15 +4,17 @@
 
 <body>
     <div class="container my-4">
+        {% if results %}
         <h1 class="text-center">Search Results</h1>
         <div class="row d-flex justify-content-center">
             {% for result in results %}
-            <div class="card mx-5 my-2 w-75">
-                <div class="card-body ">
+            <div class="card my-2 w-75">
+                <div class="card-body">
                     <div class="d-flex flex-row">
-                        <img width="120" height="120" src="{{result.img_url}}" />
+                        <img width="100" height="80" src="{{result.img_url}}" />
                         <div class="d-flex flex-column">
-                            <h5 class="name jumbotron-heading mx-5">{{result.name}}</h5>
+                            <h4 class="name jumbotron-heading mx-5">{{result.name}}</h4>
+                            <h3 class="text-muted mx-5">{{result.type}}</h3>
                         </div>
                         <div class="d-flex flex-column align-items-end ml-auto">
                             <h5>${{result.price}}.00</h5>
@@ -25,6 +27,9 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <h1 class="text-center">No Results Found</h1>
+        {% endif %}
     </div>
 </body>
 

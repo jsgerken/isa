@@ -19,10 +19,11 @@ def fetch(url):
     except Exception as e:
         return {
             'error': 'Failed to fetch from ' + url,
-            'errReason':  'Message: ' + str(e)
+            'errReason': 'Message: ' + str(e)
         }
 
 def es_index_fixtures(request):
+    del_req = urllib.request.Request('http://es:9200/*', method='DELETE')
     prods = fetch('http://models:8000/api/v1/products/')
     all_prods = prods['allProducts']
     producer = KafkaProducer(bootstrap_servers='kafka:9092')
@@ -30,6 +31,7 @@ def es_index_fixtures(request):
         producer.send('new-listings-topic', json.dumps(product).encode('utf-8'))
     producer.flush()
     producer.close()
+    return json.loads(urllib.request.urlopen(del_req).read().decode('utf-8'))
     return JsonResponse({'status': 'good'})
 
 
