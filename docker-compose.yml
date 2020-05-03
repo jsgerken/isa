@@ -18,6 +18,7 @@ services:
       && python manage.py migrate
       && python manage.py loaddata ./fixtures/manufacturer_fixtures.json
       && python manage.py loaddata ./fixtures/product_fixtures.json
+      && python manage.py test
       && mod_wsgi-express start-server --reload-on-changes ./models/wsgi.py"
 
   services:
