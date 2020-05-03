@@ -10,12 +10,7 @@ before_install:
 - docker pull mysql:latest
 - mkdir -p ~/isa/db
 - docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:latest
-- docker run -i --name mysql-cmdline --link mysql:db mysql:latest bin/bash
-- mysql -uroot -p'$3cureUS' -h db
-- create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
-- create database cs4501 character set utf8;
-- grant all on cs4501.* to 'www'@'%';
-- quit
+- docker run -i --name mysql-cmdline --link mysql:db mysql:latest db_setup.sh
 - docker network connect isa_backend mysql
 - docker-compose up -d
 
