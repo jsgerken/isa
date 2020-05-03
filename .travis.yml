@@ -16,6 +16,6 @@ before_install:
 
 script:
 - docker-compose up -d
-- docker-compose down    
+- docker-compose stop    
 - docker network connect isa_backend mysql
 - docker-compose up
