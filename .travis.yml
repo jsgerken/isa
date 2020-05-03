@@ -15,5 +15,4 @@ before_install:
 - docker network connect isa_backend mysql
 
 script:
-- docker exec -it models bash
-- python manage.py test
+- docker exec -it models python manage.py test
