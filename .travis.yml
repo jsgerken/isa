@@ -11,7 +11,7 @@ before_install:
 - mkdir -p ~/isa/db
 - docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:latest
 - chmod +x db_setup.sh
-- docker run --name mysql-cmdline --link mysql:db mysql:latest
+- docker run --name mysql-cmdline -d -e MYSQL_ROOT_PASSWORD='$3cureUS' --link mysql:db mysql:latest
 - docker exec -it mysql-cmdline /bin/bash -c " ./db_setup.sh"
 - docker network connect isa_backend mysql
 - docker-compose up -d
