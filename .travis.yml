@@ -19,5 +19,8 @@ script:
 - docker-compose up -d
 - docker-compose stop    
 - docker network connect isa_backend mysql
+- docker stop mysql
+- docker start mysql
 - docker ps
+- sleep 10
 - docker-compose up
