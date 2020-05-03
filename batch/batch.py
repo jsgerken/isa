@@ -17,7 +17,8 @@ def main():
             )
             for message in consumer:
                 item = json.loads((message.value).decode('utf-8'))
-                index = es.index(index='listing_index', doc_type='listing', id=item['product_id'], body=item)
+                index = es.index(index='listing_index',
+                                 id=item['product_id'], body=item)
                 es.indices.refresh(index="listing_index")
                 print(item)
                 print(index)
