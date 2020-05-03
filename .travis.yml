@@ -9,7 +9,7 @@ before_install:
 - docker pull elasticsearch:7.4.0
 - docker pull mysql:5.7
 - mkdir -p ~/cs4501/db
-- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:5.7
+- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD=$3cureUS -v ~/cs4501/db:/var/lib/mysql mysql:5.7
 - docker stop mysql
 - sleep 5
 - docker start mysql
