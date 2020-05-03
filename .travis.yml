@@ -2,6 +2,7 @@ language: python
 
 services:
   - docker
+  - mysql
 
 before_install:
 - docker pull tp33/django
