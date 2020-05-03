@@ -11,7 +11,7 @@ before_install:
 - docker pull spotify/kafka
 - docker pull elasticsearch:7.4.0
 - docker pull mysql:latest
-- mkdir ~/cs4501/db
+- mkdir -p ~/cs4501/db
 - docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:latest
 - docker run -i --name mysql-cmdline -d -e MYSQL_ROOT_PASSWORD='$3cureUS' --link mysql:db mysql:latest mysql -uroot -p'$3cureUS' -Bse "create user 'www' identified with mysql_native_password by '$3cureUS';create database cs4501 character set utf8;grant all on cs4501.* to 'www';\q"
 - docker stop mysql
