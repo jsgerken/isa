@@ -14,7 +14,9 @@ before_install:
 - docker stop mysql
 - docker start mysql
 - docker-compose up -d
+- docker-compose stop
 - docker network connect isa_backend mysql
+- docker-compose up -d
 
 script:
 - docker exec -it models python manage.py test
