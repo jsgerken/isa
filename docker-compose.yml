@@ -30,7 +30,12 @@ services:
       - "8002:8000"
     volumes:
       - ./services:/app
-    command: bash -c "python -u load_es_fixtures.py & mod_wsgi-express start-server --reload-on-changes ./services/wsgi.py && fg"
+    command:  
+    - /bin/bash
+    - -c
+    - |
+        python -u load_es_fixtures.py &
+        mod_wsgi-express start-server --reload-on-changes ./services/wsgi.py
 
   frontend:
     image: tp33/django
