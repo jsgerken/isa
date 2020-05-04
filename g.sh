@@ -1,4 +1,4 @@
 #!/bin/bash
-git add .travis.yml
+git add .
 git commit -m "Travis"
 git push
