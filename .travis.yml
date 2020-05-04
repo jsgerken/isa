@@ -6,11 +6,11 @@ services:
   - docker
 
 before_install:
-- docker pull mysql:5.7
+- docker pull mysql:latest
 - mkdir -p ~/cs4501/db
-- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:5.7
+- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:latest
 - sleep 20
-- docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:5.7 
+- docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:latest 
 - sleep 20
 - docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "create user 'www'@'%' identified by '$3cureUS';create database cs4501 character set utf8;grant all on *.* to 'www'@'%';\q" 
 - docker-compose up -d
