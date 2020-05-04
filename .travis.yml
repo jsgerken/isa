@@ -14,6 +14,7 @@ before_install:
 - sleep 20
 - docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' -e "create user 'www'@'%' identified by '$3cureUS';create database cs4501 character set utf8;grant all on *.* to 'www'@'%';\q" 2>/dev/null
 - sleep 20
+- docker logs mysql-cmdline
 - docker-compose up -d
 - docker network connect isa_backend mysql
 - docker ps 
