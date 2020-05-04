@@ -6,9 +6,6 @@ services:
   - docker
 
 before_install:
-# - docker pull tp33/django
-# - docker pull spotify/kafka
-# - docker pull elasticsearch:7.4.0
 - docker pull mysql:5.7
 - mkdir -p ~/cs4501/db
 - docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:5.7
@@ -20,4 +17,4 @@ before_install:
 - docker network connect isa_backend mysql
 
 script:
-- docker-compose run models python manage.py test
+- docker exec models python manage.py test
