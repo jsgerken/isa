@@ -56,14 +56,11 @@ DATABASES = {
         'USER': 'www',
         'PASSWORD': '$3cureUS',
         'HOST': 'db',
+        'TEST': {
+            'USER': 'root'
+        }
     }
 }
-
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase'
-    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
