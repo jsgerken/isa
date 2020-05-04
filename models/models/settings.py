@@ -1,5 +1,4 @@
 import os
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -53,7 +52,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cs4501',
-        'USER': 'root' if 'test' in sys.argv else 'www',
+        'USER': 'root',
         'PASSWORD': '$3cureUS',
         'HOST': 'db',
     }
