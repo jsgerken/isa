@@ -15,7 +15,12 @@ before_install:
 - sleep 20
 - docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:latest
 - sleep 20
-- docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "create user 'www'@'%' identified with mysql_native_password by '$3cureUS';create database cs4501 character set utf8;grant all on cs4501.* to 'www'@'%';" 
+- |
+  docker exec -i mysql-cmdline bash << EOF
+  mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "CREATE user 'www'@'%' IDENTIFIED WITH mysql_native_password BY '$3cureUS'" && \
+  mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "CREATE DATABASE cs4501 CHARACTER SET utf8" && \
+  mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "GRANT ALL ON cs4501.* TO 'www'@'%'"
+  EOF
 # - |
 #   create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
 #   create database cs4501 character set utf8;
