@@ -10,6 +10,3 @@ docker exec -i mysql mysql -uroot -p'$3cureUS' <<-EOF
     grant all on *.* to 'www'@'%';
 EOF
 sleep 20
-docker-compose up -d
-docker network connect isa_backend mysql
-docker ps

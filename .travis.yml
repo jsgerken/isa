@@ -10,4 +10,6 @@ before_script:
 - ./setup.sh
 
 script:
+- docker-compose up
+- docker network connect isa_backend mysql
 - docker exec models python manage.py test
