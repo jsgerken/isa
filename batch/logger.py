@@ -7,6 +7,11 @@ import os
 
 def main():
     print('Starting Logger Consumer Loop')
+    file_exist = os.path.isfile('viewLogs.csv')
+    if not file_exist:
+        with open('viewLogs.csv', 'w') as logfile:
+            csvwriter = csv.writer(logfile)
+            csvwriter.writerow(['user_id', 'product_id'])
     while True:
         try:
             consumer = KafkaConsumer(
@@ -15,14 +20,13 @@ def main():
                 consumer_timeout_ms=5000
             )
             for message in consumer:
-                file_exist = os.path.isfile('viewLogs.csv')
                 item = json.loads((message.value).decode('utf-8'))
                 print('Updating in logger for : ' + str(item))
                 # a means append to file
                 with open('viewLogs.csv', 'a') as logfile:
                     csvwriter = csv.writer(logfile)
-                    if not file_exist:
-                        csvwriter.writerow(['user_id', 'product_id'])
+                    # if not file_exist:
+                    # csvwriter.writerow(['user_id', 'product_id'])
                     csvwriter.writerow([item['user_id'], item['product_id']])
                 # sleep to wait for new logs
                 # time.sleep(5)
