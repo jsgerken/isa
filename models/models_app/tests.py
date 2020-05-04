@@ -43,9 +43,9 @@ class ProductTests(TestCase):
         response = self.client.get(reverse('get_prods'))
         self.assertContains(response, 'allProducts')
 
-    def test_get_product_pass(self):
-        response = self.client.get(reverse('get_prod', kwargs={'id': 1}))
-        self.assertContains(response, 'product_id')
+    # def test_get_product_pass(self):
+    #     response = self.client.get(reverse('get_prod', kwargs={'id': 1}))
+    #     self.assertContains(response, 'product_id')
 
     def test_get_product_fail(self):
         response = self.client.get(reverse('get_prod', kwargs={'id': 2}))
