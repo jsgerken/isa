@@ -23,7 +23,7 @@ def main():
         try:
             print('Attempting index Products into ES')
             es = Elasticsearch(['es'])
-            es.indices.delete(index='listing_index')
+            es.indices.delete(index='*')
             print("es listing_index data deleted succesfully")
             prods = fetch('http://models:8000/api/v1/products/')
             all_prods = prods['allProducts']
