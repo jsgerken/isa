@@ -9,6 +9,7 @@ create database cs4501 character set utf8;
 grant all on *.* to 'www'@'%';
 quit
 EOF
+exit
 sleep 20
 docker-compose up -d
 docker network connect isa_backend mysql
