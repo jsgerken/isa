@@ -33,7 +33,7 @@ class ProductTests(TestCase):
         Product.objects.create(
             type="Monitor",
             man_id=1,
-            name"Good Monitor",
+            name="Good Monitor",
             description="Hello",
             price=123,
             warranty="1 week"
