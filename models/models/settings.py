@@ -1,4 +1,5 @@
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -52,11 +53,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cs4501',
-        'USER': 'root',
+        'USER': 'www',
         'PASSWORD': '$3cureUS',
         'HOST': 'db',
     }
 }
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase'
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
