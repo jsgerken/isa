@@ -16,13 +16,8 @@ before_install:
 - docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:5.7 
 - sleep 20
 - docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "create user 'www'@'%' identified by '$3cureUS';create database cs4501 character set utf8;grant all on *.* to 'www'@'%';\q" 
-# - |
-#   create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
-#   create database cs4501 character set utf8;
-#   grant all on cs4501.* to 'www'@'%';
-#   EOF
-- docker logs mysql
-
-script:
 - docker-compose up -d
 - docker network connect isa_backend mysql
+
+script:
+- docker-compose run models python manage.py test
