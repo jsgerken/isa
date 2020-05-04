@@ -63,7 +63,7 @@ if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cs4501',
-        'USER': 'root'
+        'USER': 'root',
         'PASSWORD': '$3cureUS',
         'HOST': 'db',
     }
