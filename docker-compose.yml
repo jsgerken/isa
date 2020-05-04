@@ -93,23 +93,23 @@ services:
 
     volumes:
       - ./batch:/app
-  selenium-chrome:
-    image: selenium/standalone-chrome
-    container_name: selenium-chrome
-    networks:
-    - service_mesh
-    - public
-    ports:
-    - "4444:4444"
+  # selenium-chrome:
+  #   image: selenium/standalone-chrome
+  #   container_name: selenium-chrome
+  #   networks:
+  #   - service_mesh
+  #   - public
+  #   ports:
+  #   - "4444:4444"
 
-  selenium-test:
-    image: tp33/django
-    container_name: selenium-test
-    networks:
-    - service_mesh
-    volumes:
-    - ./selenium:/app
-    command: bash -c "pip install selenium && python selenium_tests.py"
+  # selenium-test:
+  #   image: tp33/django
+  #   container_name: selenium-test
+  #   networks:
+  #   - service_mesh
+  #   volumes:
+  #   - ./selenium:/app
+  #   command: bash -c "pip install selenium && python selenium_tests.py"
 
 networks:
   backend:
