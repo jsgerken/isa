@@ -19,7 +19,7 @@ before_install:
   docker exec -i mysql-cmdline bash << EOF
   mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "CREATE user 'www'@'%' IDENTIFIED WITH mysql_native_password BY '$3cureUS'" && \
   mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "CREATE DATABASE cs4501 CHARACTER SET utf8" && \
-  mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "GRANT ALL ON cs4501.* TO 'www'@'%'"
+  mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "GRANT ALL ON *.* TO 'www'@'%'"
   EOF
 # - |
 #   create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
@@ -29,7 +29,7 @@ before_install:
 - docker logs mysql
 
 script:
-- docker-compose up -d
+- dockr-compose up -d
 - docker-compose stop    
 - docker network connect isa_backend mysql
 - docker ps
