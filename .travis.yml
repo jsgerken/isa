@@ -17,10 +17,10 @@ before_install:
 - docker start mysql
 - sleep 5
 - docker exec -it mysql bash -c "mysql -uroot -l'$3cureUS' << EOF"
-- create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
-- create database cs4501 character set utf8;
-- grant all on cs4501.* to 'www'@'%';
-- EOF
+create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
+create database cs4501 character set utf8;
+grant all on cs4501.* to 'www'@'%';
+EOF
 - docker logs mysql
 
 script:
