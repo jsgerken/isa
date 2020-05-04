@@ -16,7 +16,7 @@ before_install:
 - sleep 10
 - docker-compose up -d
 - docker network connect isa_backend mysql
-- sleep 10
+- docker ps 
 
 script:
 - docker exec models python manage.py test
