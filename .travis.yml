@@ -9,13 +9,13 @@ before_install:
 # - docker pull tp33/django
 # - docker pull spotify/kafka
 # - docker pull elasticsearch:7.4.0
-- docker pull mysql:latest
+- docker pull mysql:5.7
 - mkdir -p ~/cs4501/db
-- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:latest
+- docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql mysql:5.7
 - sleep 20
-- docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:latest 
+- docker run --name mysql-cmdline --link mysql:db -d -e MYSQL_ROOT_PASSWORD='$3cureUS' mysql:5.7 
 - sleep 20
-- docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "create user 'www'@'%' identified with mysql_native_password by '$3cureUS';create database cs4501 character set utf8;grant all on *.* to 'www'@'%';\q" 
+- docker exec -i mysql-cmdline mysql -h db -P 3306 -uroot -p'$3cureUS' <<< "create user 'www'@'%' identified by '$3cureUS';create database cs4501 character set utf8;grant all on *.* to 'www'@'%';\q" 
 # - |
 #   create user 'www'@'%' identified with mysql_native_password by '$3cureUS';
 #   create database cs4501 character set utf8;
