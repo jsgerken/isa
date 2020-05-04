@@ -53,20 +53,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cs4501',
-        'USER': 'www',
+        'USER': 'root' if 'test' in sys.argv else 'www',
         'PASSWORD': '$3cureUS',
         'HOST': 'db',
     }
 }
-
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cs4501',
-        'USER': 'root',
-        'PASSWORD': '$3cureUS',
-        'HOST': 'db',
-    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
