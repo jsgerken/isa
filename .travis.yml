@@ -11,6 +11,8 @@ before_script:
 
 script:
 - docker ps
-- docker-compose up
+- docker-compose up -d
 - docker network connect isa_backend mysql
+- docker-compose down
+- docker-compose up
 - docker exec models python manage.py test
