@@ -13,6 +13,6 @@ script:
 - docker ps
 - docker-compose up -d
 - docker network connect isa_backend mysql
-- docker-compose down
+- docker-compose stop
 - docker-compose up
 - docker exec models python manage.py test
