@@ -3,59 +3,36 @@
 
 <body>
     {% if not error %}
-    <div class="container-full">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{%url 'home'%}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{resp_product.type}}</li>
-            </ol>
-        </nav>
-    </div>
-    <div class="container-fluid">
-        <!-- Portfolio Item Heading -->
-        <h2>{{resp_product.name}}</h2>
-        <h2 style="color: white; font-weight: bold">${{resp_product.price}}.00</h2>
-        <!-- Portfolio Item Row -->
-        <div class="row">
-            <div class="col-md-8">
-                <img class="img-fluid" src="{{resp_product.img_url}}" alt="" style="width:700px;height:450px;">
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+        <div class="card my-5 w-75 ">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <h2 style="color: black; font-weight: bold" class="card-title text-center">{{resp_product.name}}</h2>
+                <h2 style="color: black; font-weight: bold" class="text-center text-muted">${{resp_product.price}}.00</h2>
+                <img class="img-fluid align-self-center" src="{{resp_product.img_url}}" alt="" style="width:400px;height:250px;">
+                <h6 class="card-subtitle mb-2 text-muted">Product Details</h6>
+                <ul>
+                    {%for desp in resp_product.description%}
+                    <li>{{desp}}</li>
+                    {%endfor%}
+                </ul>
+                <h4 class="card-title">{{resp_man.man_name}}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Manufacturer Details</h6>
+                <ul>
+                    {%if resp_man.phone_num%}
+                    <li>Phone Number : {{resp_man.phone_num}}</li>
+                    {%endif%}
+                    {%if resp_man.web_url%}
+                    <li> Website : <a href="{{resp_man.web_url}}">{{resp_man.web_url}}</a> </li>
+                    {%endif%}
+                </ul>
             </div>
-            <div class=" col-md-4 m-0 card-deck">
-                <div class="card">
-                    <div class=" card-body">
-                        <h4 class="card-title">{{resp_product.name}}</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">Product Details</h6>
-                        <ul>
-                            {%for desp in resp_product.description%}
-                            <li>{{desp}}</li>
-                            {%endfor%}
-                        </ul>
-                        <h4 class="card-title">{{resp_man.man_name}}</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">Manufacturer Details</h6>
-                        <ul>
-                            {%if resp_man.phone_num%}
-                            <li>Phone Number : {{resp_man.phone_num}}</li>
-                            {%endif%}
-                            {%if resp_man.web_url%}
-                            <li> Website : <a href="{{resp_man.web_url}}">{{resp_man.web_url}}</a> </li>
-                            {%endif%}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
         </div>
-
-
-
     </div>
-
     {% else %}
     <div>
         <h2>No details for this product.</h2>
     </div>
     {% endif %}
-    
 </body>
 
 {% endblock base %}

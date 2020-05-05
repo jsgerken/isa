@@ -9,15 +9,100 @@ from django.utils.html import strip_tags
 from django.shortcuts import render
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from kafka import KafkaProducer
+from elasticsearch import Elasticsearch
+
+
+def fetch(url):
+    try:
+        req = urllib.request.Request(url)
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    except Exception as e:
+        return {
+            'error': 'Failed to fetch from ' + url,
+            'errReason': 'Message: ' + str(e)
+        }
+
+
+def es_index_fixtures(request):
+    # del_req = urllib.request.Request('http://es:9200/*', method='DELETE')
+    try:
+        es = Elasticsearch(['es'])
+        es.indices.delete(index='listing_index')
+        prods = fetch('http://models:8000/api/v1/products/')
+        all_prods = prods['allProducts']
+        producer = KafkaProducer(bootstrap_servers='kafka:9092')
+        for product in all_prods:
+            producer.send('new-listings-topic',
+                          json.dumps(product).encode('utf-8'))
+        producer.flush()
+        producer.close()
+        return JsonResponse({'status': 'good'})
+    except:
+        return JsonResponse({'status': 'bad'})
+    # return JsonResponse(json.loads(urllib.request.urlopen(del_req).read().decode('utf-8')))
+
+
+def get_all_es(request):
+    es = Elasticsearch(['es'])
+    es_results = es.search(index='listing_index', body={'query': {
+        'match_all': {}
+    },  'size': 1000})
+    results = []
+    resp = {
+        'results': results
+    }
+    return JsonResponse(es_results)
+
+
+@csrf_exempt
+def search(request):
+    es = Elasticsearch(['es'])
+    data = request.POST.dict()
+    query = data['query']
+    type = data['type']
+    if type == 'Most Popular':
+        es_results = es.search(
+            index='listing_index',
+            body={
+                'query': {
+                    'function_score': {
+                        'query': {
+                            'query_string': {
+                                'query': query + '*'
+                            }
+                        },
+                        'field_value_factor': {
+                            'field': 'views',
+                            'modifier': 'log1p',
+                            'missing': 0.1
+                        }
+                    }
+                }
+            }
+        )
+    else:
+        es_results = es.search(index='listing_index', body={
+            'query': {'query_string': {'query': query + '*'}}})
+    es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
+    results = []
+    for result in es_results['hits']['hits']:
+        results.append(result['_source'])
+    resp = {
+        'results': results
+    }
+    return JsonResponse(resp)
 
 
 def get_top_viewed(request):
-    req = urllib.request.Request('http://models:8000/api/v1/products/')
-    products_json = urllib.request.urlopen(req).read().decode('utf-8')
-    products_dict = json.loads(products_json)
-    products = products_dict['allProducts']
-    products.sort(key=lambda x: x['views'], reverse=True)
-    return JsonResponse({'products': products})
+    es = Elasticsearch(['es'])
+    es_results = es.search(index='listing_index', body={"size": 10, "query": {"function_score": {"query": {
+                           "match_all": {}}, "field_value_factor": {"field": "views", "modifier": "log1p", "missing": 0.1}}}})
+    products_only = []
+    # used to remove extra metadata that es returns
+    for product in es_results['hits']['hits']:
+        products_only.append(product['_source'])
+    return JsonResponse({'products': products_only})
 
 
 def test(request):
@@ -31,10 +116,12 @@ def newly_added(request):
     req = urllib.request.Request('http://models:8000/api/v1/products/')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp_array = json.loads(resp_json)['allProducts']
-    resp_sorted = sorted(resp_array, key=lambda i: i['datetime_created'])
+    resp_sorted = sorted(
+        resp_array, key=lambda i: i['datetime_created'], reverse=True)
     return JsonResponse({"newlyAddedSorted": resp_sorted})
 
 
+@csrf_exempt
 def product_details(request, id):
     req_product = urllib.request.Request(
         'http://models:8000/api/v1/products/' + str(id))
@@ -47,6 +134,30 @@ def product_details(request, id):
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     resp_product['description'] = resp_product['description'].split('|')
+    # add that this product was clicked to Kafka Q if it was by a user and not manufacturer
+    try:
+        if request.method == 'POST':
+            req_data = request.POST.dict()
+            get_user_id = req_data.get('user_id', False)
+            if not get_user_id:
+                raise Exception(
+                    "Cannot add because user_id was not found in post data")
+                # if here there was a user_id in data to add to Q
+            producer = KafkaProducer(bootstrap_servers='kafka:9092')
+            message = {
+                'user_id': int(get_user_id),
+                'product_id': resp_product['product_id']
+            }
+            producer.send('new-logs-topic',
+                          json.dumps(message).encode('utf-8'))
+            producer.flush()
+            producer.close()
+
+    except Exception as e:
+        print(
+            'error: In experience layer. Could not add to view to Kafka Q \n' +
+            'errReason:  DEV_MODE_MESSAGE: ' + str(e)
+        )
     return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
 
 
@@ -82,37 +193,33 @@ def get_man_from_product(request, product_id):
         req_man).read().decode('utf-8'))
     return JsonResponse(resp_man)
 
-# I wanted to do some redirection with the POST so that there was less code duplication
-# but HTTP does not like redirection of POST so I just grab data, encoded, and send
-# action can equal: "create", "login"
-
 
 def authAndListingHelper(request, action):
     try:
         if request.method == 'POST':
-            url = ""
+            url = ''
             req_data = request.POST.dict()
-            # data = urllib.parse.urlencode(req_data).encode()
             action = action.lower()
             if action == "create":
                 is_man = req_data.pop("is_man")
-                # if is_man is in the data, use it to decide between man and users. else, default to false
                 url = ("http://models:8000/api/v1/users/create/",
                        "http://models:8000/api/v1/manufacturers/create/")[is_man.lower() == 'true']
             elif action == 'login':
-                url = "http://models:8000/account/login"
+                url = 'http://models:8000/account/login'
             elif action == 'logout':
-                url = "http://models:8000/account/logout"
+                url = 'http://models:8000/account/logout'
             elif action == 'listing':
-                url = "http://models:8000/api/v1/products/create/"
-            # make sure that one of the above actions changed the url
+                url = 'http://models:8000/api/v1/products/create/'
+                producer = KafkaProducer(bootstrap_servers='kafka:9092')
             if url:
-                data = urllib.parse.urlencode(req_data).encode()
-                req = urllib.request.Request(url, data=data)
-                resp_json = json.loads(
-                    urllib.request.urlopen(req).read().decode('utf-8'))
-                # return JsonResponse(resp_json)
-                return resp_json
+                resp = post(req_data, url)
+                if action == 'listing':
+                    producer.send('new-listings-topic',
+                                  json.dumps(resp).encode('utf-8'))
+                    # producer.close(timeout=1000)
+                    producer.flush()
+                    producer.close()
+                return resp
             else:
                 # return JsonResponse({"error": "Incorrect action. Action must be: create, login, logout, listing"})
                 return {"error": "Incorrect action. Action must be: create, login, logout, listing"}
@@ -125,7 +232,7 @@ def authAndListingHelper(request, action):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
 
-# when you create an account ; we also call log in to give them an authenticator
+        # when you create an account ; we also call log in to give them an authenticator
 
 
 @csrf_exempt
@@ -212,8 +319,8 @@ def reset_password(request):
                     req_query['email'] = req_data.get('email')
                 req_resp = convert_and_call(
                     req_query, 'http://models:8000/api/v1/users/get-user-id/')
-            if 'error' in req_resp:
-                return JsonResponse(req_resp)
+                if 'error' in req_resp:
+                    return JsonResponse(req_resp)
             get_id = (req_resp.get('user_id'), req_resp.get('man_id'))[is_man]
             token_resp = convert_and_call(
                 {'authee_id': get_id, "create": "true", 'is_man': is_man}, 'http://models:8000/account/get-create-token/')
@@ -236,8 +343,9 @@ def reset_password(request):
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
 
+        # def send_email(request, authee_id, token_resp, url_pattern):
 
-# def send_email(request, authee_id, token_resp, url_pattern):
+
 def send_email(request, data):
     try:
         subject = "Oldn't Egg – Reset Password Link"
@@ -250,7 +358,7 @@ def send_email(request, data):
         send_mail(subject, plain_message, from_email,
                   [to], fail_silently=False, html_message=html_message)
         return {"code": "success", "message": "email sent successfully", 'emailTo': to}
-        # return render(request, 'reset_password_mail_template.html', {"url_email_pattern": url_email_pattern})
+    # return render(request, 'reset_password_mail_template.html', {"url_email_pattern": url_email_pattern})
     except Exception as e:
         return {
             'error': 'In experience layer. Double check param data for accepted fields and uniqueness and is_man is in data',
@@ -263,8 +371,6 @@ def reset_password_confirm(request):
     return JsonResponse(helperConfirmChangePassword(request, False))
 
 
-# # later think of a way to keep this method safe
-# # will be called to change password: double checks token and ID
 @csrf_exempt
 def change_password(request):
     return JsonResponse(helperConfirmChangePassword(request, True))
@@ -338,7 +444,13 @@ def convert_and_call(data, url):
         }
 
 
-# uid = force_text(urlsafe_base64_decode(uidb64))
-# django.utils.http
-    # urlsafe_base64_encode(s):
-    # urlsafe_base64_decode(s):
+def post(data, url):
+    try:
+        data = urllib.parse.urlencode(data).encode()
+        req = urllib.request.Request(url, data=data)
+        return json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    except Exception as e:
+        return {
+            'error': 'Failed to post to ' + url,
+            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        }

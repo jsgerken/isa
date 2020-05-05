@@ -28,10 +28,8 @@
             <a class="navbar-brand" href="{%url 'home'%}">
                 <h2 class="mt-1">Oldn't Egg</h2>
             </a>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-
-            </div>
-            <ul class="navbar-nav mr-auto" display: inline-flex>
+            <div class="collapse navbar-collapse" id="navbarResponsive"></div>
+            <ul class="navbar-nav mr-auto" >
                 {% if is_man %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{%url 'createListing'%}">Create Listing</a>
@@ -39,13 +37,21 @@
                 {% endif %}
                 {% if not is_man %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="users">Profile</a>
+                    <a class="nav-link" href="{%url 'userProfile'%}">Profile</a>
                 </li>
                 {% endif %}
                 <li class="nav-item active">
                     <a class="nav-link" href="/logout">Sign Out</a>
                 </li>
             </ul>
+            <form action="/search" method="post" class="form-inline text-center ml-auto">
+                <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
+                <select class="form-control mr-3" name="type">
+                    <option>Relevant</option>
+                    <option>Most Popular</option>
+                </select>
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+            </form>
         </div>
         </div>
     </nav>

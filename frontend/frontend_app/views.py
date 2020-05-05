@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -16,16 +17,31 @@ def home(request):
     top_dict = fetch('http://services:8000/api/v1/top/')
     new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
-    
     if request.get_signed_cookie('is_man', 'False') == 'True':
-        top_dict['is_man'] = 'True'
+        top_dict['is_man'] = True
     return render(request, 'home.html', top_dict)
+
+
+@csrf_exempt
+def search(request):
+    form_data = request.POST.dict()
+    resp = post(form_data, 'http://services:8000/api/v1/search/')
+    if request.get_signed_cookie('is_man', 'False') == 'True':
+        resp['is_man'] = True
+    return render(request, 'search.html', resp)
 
 
 def product_details(request, id):
     if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
-    product_dict = fetch('http://services:8000/api/v1/product-details/' + str(id))
+    post_data = {}
+    get_user_id = request.get_signed_cookie('user_id', False)
+    if get_user_id:
+        post_data = {'user_id': get_user_id}
+    product_dict = post(
+        post_data, 'http://services:8000/api/v1/product-details/' + str(id))
+    if request.get_signed_cookie('is_man', 'False') == 'True':
+        product_dict['is_man'] = True
     return render(request, 'frontend_app/product_details.html', product_dict)
 
 
@@ -63,6 +79,9 @@ def create_listing(request):
         form_data = form.cleaned_data
         form_data['man_id'] = request.get_signed_cookie('man_id')
         resp = post(form_data, 'http://services:8000/api/v1/create-new-listing')
+        # return JsonResponse(resp)
+        if 'error' in resp:
+            render(request, 'create_listing.html', {'form': form})
         return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
     else:
         if request.get_signed_cookie('is_man', 'False') == 'False':
@@ -197,6 +216,7 @@ def login(request):
 
         return response
     else:
+        # fix = fetch('http://services:8000/index-fixtures/')
         form = Login()
         return render(request, 'login.html', {'form': form})
 
@@ -250,4 +270,3 @@ def post(data, url):
             'error': 'Failed to post to ' + url,
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
-

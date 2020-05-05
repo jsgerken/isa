@@ -12,10 +12,10 @@ urlpatterns = [
     path('api/v1/login', views.login),
     path('api/v1/logout', views.logout),
     path('api/v1/create-new-listing', views.create_new_listing),
-    # path('api/v1/send-email', views.send_email),
     path('api/v1/reset-password/', views.reset_password),
     path('api/v1/reset-password-confirm/', views.reset_password_confirm),
-    path('api/v1/change-password/', views.change_password)
-
-
+    path('api/v1/change-password/', views.change_password),
+    path('api/v1/search/', views.search),
+    path('api/v1/get-all-es/', views.get_all_es),
+    path('index-fixtures/', views.es_index_fixtures)
 ]

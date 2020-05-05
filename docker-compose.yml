@@ -3,6 +3,8 @@ services:
   models:
     image: tp33/django
     container_name: models
+    environment: 
+      - TRAVIS
     external_links:
       - mysql:db
     volumes:
@@ -30,7 +32,12 @@ services:
       - "8002:8000"
     volumes:
       - ./services:/app
-    command: "mod_wsgi-express start-server --reload-on-changes ./services/wsgi.py"
+    command:  
+    - /bin/bash
+    - -c
+    - |
+        python -u load_es_fixtures.py &
+        mod_wsgi-express start-server --reload-on-changes ./services/wsgi.py
 
   frontend:
     image: tp33/django
@@ -42,9 +49,72 @@ services:
     volumes:
       - ./frontend:/app
     command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
       && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+
+  kafka:
+    image: spotify/kafka
+    container_name: kafka
+    networks:
+        - batch_network
+        - service_mesh
+    environment:
+        ADVERTISED_HOST: kafka
+        ADVERTISED_PORT: 9092
+    hostname: kafka
+    
+  es:
+    image: elasticsearch:7.4.0
+    container_name: es
+    environment:
+        - discovery.type=single-node
+    networks:
+        - service_mesh
+        - batch_network
+    ports:
+        - "9200:9200"
+  
+  batch:
+    image: tp33/django
+    container_name: batch
+    networks:
+        - batch_network
+    depends_on: 
+      - "es"
+      - "kafka"
+    restart: on-failure
+    command: 
+      - /bin/bash
+      - -c
+      - |
+          set -m
+          python -u logger.py &
+          python -u count_logs.py & 
+          python -u batch.py & 
+          wait $$!
+
+    volumes:
+      - ./batch:/app
+  # selenium-chrome:
+  #   image: selenium/standalone-chrome
+  #   container_name: selenium-chrome
+  #   networks:
+  #   - service_mesh
+  #   - public
+  #   ports:
+  #   - "4444:4444"
+
+  # selenium-test:
+  #   image: tp33/django
+  #   container_name: selenium-test
+  #   networks:
+  #   - service_mesh
+  #   volumes:
+  #   - ./selenium:/app
+  #   command: bash -c "pip install selenium && python selenium_tests.py"
 
 networks:
   backend:
   service_mesh:
   public:
+  batch_network:
