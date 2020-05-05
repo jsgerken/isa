@@ -57,41 +57,54 @@ def get_all_es(request):
 
 @csrf_exempt
 def search(request):
-    es = Elasticsearch(['es'])
-    data = request.POST.dict()
-    query = data['query']
-    type = data['type']
-    if type == 'Most Popular':
-        es_results = es.search(
-            index='listing_index',
-            body={
-                'query': {
-                    'function_score': {
-                        'query': {
-                            'query_string': {
-                                'query': query + '*'
+    try:
+        es = Elasticsearch(['es'])
+        data = request.POST.dict()
+        query = data['query']
+        type = data['type']
+        if type == 'Most Popular':
+            es_results = es.search(
+                index='listing_index',
+                body={
+                    'query': {
+                        'function_score': {
+                            'query': {
+                                'query_string': {
+                                    'query': query + '*',
+                                    'fields': ['type', 'name', 'description']
+                                },
+                            },
+                            'field_value_factor': {
+                                'field': 'views',
+                                'modifier': 'log1p',
+                                'missing': 0.1
                             }
-                        },
-                        'field_value_factor': {
-                            'field': 'views',
-                            'modifier': 'log1p',
-                            'missing': 0.1
                         }
                     }
                 }
-            }
-        )
-    else:
-        es_results = es.search(index='listing_index', body={
-            'query': {'query_string': {'query': query + '*'}}})
-    es_results['hits']['hits'].sort(key=lambda x: x['_score'], reverse=True)
-    results = []
-    for result in es_results['hits']['hits']:
-        results.append(result['_source'])
-    resp = {
-        'results': results
-    }
-    return JsonResponse(resp)
+            )
+        else:
+            es_results = es.search(index='listing_index', body={
+                'query': {'query_string':
+                          {'query': query + '*',
+                              'fields': ['type', 'name', 'description']
+                           }
+                          },
+            })
+        es_results['hits']['hits'].sort(
+            key=lambda x: x['_score'], reverse=True)
+        results = []
+        for result in es_results['hits']['hits']:
+            results.append(result['_source'])
+        resp = {
+            'results': results
+        }
+        return JsonResponse(resp)
+    except Exception as e:
+        return JsonResponse({
+            "error": 'Error in service layer search method',
+            'message': str(e)
+        })
 
 
 def get_top_viewed(request):
