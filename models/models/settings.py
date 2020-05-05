@@ -48,9 +48,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'models.wsgi.application'
-print(os.environ)
-print(type(os.environ.get('TRAVIS')))
-print(os.environ.get('TRAVIS') == 'true')
 if os.environ.get('TRAVIS') == 'true':
     DATABASES = {
         'default': {
