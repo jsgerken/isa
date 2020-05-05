@@ -65,7 +65,7 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'cs4501',
-            'USER': 'www',
+            'USER': 'root',
             'PASSWORD': '$3cureUS',
             'HOST': 'db',
         }
