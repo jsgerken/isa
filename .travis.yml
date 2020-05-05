@@ -15,4 +15,5 @@ script:
 - docker network connect isa_backend mysql
 - docker-compose stop
 - docker-compose up
+- docker exec models export USER="TRAVIS"
 - docker exec models python manage.py test
