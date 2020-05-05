@@ -7,7 +7,6 @@ services:
 
 before_script:
 - chmod +x setup.sh
-- ./setup.sh
 
 script:
 - docker ps
