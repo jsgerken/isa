@@ -15,4 +15,5 @@ script:
 - docker network connect isa_backend mysql
 - docker-compose stop
 - docker-compose up -d
+- sleep 45
 - docker exec models bash -c "python manage.py test"
