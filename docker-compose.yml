@@ -3,6 +3,8 @@ services:
   models:
     image: tp33/django
     container_name: models
+    environment: :
+      - TRAVIS
     external_links:
       - mysql:db
     volumes:
