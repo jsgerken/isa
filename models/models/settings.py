@@ -49,8 +49,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'models.wsgi.application'
 
-print(os.environ.get('USER'))
-if os.environ.get('USER') == 'TRAVIS':
+print(os.environ)
+if os.environ.get('USER') == 'TRAVIS' or os.environ.get('TRAVIS'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

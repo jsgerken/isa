@@ -5,6 +5,7 @@ services:
     container_name: models
     environment: 
       - TRAVIS
+      - USER
     external_links:
       - mysql:db
     volumes:
