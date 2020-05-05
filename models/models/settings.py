@@ -49,7 +49,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'models.wsgi.application'
 
-print(os.environ)
+print(os.environ.get('USER'))
 if os.environ.get('USER') == 'TRAVIS':
     DATABASES = {
         'default': {
