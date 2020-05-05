@@ -16,4 +16,5 @@ script:
 - docker-compose stop
 - docker-compose up -d
 - sleep 45
+- docker ps
 - docker exec models bash -c "python manage.py test"
