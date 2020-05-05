@@ -9,9 +9,6 @@ before_script:
 - chmod +x setup.sh
 - ./setup.sh
 
-env: 
-  global: 
-    - TRAVIS:true
 script:
 - docker ps
 - docker-compose up -d

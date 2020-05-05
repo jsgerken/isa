@@ -49,7 +49,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'models.wsgi.application'
 
-if os.getenv('TRAVIS', None):
+if os.getenv('TRAVIS', None) == 'true' or os.getenv('USER') == 'travis':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
