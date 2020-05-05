@@ -6,4 +6,5 @@ sleep 45
 docker exec -i mysql mysql -uroot -p'$3cureUS' -e "create user 'www'@'%' identified with mysql_native_password by '$3cureUS';"
 docker exec -i mysql mysql -uroot -p'$3cureUS' -e "create database cs4501 character set utf8;"
 docker exec -i mysql mysql -uroot -p'$3cureUS' -e "grant all on *.* to 'www'@'%';"
+docker exec -i mysql mysql -uroot -p'$3cureUS' -e "flush privileges;"
 sleep 20
