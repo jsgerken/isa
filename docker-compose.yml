@@ -3,8 +3,8 @@ services:
   models:
     image: tp33/django
     container_name: models
-    logging:
-      driver: "none"
+    # logging:
+    #   driver: "none"
     environment: 
       - TRAVIS
     external_links:
@@ -127,7 +127,7 @@ services:
     - service_mesh
     volumes:
     - ./selenium:/app
-    command: bash -c "pip install selenium && python selenium_tests.py"
+    command: bash -c "pip install selenium && pip install requests && python selenium_tests.py"
 
 networks:
   backend:

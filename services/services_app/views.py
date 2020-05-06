@@ -23,6 +23,9 @@ def fetch(url):
             'errReason': 'Message: ' + str(e)
         }
 
+def selenium(request):
+    fetch('http://models:8000/selenium')
+    return 'cleared selenium objects'
 
 def es_index_fixtures(request):
     # del_req = urllib.request.Request('http://es:9200/*', method='DELETE')

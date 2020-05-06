@@ -9,6 +9,14 @@ import os
 import hmac
 from django.conf import settings
 
+def selenium(request):
+    man = Manufacturer.objects.get(man_name='selenium_man')
+    man.delete()
+    user = User.objects.get(username='selenium')
+    user.delete()
+    prod = Product.objects.get(name='selenium')
+    prod.delete()
+    return JsonResponse({'status': 'cleared selenium test data'})
 
 def get_all_manufacturers(request):
     if request.method == 'GET':
