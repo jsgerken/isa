@@ -18,4 +18,4 @@ script:
 - sleep 45
 - docker ps
 - docker exec models bash -c "python manage.py test"
-- docker-compose run selenium-tests
+- docker-compose run selenium-test
