@@ -86,24 +86,28 @@ class PythonOrgSearch(unittest.TestCase):
     def test_search_relevant(self):
         self.login(False, 'selenium', 'selenium')
         self.relevant_search('corsair')
+        browser.implicitly_wait(7)
         result_title = self.driver.find_element_by_name('resultTitle')
         assert result_title.text == 'Search Results'
 
     def test_search_top(self):
         self.login(False, 'selenium', 'selenium')
         self.top_search('corsair')
+        browser.implicitly_wait(7)
         result_title = self.driver.find_element_by_name('resultTitle')
         assert result_title.text == 'Search Results'
 
     def test_search_relevant_none(self):
         self.login(False, 'selenium', 'selenium')
         self.relevant_search('notgonnafindthisnosir')
+        browser.implicitly_wait(7)
         result_title = self.driver.find_element_by_name('resultTitle')
         assert result_title.text == 'No Results Found'
 
     def test_search_top_none(self):
         self.login(False, 'selenium', 'selenium')
         self.top_search('notgonnafindthisnosir')
+        browser.implicitly_wait(7)
         result_title = self.driver.find_element_by_name('resultTitle')
         assert result_title.text == 'No Results Found'
 
@@ -117,6 +121,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.create_listing()
         self.driver.get('http://frontend:8000/home')
         self.relevant_search('selenium')
+        browser.implicitly_wait(7)
         assert self.driver.find_element_by_name('resultTitle').text == 'Search Results'
 
     def test_new_product_top_search(self):
@@ -124,6 +129,7 @@ class PythonOrgSearch(unittest.TestCase):
         self.create_listing()
         self.driver.get('http://frontend:8000/home')
         self.top_search('selenium')
+        browser.implicitly_wait(7)
         assert self.driver.find_element_by_name('resultTitle').text == 'Search Results'
         
     def tearDown(self):
