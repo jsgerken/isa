@@ -127,7 +127,6 @@ services:
     - service_mesh
     volumes:
     - ./selenium:/app
-    command: bash -c "pip install selenium && pip install requests && python selenium_tests.py"
 
 networks:
   backend:
