@@ -55,7 +55,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 90).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.ID, 'resultTitle')))
         print('Clicked relevant search, current url:', driver.current_url)
         return title
 
@@ -65,7 +65,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('popular').click()
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 90).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.ID, 'resultTitle')))
         print('Clicked relevant search, current url:', driver.current_url)
         return title
 
