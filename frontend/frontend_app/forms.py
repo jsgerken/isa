@@ -3,24 +3,35 @@ from django import forms
 
 class CreateListing(forms.Form):
     name = forms.CharField(max_length=200, widget=forms.TextInput(
-        attrs={'placeholder': 'Name:'}))
+        attrs={'placeholder': 'Intel Core i5-9600K'}))
     type = forms.CharField(max_length=50, widget=forms.TextInput(
-        attrs={'placeholder': 'Type:'}))
+        attrs={'placeholder': 'CPU'}))
     description = forms.CharField(max_length=2000, widget=forms.TextInput(
-        attrs={'placeholder': 'Description:'}))
+        attrs={'placeholder': '9th Gen Intel Processor|Intel UHD Graphics 630'}))
     price = forms.IntegerField(widget=forms.NumberInput(
-        attrs={'placeholder': 'Price:'}))
+        attrs={'placeholder': '300'}))
     warranty = forms.CharField(max_length=50, widget=forms.TextInput(
-        attrs={'placeholder': 'Warranty:'}))
-    img_url = forms.CharField(max_length=500, label="Image URL", widget=forms.TextInput(
-        attrs={'placeholder': 'Image URL:'}))
+        attrs={'placeholder': '60 days'}))
+    # img_url = forms.CharField(max_length=500, label="Image URL", widget=forms.TextInput(
+    #     attrs={'placeholder': 'REMEMBER TO REMOVE'}))
+    product_img = forms.ImageField(label="Product Image")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        get_image = cleaned_data.get('product_img')
+        # if the size of the image is greater than ~7 MB , throw error
+        if get_image.size > 7000000:
+            self.add_error('product_img', forms.ValidationError(
+                "Product Image must be less than 7.0 MB. Your image: " +
+                str(round(get_image.size/(1000000), 1)) + " MB"
+            ))
 
 
 class Login(forms.Form):
     username = forms.CharField(max_length=50, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'Username:'}))
+        attrs={'placeholder': 'Username'}))
     password = forms.CharField(max_length=50, label="", widget=forms.PasswordInput(
-        attrs={'placeholder': 'Password:'}))
+        attrs={'placeholder': 'Password'}))
     is_man = forms.BooleanField(
         required=False, label="I am logging in as a manufacturer")
 
@@ -44,15 +55,15 @@ class CreateManufacturer(forms.Form):
 
 class Profile(forms.Form):
     username = forms.CharField(max_length=50, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'Username:'}))
+        attrs={'placeholder': 'Username'}))
     email = forms.CharField(max_length=100, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'E-Mail:'}))
+        attrs={'placeholder': 'E-Mail'}))
     phone_number = forms.CharField(max_length=14, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'Phone Number:'}))
+        attrs={'placeholder': 'Phone Number'}))
     first_name = forms.CharField(max_length=30, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'First Name:'}))
+        attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(max_length=30, label="", widget=forms.TextInput(
-        attrs={'placeholder': 'Last Name:'}))
+        attrs={'placeholder': 'Last Name'}))
 
 
 class ForgotPassword(forms.Form):

@@ -2,13 +2,13 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile, ForgotPassword, ResetPassword
-
+from django import forms
 import urllib.request
 import urllib.parse
 import json
 import re
+import base64
 
 
 def home(request):
@@ -42,6 +42,7 @@ def product_details(request, id):
         post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
+    # return JsonResponse(product_dict)
     return render(request, 'frontend_app/product_details.html', product_dict)
 
 
@@ -72,22 +73,39 @@ def edit_user(request):
 
 
 def create_listing(request):
-    if request.method == 'POST':
-        form = CreateListing(request.POST)
-        if not form.is_valid():
-            return HttpResponseRedirect('/create-listing')
-        form_data = form.cleaned_data
-        form_data['man_id'] = request.get_signed_cookie('man_id')
-        resp = post(form_data, 'http://services:8000/api/v1/create-new-listing')
-        # return JsonResponse(resp)
-        if 'error' in resp:
-            render(request, 'create_listing.html', {'form': form})
-        return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
-    else:
-        if request.get_signed_cookie('is_man', 'False') == 'False':
-            return HttpResponseRedirect('/')
-        form = CreateListing()
-    return render(request, 'create_listing.html', {'form': form})
+    resp = None
+    try:
+        if request.method == 'POST':
+            form = CreateListing(request.POST, request.FILES)
+            if form.is_valid():
+                form_data = form.cleaned_data
+                # TO DO: check for 2.5MB size and then throw form error if it is
+                get_product_img = request.FILES['product_img'].file.getvalue()
+                # return JsonResponse({"no error": str(get_product_img), 'valid': form.is_valid()})
+                form_data['man_id'] = request.get_signed_cookie('man_id')
+                form_data['product_img'] = base64.b64encode(get_product_img)
+                resp = post(
+                    form_data, 'http://services:8000/api/v1/create-new-listing')
+                if 'error' in resp:
+                    # return JsonResponse(resp)
+                    # error checking for Will to implement
+                    form.add_error(None, forms.ValidationError(
+                        "Failed to submit listing. Please try again."))
+                    return render(request, 'create_listing.html', {'form': form})
+                else:
+                    return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
+            else:
+                return render(request, 'create_listing.html', {'form': form})
+        else:
+            if request.get_signed_cookie('is_man', 'False') == 'False':
+                return HttpResponseRedirect('/')
+            form = CreateListing()
+            return render(request, 'create_listing.html', {'form': form})
+    except Exception as e:
+        return JsonResponse({
+            'error': "error in create Listing " + str(e),
+            'errorJSON': resp
+        })
 
 
 def create_man(request):
@@ -140,10 +158,12 @@ def forgot_password(request):
             if 'error' in req_resp:
                 error_string = "There seems to be a problem with this email/username. Please double check spelling."
                 return render(request, 'forgot_password.html', {'form': form, 'error': error_string})
-            # lets users know that email was sent succesfully
-            regex_asterisk = r'(?!^).(?=[^@]+@)'
-            email_asterisk = re.sub(regex_asterisk, '*', req_resp['emailTo'])
-            return render(request, 'password_reset_done.html', {'emailTo': email_asterisk})
+            else:
+                # lets users know that email was sent succesfully
+                regex_asterisk = r'(?!^).(?=[^@]+@)'
+                email_asterisk = re.sub(
+                    regex_asterisk, '*', req_resp['emailTo'])
+                return render(request, 'password_reset_done.html', {'emailTo': email_asterisk})
         # else:
         #     return JsonResponse({'errors': form.errors})
     else:

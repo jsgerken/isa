@@ -8,7 +8,17 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 import hmac
 from django.conf import settings
+from django.core.files.base import ContentFile
+import base64
 
+def selenium(request):
+    man = Manufacturer.objects.get(man_name='selenium_man')
+    man.delete()
+    user = User.objects.get(username='selenium')
+    user.delete()
+    prod = Product.objects.get(name='selenium')
+    prod.delete()
+    return JsonResponse({'status': 'cleared selenium test data'})
 
 def get_all_manufacturers(request):
     if request.method == 'GET':
@@ -143,63 +153,6 @@ def get_or_update_product(request, id):
         return JsonResponse(error_object)
 
 
-# def get_or_update_user(request, id):
-    # if request.method == 'GET':
-    #     try:
-
-    #         user = User.objects.get(user_id=id)
-    #         user_object = {}
-    #         user_object['user_id'] = user.user_id
-    #         user_object['first_name']= user.first_name
-    #         user_object['last_name']= user.last_name
-    #         user_object['phone_number']= user.phone_number
-    #         user_object['username']= user.username
-    #         return JsonResponse(user_object)
-    #     except ObjectDoesNotExist:
-    #         error_object = {
-    #             'error': 'Get failed: user with user_id ' + str(id) + ' does not exist'
-    #         }
-    #         return JsonResponse(error_object)
-    #     except Exception as e:  # for development purpose. can remove exception as e in production
-    #         return JsonResponse({
-    #             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
-    #             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
-    #         })
-    # elif request.method == 'POST':
-    #     try:
-    #         user = User.objects.get(user_id=id)
-    #         user.email = request.POST.__getitem__('email')
-    #        # user.man_id = request.POST.__getitem__('man_id')
-    #         user.first_name = request.POST.__getitem__('first_name')
-    #         user.last_name = request.POST.__getitem__('last_name')
-    #         user.phone_number = request.POST.__getitem__('phone_number')
-    #         user.username = request.POST.__getitem__('username')
-    #         user.save()
-    #         updated_prod = {
-    #             'user_id': user.user_id,
-    #             'first_name': user.first_name,
-    #             'last_name': user.last_name,
-    #             'phone_number': user.phone_number,
-    #             'username': user.username,
-    #         }
-    #         return JsonResponse(updated_prod)
-    #     except ObjectDoesNotExist:
-    #         error_object = {
-    #             'error': 'Update failed: user with user_id ' + str(id) + ' does not exist'
-    #         }
-    #         return JsonResponse(error_object)
-    #     except MultiValueDictKeyError:
-    #         error_object = {
-    #             'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to update a user'
-    #         }
-    #         return JsonResponse(error_object)
-    # else:
-    #     error_object = {
-    #         'error': 'HTTP method error: user endpoint expects a GET or POST request'
-    #     }
-    #     return JsonResponse(error_object)
-
-
 def delete_manufacturer(request, id):
     if request.method == 'DELETE':
         try:
@@ -282,9 +235,22 @@ def create_product(request):
     try:
         if request.method == 'POST':
             new_values = request.POST.dict()
+            # decode bytes from uploaded img
+            convert_bytes_to_file = ContentFile(
+                base64.b64decode(new_values.pop('product_img')))
             product = Product(**new_values)
             product.save()
+            # create image name
+            file_name = new_values['name'] + " " + \
+                new_values['type'] + " " + str(product.pk) + '.png'
+            # save the file to s3
+            product.product_img.save(file_name, convert_bytes_to_file)
+            # grab the url now so we dont have to open the file later
+            product.img_url = product.product_img.url
+            product.save()
             new_values[product._meta.pk.name] = product.pk
+            new_values['product_img'] = product.product_img.name
+            new_values['img_url'] = product.product_img.url
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -292,13 +258,13 @@ def create_product(request):
             })
     except MultiValueDictKeyError:
         error_object = {
-            'error': 'Create failed: you must provide type, man_id, name, description, price, and warranty in your POST body to create a product'
+            'error': 'Create failed: you must provide type, man_id, name, description, price, warranty, and product_img in your POST body to create a product'
         }
         return JsonResponse(error_object)
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and img_url',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and product_img',
+            'errReason':  'In Create Product – DEV_MODE_MESSAGE: ' + str(e)
         }
         )
 
