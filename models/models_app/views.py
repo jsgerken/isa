@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 import hmac
 from django.conf import settings
+from django.core.files.base import ContentFile
+import base64
 
 
 def get_all_manufacturers(request):
@@ -282,9 +284,18 @@ def create_product(request):
     try:
         if request.method == 'POST':
             new_values = request.POST.dict()
+            decode = base64.b64decode(new_values.pop('product_img'))
+            convert_bytes_to_file = ContentFile(decode)
+            new_values['product_img'] = ''
+            # return JsonResponse({'newvals': str(new_values)})
             product = Product(**new_values)
             product.save()
+            file_name = new_values['name'] + " " + \
+                new_values['type'] + " " + str(product.pk) + '.png'
+            product.product_img.save(file_name, convert_bytes_to_file)
             new_values[product._meta.pk.name] = product.pk
+            # later change to pop at the beginning and you just save manually
+            new_values.pop('product_img')
             return JsonResponse(new_values)
         else:
             return JsonResponse({

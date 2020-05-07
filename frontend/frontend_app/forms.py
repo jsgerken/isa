@@ -13,7 +13,8 @@ class CreateListing(forms.Form):
     warranty = forms.CharField(max_length=50, widget=forms.TextInput(
         attrs={'placeholder': 'Warranty:'}))
     img_url = forms.CharField(max_length=500, label="Image URL", widget=forms.TextInput(
-        attrs={'placeholder': 'Image URL:'}))
+        attrs={'placeholder': 'REMEMBER TO REMOVE'}))
+    product_img = forms.ImageField(label="Upload Product Image")
 
 
 class Login(forms.Form):

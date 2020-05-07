@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from kafka import KafkaProducer
 from elasticsearch import Elasticsearch
+import base64
 
 
 def fetch(url):
@@ -223,10 +224,13 @@ def authAndListingHelper(request, action):
                 url = 'http://models:8000/account/logout'
             elif action == 'listing':
                 url = 'http://models:8000/api/v1/products/create/'
-                producer = KafkaProducer(bootstrap_servers='kafka:9092')
+                decode = base64.b64decode(req_data['product_img'])
+                # req_data['product_img'] = decode
+                # return {"service": decode}
             if url:
                 resp = post(req_data, url)
                 if action == 'listing':
+                    producer = KafkaProducer(bootstrap_servers='kafka:9092')
                     producer.send('new-listings-topic',
                                   json.dumps(resp).encode('utf-8'))
                     # producer.close(timeout=1000)

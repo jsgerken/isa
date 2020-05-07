@@ -31,6 +31,7 @@ class Product(models.Model):
     price = models.IntegerField()
     warranty = models.CharField(max_length=50)
     img_url = models.CharField(max_length=500)
+    product_img = models.FileField(upload_to='testing/')
     datetime_modified = models.DateTimeField(auto_now=True)
     datetime_created = models.DateTimeField(auto_now_add=True)
 
