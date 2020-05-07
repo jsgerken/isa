@@ -12,9 +12,19 @@ class CreateListing(forms.Form):
         attrs={'placeholder': 'Price:'}))
     warranty = forms.CharField(max_length=50, widget=forms.TextInput(
         attrs={'placeholder': 'Warranty:'}))
-    img_url = forms.CharField(max_length=500, label="Image URL", widget=forms.TextInput(
-        attrs={'placeholder': 'REMEMBER TO REMOVE'}))
-    product_img = forms.ImageField(label="Upload Product Image")
+    # img_url = forms.CharField(max_length=500, label="Image URL", widget=forms.TextInput(
+    #     attrs={'placeholder': 'REMEMBER TO REMOVE'}))
+    product_img = forms.ImageField(label="Product Image")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        get_image = cleaned_data.get('product_img')
+        # if the size of the image is greater than ~7 MB , throw error
+        if get_image.size > 7000000:
+            raise forms.ValidationError(
+                "Product Image must be less than 7 MB. Your image: " +
+                str(round(get_image.size/(1000000), 1)) + " MB"
+            )
 
 
 class Login(forms.Form):

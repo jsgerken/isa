@@ -227,15 +227,22 @@ def create_product(request):
     try:
         if request.method == 'POST':
             new_values = request.POST.dict()
-            convert_bytes_to_file = ContentFile(base64.b64decode(new_values.pop('product_img')))
-            #let field be blank to start
-            new_values['product_img'] = ''
+            # let field be blank to start
+            # new_values['product_img'] = ''
             # return JsonResponse({'newvals': str(new_values)})
+            # decode bytes from uploaded img
+            convert_bytes_to_file = ContentFile(
+                base64.b64decode(new_values.pop('product_img')))
             product = Product(**new_values)
             product.save()
+            # create image name
             file_name = new_values['name'] + " " + \
                 new_values['type'] + " " + str(product.pk) + '.png'
+            # save the file to s3
             product.product_img.save(file_name, convert_bytes_to_file)
+            # grab the url now so we dont have to open the file later
+            product.img_url = product.product_img.url
+            product.save()
             new_values[product._meta.pk.name] = product.pk
             new_values['product_img'] = product.product_img.url
             return JsonResponse(new_values)
@@ -251,7 +258,7 @@ def create_product(request):
     except Exception as e:
         return JsonResponse({
             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and img_url',
-            'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+            'errReason':  'In Create Product – DEV_MODE_MESSAGE: ' + str(e)
         }
         )
 

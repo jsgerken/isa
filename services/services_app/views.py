@@ -229,7 +229,7 @@ def authAndListingHelper(request, action):
                 # return {"service": decode}
             if url:
                 resp = post(req_data, url)
-                if action == 'listing':
+                if action == 'listing' and 'error' not in resp:
                     producer = KafkaProducer(bootstrap_servers='kafka:9092')
                     producer.send('new-listings-topic',
                                   json.dumps(resp).encode('utf-8'))

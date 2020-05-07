@@ -42,7 +42,7 @@ def product_details(request, id):
         post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
-    return JsonResponse(product_dict)
+    # return JsonResponse(product_dict)
     return render(request, 'frontend_app/product_details.html', product_dict)
 
 
@@ -73,23 +73,27 @@ def edit_user(request):
 
 
 def create_listing(request):
+    resp = None
     try:
         if request.method == 'POST':
             form = CreateListing(request.POST, request.FILES)
-            if not form.is_valid():
-                return HttpResponseRedirect('/create-listing')
-            form_data = form.cleaned_data
-            # TO DO: check for 2.5MB size and then throw form error if it is
-            get_product_img = request.FILES['product_img'].file.getvalue()
-            form_data['man_id'] = request.get_signed_cookie('man_id')
-            form_data['product_img'] = base64.b64encode(get_product_img)
-            # return JsonResponse({"frontend": str(form_data)})
-            resp = post(
-                form_data, 'http://services:8000/api/v1/create-new-listing')
-            return JsonResponse(resp)
-            if 'error' in resp:
+            if form.is_valid():
+                form_data = form.cleaned_data
+                # TO DO: check for 2.5MB size and then throw form error if it is
+                get_product_img = request.FILES['product_img'].file.getvalue()
+                # return JsonResponse({"no error": str(get_product_img), 'valid': form.is_valid()})
+                form_data['man_id'] = request.get_signed_cookie('man_id')
+                form_data['product_img'] = base64.b64encode(get_product_img)
+                resp = post(
+                    form_data, 'http://services:8000/api/v1/create-new-listing')
+                if 'error' in resp:
+                    return JsonResponse(resp)
+                    # error checking for will to implement
+                    render(request, 'create_listing.html', {'form': form})
+                else:
+                    return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
+            else:
                 render(request, 'create_listing.html', {'form': form})
-            return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
         else:
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')
@@ -97,7 +101,8 @@ def create_listing(request):
         return render(request, 'create_listing.html', {'form': form})
     except Exception as e:
         return JsonResponse({
-            'errorExcept': str(e)
+            'error': "error in create Listing " + str(e),
+            'errorJSON': resp
         })
 
 
@@ -151,10 +156,12 @@ def forgot_password(request):
             if 'error' in req_resp:
                 error_string = "There seems to be a problem with this email/username. Please double check spelling."
                 return render(request, 'forgot_password.html', {'form': form, 'error': error_string})
-            # lets users know that email was sent succesfully
-            regex_asterisk = r'(?!^).(?=[^@]+@)'
-            email_asterisk = re.sub(regex_asterisk, '*', req_resp['emailTo'])
-            return render(request, 'password_reset_done.html', {'emailTo': email_asterisk})
+            else:
+                # lets users know that email was sent succesfully
+                regex_asterisk = r'(?!^).(?=[^@]+@)'
+                email_asterisk = re.sub(
+                    regex_asterisk, '*', req_resp['emailTo'])
+                return render(request, 'password_reset_done.html', {'emailTo': email_asterisk})
         # else:
         #     return JsonResponse({'errors': form.errors})
     else:
