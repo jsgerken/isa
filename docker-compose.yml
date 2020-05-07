@@ -1,5 +1,14 @@
 version: "3"
 services:
+  haproxy:
+    image: isa-haproxy
+    container_name: haproxy
+    ports:
+      - 80:80
+    networks:
+      - public
+      - service_mesh
+    
   models:
     image: tp33/django
     container_name: models
@@ -47,12 +56,36 @@ services:
   frontend:
     image: tp33/django
     container_name: frontend
-    logging:
-      driver: "none"
     networks:
       - public
     ports:
       - "8000:8000"
+    volumes:
+      - ./frontend:/app
+    command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
+      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+
+  frontend1:
+    image: tp33/django
+    container_name: frontend1
+    networks:
+      - public
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./frontend:/app
+    command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
+      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+
+  frontend2:
+    image: tp33/django
+    container_name: frontend2
+    networks:
+      - public
+    ports:
+      - "8005:8000"
     volumes:
       - ./frontend:/app
     command: bash -c "pip install whitenoise
@@ -111,6 +144,8 @@ services:
 
   selenium-chrome:
     image: selenium/standalone-chrome
+    logging:
+      driver: "none"
     container_name: selenium-chrome
     volumes:
       - /dev/shm:/dev/shm
