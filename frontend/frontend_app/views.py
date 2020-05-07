@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile, ForgotPassword, ResetPassword
-
+from django import forms
 import urllib.request
 import urllib.parse
 import json
@@ -87,13 +87,15 @@ def create_listing(request):
                 resp = post(
                     form_data, 'http://services:8000/api/v1/create-new-listing')
                 if 'error' in resp:
-                    return JsonResponse(resp)
-                    # error checking for will to implement
-                    render(request, 'create_listing.html', {'form': form})
+                    # return JsonResponse(resp)
+                    # error checking for Will to implement
+                    form.add_error(None, forms.ValidationError(
+                        "Failed to submit listing. Please try again."))
+                    return render(request, 'create_listing.html', {'form': form})
                 else:
                     return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
             else:
-                render(request, 'create_listing.html', {'form': form})
+                return render(request, 'create_listing.html', {'form': form})
         else:
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')

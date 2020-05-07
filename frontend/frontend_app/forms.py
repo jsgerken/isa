@@ -21,10 +21,10 @@ class CreateListing(forms.Form):
         get_image = cleaned_data.get('product_img')
         # if the size of the image is greater than ~7 MB , throw error
         if get_image.size > 7000000:
-            raise forms.ValidationError(
-                "Product Image must be less than 7 MB. Your image: " +
+            self.add_error('product_img', forms.ValidationError(
+                "Product Image must be less than 7.0 MB. Your image: " +
                 str(round(get_image.size/(1000000), 1)) + " MB"
-            )
+            ))
 
 
 class Login(forms.Form):
