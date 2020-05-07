@@ -6,6 +6,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 class PythonOrgSearch(unittest.TestCase):
 
@@ -55,6 +56,9 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('query').send_keys(query)
         driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
+        title = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        return title
+
 
     def top_search(self, query):
         driver = self.driver
@@ -62,6 +66,8 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('popular').click()
         driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
+        title = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        return title
 
     def create_listing(self):
         driver = self.driver
@@ -88,30 +94,22 @@ class PythonOrgSearch(unittest.TestCase):
 
     def test_search_relevant(self):
         self.login(False, 'selenium', 'selenium')
-        self.relevant_search('corsair')
-        self.driver.implicitly_wait(7)
-        result_title = self.driver.find_element_by_name('resultTitle')
+        result_title = self.relevant_search('corsair')
         assert result_title.text == 'Search Results'
 
     def test_search_top(self):
         self.login(False, 'selenium', 'selenium')
-        self.top_search('corsair')
-        self.driver.implicitly_wait(7)
-        result_title = self.driver.find_element_by_name('resultTitle')
+        result_title = self.top_search('corsair')
         assert result_title.text == 'Search Results'
 
     def test_search_relevant_none(self):
         self.login(False, 'selenium', 'selenium')
-        self.relevant_search('notgonnafindthisnosir')
-        self.driver.implicitly_wait(7)
-        result_title = self.driver.find_element_by_name('resultTitle')
+        result_title = self.relevant_search('notgonnafindthisnosir')
         assert result_title.text == 'No Results Found'
 
     def test_search_top_none(self):
         self.login(False, 'selenium', 'selenium')
-        self.top_search('notgonnafindthisnosir')
-        self.driver.implicitly_wait(7)
-        result_title = self.driver.find_element_by_name('resultTitle')
+        result_title = self.top_search('notgonnafindthisnosir')
         assert result_title.text == 'No Results Found'
 
     def test_product_details(self):
@@ -123,18 +121,16 @@ class PythonOrgSearch(unittest.TestCase):
         self.login(True, 'selenium_man', 'selenium_man')
         self.create_listing()
         self.driver.get('http://frontend:8000/home')
-        self.relevant_search('selenium')
-        self.driver.implicitly_wait(7)
-        assert self.driver.find_element_by_name('resultTitle').text == 'Search Results'
+        result_title = self.relevant_search('selenium')
+        assert result_title.text == 'Search Results'
 
     def test_new_product_top_search(self):
         self.login(True, 'selenium_man', 'selenium_man')
         self.create_listing()
         self.driver.get('http://frontend:8000/home')
-        self.top_search('selenium')
-        self.driver.implicitly_wait(7)
-        assert self.driver.find_element_by_name('resultTitle').text == 'Search Results'
-        
+        result_title = self.top_search('selenium')
+        assert result_title.text == 'Search Results'
+
     def tearDown(self):
         requests.get('http://services:8000/selenium')
         self.driver.close()

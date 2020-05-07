@@ -5,7 +5,7 @@
 <body>
     <div class="container my-4">
         {% if results %}
-        <h1 name="resultTitle" class="text-center">Search Results</h1>
+        <h1 id="resultTitle" name="resultTitle" class="text-center">Search Results</h1>
         <div class="row d-flex justify-content-center">
             {% for result in results %}
             <div class="card my-2 w-75">
@@ -28,7 +28,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <h1 name="resultTitle" class="text-center">No Results Found</h1>
+        <h1 id="resultTitle" name="resultTitle" class="text-center">No Results Found</h1>
         {% endif %}
     </div>
 </body>
