@@ -56,7 +56,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('searchButton').click()
         print('Clicked relevant search, current url:', driver.current_url)
-        title = WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 90).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
 
@@ -66,7 +66,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('popular').click()
         driver.find_element_by_name('searchButton').click()
         print('Clicked relevant search, current url:', driver.current_url)
-        title = WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 90).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
     def create_listing(self):
@@ -110,14 +110,14 @@ class PythonOrgSearch(unittest.TestCase):
         if not self.login(False, 'selenium', 'selenium'):
             assert False
         self.driver.implicitly_wait(10)
-        result_title = self.relevant_search('notgonnafindthisnosir')
+        result_title = self.relevant_search('pear')
         assert result_title.text == 'No Results Found'
 
     def test_search_top_none(self):
         if not self.login(False, 'selenium', 'selenium'):
             assert False
         self.driver.implicitly_wait(10)
-        result_title = self.top_search('notgonnafindthisnosir')
+        result_title = self.top_search('pear')
         assert result_title.text == 'No Results Found'
 
     def test_product_details(self):
