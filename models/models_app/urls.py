@@ -24,6 +24,8 @@ urlpatterns = [
     path('account/login', views.login),
     path('account/logout', views.logout),
     path('account/get-create-token/', views.get_or_create_token),
-    path('account/change-password/', views.change_password)
+    path('account/change-password/', views.change_password),
+
+    path('selenium', views.selenium)
 
 ]

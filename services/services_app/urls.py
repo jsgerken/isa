@@ -17,5 +17,6 @@ urlpatterns = [
     path('api/v1/change-password/', views.change_password),
     path('api/v1/search/', views.search),
     path('api/v1/get-all-es/', views.get_all_es),
-    path('index-fixtures/', views.es_index_fixtures)
+    path('index-fixtures/', views.es_index_fixtures),
+    path('selenium', views.selenium)
 ]
