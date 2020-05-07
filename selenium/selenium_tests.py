@@ -54,9 +54,8 @@ class PythonOrgSearch(unittest.TestCase):
     def relevant_search(self, query):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
-        driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
 
@@ -64,9 +63,8 @@ class PythonOrgSearch(unittest.TestCase):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('popular').click()
-        driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
     def create_listing(self):
@@ -136,5 +134,4 @@ class PythonOrgSearch(unittest.TestCase):
         self.driver.close()
 
 if __name__ == "__main__":
-    # time.sleep(30)
     unittest.main()
