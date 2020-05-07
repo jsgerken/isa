@@ -227,9 +227,6 @@ def create_product(request):
     try:
         if request.method == 'POST':
             new_values = request.POST.dict()
-            # let field be blank to start
-            # new_values['product_img'] = ''
-            # return JsonResponse({'newvals': str(new_values)})
             # decode bytes from uploaded img
             convert_bytes_to_file = ContentFile(
                 base64.b64decode(new_values.pop('product_img')))
@@ -244,7 +241,8 @@ def create_product(request):
             product.img_url = product.product_img.url
             product.save()
             new_values[product._meta.pk.name] = product.pk
-            new_values['product_img'] = product.product_img.url
+            new_values['product_img'] = product.product_img.name
+            new_values['img_url'] = product.product_img.url
             return JsonResponse(new_values)
         else:
             return JsonResponse({
@@ -252,12 +250,12 @@ def create_product(request):
             })
     except MultiValueDictKeyError:
         error_object = {
-            'error': 'Create failed: you must provide type, man_id, name, description, price, and warranty in your POST body to create a product'
+            'error': 'Create failed: you must provide type, man_id, name, description, price, warranty, and product_img in your POST body to create a product'
         }
         return JsonResponse(error_object)
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and img_url',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: type, man_id, name, description, price, warranty, and product_img',
             'errReason':  'In Create Product – DEV_MODE_MESSAGE: ' + str(e)
         }
         )

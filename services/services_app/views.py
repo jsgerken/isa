@@ -224,8 +224,6 @@ def authAndListingHelper(request, action):
                 url = 'http://models:8000/account/logout'
             elif action == 'listing':
                 url = 'http://models:8000/api/v1/products/create/'
-                decode = base64.b64decode(req_data['product_img'])
-                # req_data['product_img'] = decode
                 # return {"service": decode}
             if url:
                 resp = post(req_data, url)

@@ -98,7 +98,7 @@ def create_listing(request):
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')
             form = CreateListing()
-        return render(request, 'create_listing.html', {'form': form})
+            return render(request, 'create_listing.html', {'form': form})
     except Exception as e:
         return JsonResponse({
             'error': "error in create Listing " + str(e),
