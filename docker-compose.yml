@@ -162,8 +162,9 @@ services:
 
   selenium-test:
     image: tp33/django
-   logging:
-      driver: "none" container_name: selenium-test
+    logging:
+      driver: "none" 
+    container_name: selenium-test
     networks:
     - service_mesh
     volumes:
