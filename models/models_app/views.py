@@ -145,63 +145,6 @@ def get_or_update_product(request, id):
         return JsonResponse(error_object)
 
 
-# def get_or_update_user(request, id):
-    # if request.method == 'GET':
-    #     try:
-
-    #         user = User.objects.get(user_id=id)
-    #         user_object = {}
-    #         user_object['user_id'] = user.user_id
-    #         user_object['first_name']= user.first_name
-    #         user_object['last_name']= user.last_name
-    #         user_object['phone_number']= user.phone_number
-    #         user_object['username']= user.username
-    #         return JsonResponse(user_object)
-    #     except ObjectDoesNotExist:
-    #         error_object = {
-    #             'error': 'Get failed: user with user_id ' + str(id) + ' does not exist'
-    #         }
-    #         return JsonResponse(error_object)
-    #     except Exception as e:  # for development purpose. can remove exception as e in production
-    #         return JsonResponse({
-    #             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
-    #             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
-    #         })
-    # elif request.method == 'POST':
-    #     try:
-    #         user = User.objects.get(user_id=id)
-    #         user.email = request.POST.__getitem__('email')
-    #        # user.man_id = request.POST.__getitem__('man_id')
-    #         user.first_name = request.POST.__getitem__('first_name')
-    #         user.last_name = request.POST.__getitem__('last_name')
-    #         user.phone_number = request.POST.__getitem__('phone_number')
-    #         user.username = request.POST.__getitem__('username')
-    #         user.save()
-    #         updated_prod = {
-    #             'user_id': user.user_id,
-    #             'first_name': user.first_name,
-    #             'last_name': user.last_name,
-    #             'phone_number': user.phone_number,
-    #             'username': user.username,
-    #         }
-    #         return JsonResponse(updated_prod)
-    #     except ObjectDoesNotExist:
-    #         error_object = {
-    #             'error': 'Update failed: user with user_id ' + str(id) + ' does not exist'
-    #         }
-    #         return JsonResponse(error_object)
-    #     except MultiValueDictKeyError:
-    #         error_object = {
-    #             'error': 'Update failed: you must provide type, man_id, name, description, price, and warranty in your POST body to update a user'
-    #         }
-    #         return JsonResponse(error_object)
-    # else:
-    #     error_object = {
-    #         'error': 'HTTP method error: user endpoint expects a GET or POST request'
-    #     }
-    #     return JsonResponse(error_object)
-
-
 def delete_manufacturer(request, id):
     if request.method == 'DELETE':
         try:
@@ -284,8 +227,8 @@ def create_product(request):
     try:
         if request.method == 'POST':
             new_values = request.POST.dict()
-            decode = base64.b64decode(new_values.pop('product_img'))
-            convert_bytes_to_file = ContentFile(decode)
+            convert_bytes_to_file = ContentFile(base64.b64decode(new_values.pop('product_img')))
+            #let field be blank to start
             new_values['product_img'] = ''
             # return JsonResponse({'newvals': str(new_values)})
             product = Product(**new_values)
@@ -294,8 +237,7 @@ def create_product(request):
                 new_values['type'] + " " + str(product.pk) + '.png'
             product.product_img.save(file_name, convert_bytes_to_file)
             new_values[product._meta.pk.name] = product.pk
-            # later change to pop at the beginning and you just save manually
-            new_values.pop('product_img')
+            new_values['product_img'] = product.product_img.url
             return JsonResponse(new_values)
         else:
             return JsonResponse({

@@ -80,22 +80,10 @@ def create_listing(request):
                 return HttpResponseRedirect('/create-listing')
             form_data = form.cleaned_data
             # TO DO: check for 2.5MB size and then throw form error if it is
-
-            # bigger than 2.5 MB, must read from disk instead of memory (will implement later)
-            get_product_file = request.FILES['product_img']
-            get_product_img = None
-            if get_product_file.multiple_chunks:
-                raw_img_data = bytearray()
-                for chunk in get_product_file.chunks():
-                    raw_img_data.extend(chunk)
-                    # s += chunk
-                get_product_img = raw_img_data
-                # get_product_img = s
-            else:
-                get_product_img = request.FILES['product_img'].file.getvalue()
+            get_product_img = request.FILES['product_img'].file.getvalue()
             form_data['man_id'] = request.get_signed_cookie('man_id')
             form_data['product_img'] = base64.b64encode(get_product_img)
-            return JsonResponse({"frontend": str(form_data)})
+            # return JsonResponse({"frontend": str(form_data)})
             resp = post(
                 form_data, 'http://services:8000/api/v1/create-new-listing')
             return JsonResponse(resp)
