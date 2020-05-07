@@ -103,7 +103,7 @@ def get_or_update_product(request, id):
             return JsonResponse(error_object)
         except Exception as e:  # for development purpose. can remove exception as e in production
             return JsonResponse({
-                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+                'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
                 'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
             })
     elif request.method == 'POST':
@@ -162,7 +162,7 @@ def get_or_update_product(request, id):
     #         return JsonResponse(error_object)
     #     except Exception as e:  # for development purpose. can remove exception as e in production
     #         return JsonResponse({
-    #             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+    #             'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
     #             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
     #         })
     # elif request.method == 'POST':
@@ -273,7 +273,7 @@ def create_manufacturer(request):
         return JsonResponse(error_object)
     except Exception as e:  # for development purpose. can remove exception as e in production
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: man_name, web_url, phone_numberber, password, is_man',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: man_name, web_url, phone_number, password, is_man',
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -345,7 +345,7 @@ def get_or_update_user(request, id):
         })
     except Exception as e:  # for development purpose. can remove exception as e in production
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
             'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })
 
@@ -366,7 +366,7 @@ def create_user(request):
             })
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         }
         )
@@ -389,7 +389,7 @@ def delete_user(request, id):
         })
     except Exception as e:
         return JsonResponse({
-            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_numberber, first_name, last_name',
+            'error': 'Double check param data for accepted fields and uniqueness. API currently accepts: email, username, password, phone_number, first_name, last_name',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
         })
 
