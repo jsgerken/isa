@@ -19,3 +19,4 @@ script:
 - docker ps
 - docker exec models bash -c "python manage.py test"
 - docker-compose run selenium-test bash -c "pip install selenium && pip install requests && python selenium_tests.py"
+- docker ps

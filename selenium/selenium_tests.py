@@ -55,7 +55,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
 
@@ -64,7 +64,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('popular').click()
         driver.find_element_by_name('searchButton').click()
-        title = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
+        title = WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.ID, 'resultTitle')))
         return title
 
     def create_listing(self):
