@@ -1,6 +1,7 @@
 import unittest
 import time
 import requests
+import os
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
@@ -77,7 +78,7 @@ class PythonOrgSearch(unittest.TestCase):
         driver.find_element_by_id('id_description').send_keys('selenium')
         driver.find_element_by_id('id_price').send_keys('123')
         driver.find_element_by_id('id_warranty').send_keys('selenium')
-        driver.find_element_by_id('id_img_url').send_keys('selenium')
+        driver.find_element_by_id('id_product_img').send_keys(os.getcwd() + '/selenium_image.jpg')
         driver.find_element_by_name('createListing').submit()
 
     def test_user_login_error(self):
