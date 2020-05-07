@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 
 class PythonOrgSearch(unittest.TestCase):
 
@@ -52,12 +53,14 @@ class PythonOrgSearch(unittest.TestCase):
     def relevant_search(self, query):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
+        driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
 
     def top_search(self, query):
         driver = self.driver
         driver.find_element_by_name('query').send_keys(query)
         driver.find_element_by_name('popular').click()
+        driver.implicitly_wait(7)
         driver.find_element_by_name('searchButton').click()
 
     def create_listing(self):
