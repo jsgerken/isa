@@ -92,19 +92,19 @@ class PythonOrgSearch(unittest.TestCase):
     def test_create_man(self):
         assert self.login(True, 'selenium_man', 'selenium_man')
 
-    def test_search_relevant(self):
-        if not self.login(False, 'selenium', 'selenium'):
-            assert False
-        self.driver.implicitly_wait(10)
-        result_title = self.relevant_search('corsair')
-        assert result_title.text == 'Search Results'
+    # def test_search_relevant(self):
+    #     if not self.login(False, 'selenium', 'selenium'):
+    #         assert False
+    #     self.driver.implicitly_wait(10)
+    #     result_title = self.relevant_search('corsair')
+    #     assert result_title.text == 'Search Results'
 
-    def test_search_top(self):
-        if not self.login(False, 'selenium', 'selenium'):
-            assert False
-        self.driver.implicitly_wait(10)
-        result_title = self.top_search('corsair')
-        assert result_title.text == 'Search Results'
+    # def test_search_top(self):
+    #     if not self.login(False, 'selenium', 'selenium'):
+    #         assert False
+    #     self.driver.implicitly_wait(10)
+    #     result_title = self.top_search('corsair')
+    #     assert result_title.text == 'Search Results'
 
     def test_search_relevant_none(self):
         if not self.login(False, 'selenium', 'selenium'):
