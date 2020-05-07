@@ -129,5 +129,6 @@ EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jacoboscholarships@gmail.com'
 EMAIL_HOST_PASSWORD = 'xsmtpsib-1443f9a5eb059ec6331c7dff4791fe7680921cfc74f5f1b4c8f9bc68a7a4ddc0-wMtNESWrcHjzqn5h'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10000000  # 10MB
 # EMAIL_USE_TLS =
 # EMAIL_USE_SSL =

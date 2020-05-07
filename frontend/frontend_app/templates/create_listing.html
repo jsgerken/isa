@@ -4,7 +4,7 @@
 
 <div class="flex-column d-flex justify-content-center align-items-center pt-1 pb-5">
     <h1 class="text-center mt-5">Create Listing</h1>
-    <form action="/create-listing" method="post" class="bg-light px-5 py-3 rounded w-75">
+    <form action="/create-listing" method="post" class="bg-light px-5 py-3 rounded w-75" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="my-3">
             {{ form|crispy }}
