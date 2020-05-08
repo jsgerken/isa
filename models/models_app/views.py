@@ -1,4 +1,4 @@
-from .models import Manufacturer, Product, User, Authenticator
+from .models import Manufacturer, Product, User, Authenticator, Recommendation
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,6 +10,8 @@ import hmac
 from django.conf import settings
 from django.core.files.base import ContentFile
 import base64
+from django.forms.models import model_to_dict
+
 
 def selenium(request):
     man = Manufacturer.objects.get(man_name='selenium_man')
@@ -19,6 +21,17 @@ def selenium(request):
     prod = Product.objects.get(name='selenium')
     prod.delete()
     return JsonResponse({'status': 'cleared selenium test data'})
+
+def get_recommendations(request, id):
+    rec = Recommendation.objects.filter(item_id=id).first()
+    if rec is None:
+        return JsonResponse({'rec_prods': []})
+    rec_list = rec.recommended_items.split(',')
+    results = []
+    for prod_id in rec_list:
+        product = Product.objects.filter(product_id=int(prod_id))
+        results.append(product.values()[0])
+    return JsonResponse({'rec_prods': results})
 
 def get_all_manufacturers(request):
     if request.method == 'GET':
@@ -579,4 +592,57 @@ def change_password(request):
         return JsonResponse({
             'error': 'Error in get_user_id in models',
             'errReason':  'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+def get_or_create_recommendation(request, id):
+    try:
+        if request.method == 'GET':
+            # using get_or_create to simplify my life and avoid create races
+            rec_list = Recommendation.objects.get_or_create(
+                item_id=id, defaults={'recommended_items': ''})
+            return JsonResponse(model_to_dict(rec_list[0]))
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: get_or_create_recommendation endpoint expects a GET request'
+            })
+    except Exception as e:  # for development purpose. can remove exception as e in production
+        return JsonResponse({
+            'error': 'Error in get_or_create_recommendation',
+            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
+        })
+
+
+@csrf_exempt
+def update_recommendation(request, id):
+    # expects: {
+    #     recommended_items: "" (string)
+    # }
+    try:
+        if request.method == 'POST':
+            rec_list = Recommendation.objects.filter(item_id=id)
+            new_values = request.POST.dict()
+            get_rec_list = new_values.pop('recommended_items')
+            # convert to all values to int while also checking they are all int type
+            list_int = [int(x) for x in get_rec_list.split(",")]
+            # put into set to remove duplicates if any
+            rec_set = set(list_int)
+            # join back together into comma-separated string
+            final_rec_list = {'recommended_items': ','.join(
+                str(s) for s in rec_set)}
+            # update the rec_list in db
+            rec_list.update(**final_rec_list)
+            return JsonResponse(rec_list.values()[0])
+        else:
+            return JsonResponse({
+                'error': 'HTTP method error: update_recommendation endpoint expects a POST request'
+            })
+    except IndexError:  # this is what filter throws if it does not find item with given id.
+        return JsonResponse({
+            'error': 'Filter failed: recommedation list with item_id ' + str(id) + ' does not exist',
+        })
+    except Exception as e:  # for development purpose. can remove exception as e in production
+        return JsonResponse({
+            'error': "error in update_recommendation. if error 'recommended_items' means not found in post data else make sure list contains only integers and no trailing comma",
+            'errMessage': 'DEV_MODE_MESSAGE: ' + str(e)
         })

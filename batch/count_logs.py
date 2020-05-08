@@ -12,7 +12,7 @@ def main():
         try:
             product_to_views = {}
             print('Updating Count Logs ES')
-            with open('viewLogs.csv', 'r') as logfile:
+            with open('./data/viewLogs.csv', 'r') as logfile:
                 csv_reader = csv.reader(logfile)
                 for row in csv_reader:
                     # row[0] is user_id #row[1] is product_id
