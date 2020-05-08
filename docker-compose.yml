@@ -1,19 +1,19 @@
 version: "3"
 services:
-  # haproxy:
-  #   image: isa-haproxy
-  #   container_name: haproxy
-  #   ports:
-  #     - 80:80
-  #   networks:
-  #     - public
-  #     - service_mesh
+  haproxy:
+    container_name: haproxy
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - public
+      - service_mesh
     
   models:
     image: tp33/django
     container_name: models
-    logging:
-      driver: "none"
     environment: 
       - TRAVIS
     external_links:
@@ -39,8 +39,6 @@ services:
   services:
     image: tp33/django
     container_name: services
-    logging:
-      driver: "none"
     networks:
       - service_mesh
       - public
@@ -100,8 +98,6 @@ services:
   kafka:
     image: spotify/kafka
     container_name: kafka
-    logging:
-      driver: "none"
     networks:
         - batch_network
         - service_mesh
@@ -113,8 +109,6 @@ services:
   es:
     image: elasticsearch:7.4.0
     container_name: es
-    logging:
-      driver: "none"
     environment:
         - discovery.type=single-node
     networks:
@@ -126,8 +120,6 @@ services:
   batch:
     image: tp33/django
     container_name: batch
-    logging:
-      driver: "none"
     networks:
         - batch_network
     depends_on: 
@@ -147,29 +139,6 @@ services:
     volumes:
       - ./batch:/app
 
-  # selenium-chrome:
-  #   image: selenium/standalone-chrome
-  #   logging:
-  #     driver: "none"
-  #   container_name: selenium-chrome
-  #   volumes:
-  #     - /dev/shm:/dev/shm
-  #   networks:
-  #   - service_mesh
-  #   - public
-  #   ports:
-  #   - "4444:4444"
-
-  # selenium-test:
-  #   image: tp33/django
-  #   logging:
-  #     driver: "none" 
-  #   container_name: selenium-test
-  #   networks:
-  #   - service_mesh
-  #   volumes:
-  #   - ./selenium:/app
-
   spark-master:
     image: gettyimages/spark
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
@@ -178,6 +147,19 @@ services:
     environment:
       MASTER: spark://spark-master:7077
       SPARK_CONF_DIR: /conf
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+    volumes:
+      - ./batch/data:/tmp/data
+
+  selenium-chrome:
+    image: selenium/standalone-chrome
+    container_name: selenium-chrome
+    volumes:
+      - /dev/shm:/dev/shm
     networks:
         - backend
     expose:
@@ -190,12 +172,12 @@ services:
       - 7077
       - 6066
     ports:
-      - 4040:4040
-      - 6066:6066
-      - 7077:7077
-      - 8080:8080
-    volumes:
-      - ./batch/data:/tmp/data
+      - "4444:4444"
+
+  selenium-test:
+    image: tp33/django
+    container_name: selenium-test
+
   
   spark-worker:
     image: gettyimages/spark
