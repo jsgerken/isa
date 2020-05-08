@@ -3,10 +3,12 @@ import urllib.request
 import urllib.parse
 import json
 import time
-
+import csv
 
 # ####################
 # Helper functions for HTTP request
+
+
 def fetch(url):
     try:
         req = urllib.request.Request(url)
@@ -132,6 +134,12 @@ def main():
             sc = SparkContext("spark://spark-master:7077", "PopularItems")
             spark_output = run_spark(sc)
             sc.stop()
+            print('Saving output to output.log!')
+            with open('/tmp/data/output.log', 'w') as logfile:
+                csvwriter = csv.writer(logfile)
+                for pairs in spark_output:
+                    csvwriter.writerow([pairs])
+            print('Finished saving output')
             save_to_db(spark_output)
             # Run on interval
             print('sleeping @ 90 sec - 1.5 min')
