@@ -12,8 +12,8 @@ services:
   models:
     image: tp33/django
     container_name: models
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     environment: 
       - TRAVIS
     external_links:
@@ -39,8 +39,8 @@ services:
   services:
     image: tp33/django
     container_name: services
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     networks:
       - service_mesh
       - public
@@ -100,8 +100,8 @@ services:
   kafka:
     image: spotify/kafka
     container_name: kafka
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     networks:
         - batch_network
         - service_mesh
@@ -113,8 +113,8 @@ services:
   es:
     image: elasticsearch:7.4.0
     container_name: es
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     environment:
         - discovery.type=single-node
     networks:
@@ -126,8 +126,8 @@ services:
   batch:
     image: tp33/django
     container_name: batch
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     networks:
         - batch_network
     depends_on: 
@@ -169,6 +169,60 @@ services:
   #   - service_mesh
   #   volumes:
   #   - ./selenium:/app
+
+  spark-master:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    container_name: spark-master
+    hostname: spark-master
+    environment:
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf
+    networks:
+        - backend
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7006
+      - 7077
+      - 6066
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+    volumes:
+      - ./batch/data:/tmp/data
+  
+  spark-worker:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    container_name: spark-worker
+    hostname: spark-worker
+    networks:
+      - backend 
+    environment:
+      SPARK_CONF_DIR: /conf
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 512m
+      SPARK_WORKER_PORT: 8881
+      SPARK_WORKER_WEBUI_PORT: 8081
+    links:
+      - spark-master
+    expose:
+      - 7012
+      - 7013
+      - 7014
+      - 7015
+      - 7016
+      - 8881
+    ports:
+      - 8081:8081
+    volumes:
+      - ./batch/data:/tmp/data
 
 networks:
   backend:
