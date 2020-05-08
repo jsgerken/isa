@@ -26,6 +26,6 @@ urlpatterns = [
     path('account/get-create-token/', views.get_or_create_token),
     path('account/change-password/', views.change_password),
 
-    path('selenium', views.selenium)
-
+    path('selenium', views.selenium),
+    path('api/v1/recommended-products/<int:id>', views.get_recommendations)
 ]

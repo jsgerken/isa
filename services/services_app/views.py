@@ -13,7 +13,6 @@ from kafka import KafkaProducer
 from elasticsearch import Elasticsearch
 import base64
 
-
 def fetch(url):
     try:
         req = urllib.request.Request(url)
@@ -146,12 +145,15 @@ def product_details(request, id):
         req_product).read().decode('utf-8'))
     if 'error' in resp_product:
         return JsonResponse(resp_product)
+
     req_man = urllib.request.Request(
         'http://models:8000/api/v1/manufacturers/' + str(resp_product["man_id"]))
     resp_man = json.loads(urllib.request.urlopen(
         req_man).read().decode('utf-8'))
     resp_product['description'] = resp_product['description'].split('|')
-    # add that this product was clicked to Kafka Q if it was by a user and not manufacturer
+
+    rec_resp = fetch('http://models:8000/api/v1/recommended-products/' + str(id))
+    resp_rec = rec_resp['rec_prods']
     try:
         if request.method == 'POST':
             req_data = request.POST.dict()
@@ -159,7 +161,6 @@ def product_details(request, id):
             if not get_user_id:
                 raise Exception(
                     "Cannot add because user_id was not found in post data")
-                # if here there was a user_id in data to add to Q
             producer = KafkaProducer(bootstrap_servers='kafka:9092')
             message = {
                 'user_id': int(get_user_id),
@@ -175,7 +176,7 @@ def product_details(request, id):
             'error: In experience layer. Could not add to view to Kafka Q \n' +
             'errReason:  DEV_MODE_MESSAGE: ' + str(e)
         )
-    return JsonResponse({"resp_product": resp_product, "resp_man": resp_man})
+    return JsonResponse({'resp_product': resp_product, 'resp_man': resp_man, 'rec_prods': resp_rec})
 
 
 @csrf_exempt

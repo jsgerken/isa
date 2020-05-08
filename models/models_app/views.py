@@ -20,6 +20,14 @@ def selenium(request):
     prod.delete()
     return JsonResponse({'status': 'cleared selenium test data'})
 
+def get_recommendations(request, id):
+    rec_ids = [1, 2, 3, 4, 5]
+    results = []
+    for id in rec_ids:
+        product = Product.objects.filter(product_id=id)
+        results.append(product.values()[0])
+    return JsonResponse({'rec_prods': results})
+
 def get_all_manufacturers(request):
     if request.method == 'GET':
         manufacturers_list = Manufacturer.objects.all()
