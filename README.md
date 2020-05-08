@@ -38,6 +38,7 @@ python manage.py test
 1. Run the following command:
 ```shell
 docker-compose run selenium-test bash -c "pip install selenium && pip install requests && python selenium_tests.py"
+```
 
 ## Site Overview
 
