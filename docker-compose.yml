@@ -67,33 +67,33 @@ services:
       && pip install Pillow
       && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  # frontend1:
-  #   image: tp33/django
-  #   container_name: frontend1
-  #   networks:
-  #     - public
-  #   ports:
-  #     - "8003:8000"
-  #   volumes:
-  #     - ./frontend:/app
-  #   command: bash -c "pip install whitenoise
-  #     && pip install django-crispy-forms
-  #     && pip install Pillow
-  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  frontend1:
+    image: tp33/django
+    container_name: frontend1
+    networks:
+      - public
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./frontend:/app
+    command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
+      && pip install Pillow
+      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  # frontend2:
-  #   image: tp33/django
-  #   container_name: frontend2
-  #   networks:
-  #     - public
-  #   ports:
-  #     - "8005:8000"
-  #   volumes:
-  #     - ./frontend:/app
-  #   command: bash -c "pip install whitenoise
-  #     && pip install django-crispy-forms
-  #     && pip install Pillow
-  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  frontend2:
+    image: tp33/django
+    container_name: frontend2
+    networks:
+      - public
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./frontend:/app
+    command: bash -c "pip install whitenoise
+      && pip install django-crispy-forms
+      && pip install Pillow
+      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
   kafka:
     image: spotify/kafka

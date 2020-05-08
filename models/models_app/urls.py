@@ -31,7 +31,7 @@ urlpatterns = [
     path('api/v1/recommendations/get-or-create/<int:id>',
          views.get_or_create_recommendation),
     path('api/v1/recommendations/update/<int:id>',
-         views.update_recommendation)
+         views.update_recommendation),
     path('api/v1/recommended-products/<int:id>', views.get_recommendations)
 
 ]
