@@ -111,14 +111,14 @@ class PythonOrgSearch(unittest.TestCase):
         if not self.login(False, 'selenium', 'selenium'):
             assert False
         self.driver.implicitly_wait(200)
-        result_title = self.relevant_search('pear')
+        result_title = self.relevant_search('abcdefgh')
         assert result_title.text == 'No Results Found'
 
     def test_search_top_none(self):
         if not self.login(False, 'selenium', 'selenium'):
             assert False
         self.driver.implicitly_wait(200)
-        result_title = self.top_search('pear')
+        result_title = self.top_search('abcdefgh')
         assert result_title.text == 'No Results Found'
 
     def test_product_details(self):
