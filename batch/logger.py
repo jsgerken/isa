@@ -7,11 +7,12 @@ import os
 
 def main():
     print('Starting Logger Consumer Loop')
-    file_exist = os.path.isfile('viewLogs.csv')
+    file_exist = os.path.isfile('./data/viewLogs.csv')
     if not file_exist:
-        with open('viewLogs.csv', 'w') as logfile:
-            csvwriter = csv.writer(logfile)
-            csvwriter.writerow(['user_id', 'product_id'])
+        with open('./data/viewLogs.csv', 'w') as logfile:
+            pass
+            # csvwriter = csv.writer(logfile)
+            # csvwriter.writerow(['user_id', 'product_id'])
     while True:
         try:
             consumer = KafkaConsumer(
@@ -23,7 +24,7 @@ def main():
                 item = json.loads((message.value).decode('utf-8'))
                 print('Updating in logger for : ' + str(item))
                 # a means append to file
-                with open('viewLogs.csv', 'a') as logfile:
+                with open('./data/viewLogs.csv', 'a') as logfile:
                     csvwriter = csv.writer(logfile)
                     # if not file_exist:
                     # csvwriter.writerow(['user_id', 'product_id'])
