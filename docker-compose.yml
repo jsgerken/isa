@@ -1,8 +1,10 @@
 version: "3"
 services:
   haproxy:
-    image: isa-haproxy
     container_name: haproxy
+    build:
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - 80:80
     networks:
