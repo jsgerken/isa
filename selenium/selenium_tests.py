@@ -127,23 +127,23 @@ class PythonOrgSearch(unittest.TestCase):
         self.create_listing('details')
         assert self.driver.find_element_by_name('prodName').text == 'details'
 
-    # def test_new_product_relevant_search(self):
-    #     self.login(True, 'selenium_man', 'selenium_man')
-    #     self.driver.implicitly_wait(30)
-    #     self.create_listing('relevant')
-    #     self.driver.implicitly_wait(30)
-    #     self.driver.get('http://frontend:8000/home')
-    #     result_title = self.relevant_search('relevant')
-    #     assert result_title.text == 'Search Results'
+    def test_new_product_relevant_search(self):
+        self.login(True, 'selenium_man', 'selenium_man')
+        self.driver.implicitly_wait(30)
+        self.create_listing('relevant')
+        self.driver.implicitly_wait(30)
+        self.driver.get('http://frontend:8000/home')
+        result_title = self.relevant_search('relevant')
+        assert result_title.text == 'Search Results'
 
-    # def test_new_product_top_search(self):
-    #     self.login(True, 'selenium_man', 'selenium_man')
-    #     self.driver.implicitly_wait(30)
-    #     self.create_listing('top')
-    #     self.driver.implicitly_wait(30)
-    #     self.driver.get('http://frontend:8000/home')
-    #     result_title = self.top_search('top')
-    #     assert result_title.text == 'Search Results'
+    def test_new_product_top_search(self):
+        self.login(True, 'selenium_man', 'selenium_man')
+        self.driver.implicitly_wait(30)
+        self.create_listing('top')
+        self.driver.implicitly_wait(30)
+        self.driver.get('http://frontend:8000/home')
+        result_title = self.top_search('top')
+        assert result_title.text == 'Search Results'
 
     def tearDown(self):
         requests.get('http://services:8000/selenium')
