@@ -23,7 +23,9 @@ def selenium(request):
     return JsonResponse({'status': 'cleared selenium test data'})
 
 def get_recommendations(request, id):
-    rec = Recommendation.objects.filter_by(item_id=id).first()
+    rec = Recommendation.objects.filter(item_id=id).first()
+    if rec is None:
+        return JsonResponse({'rec_prods': []})
     rec_list = rec.recommended_items.split(',')
     results = []
     for prod_id in rec_list:

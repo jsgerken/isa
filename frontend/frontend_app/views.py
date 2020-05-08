@@ -40,7 +40,10 @@ def product_details(request, id):
     product_dict = post(post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
-    product_dict['rec_groups'] = group(product_dict['rec_prods'], 4)
+    if len(product_dict['rec_prods']) == 0:
+        product_dict['rec_groups'] = product_dict['rec_prods']
+    else:
+        product_dict['rec_groups'] = group(product_dict['rec_prods'], 4)
     # return JsonResponse(product_dict)
     return render(request, 'frontend_app/product_details.html', product_dict)
 
