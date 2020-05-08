@@ -41,3 +41,8 @@ class Authenticator(models.Model):
     auth_id = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
     auth_model = models.CharField(max_length=50)
+
+
+class Recommendation(models.Model):
+    item_id = models.AutoField(primary_key=True)
+    recommended_items = models.CharField(max_length=1000)

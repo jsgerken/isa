@@ -1,13 +1,13 @@
 version: "3"
 services:
-  haproxy:
-    image: isa-haproxy
-    container_name: haproxy
-    ports:
-      - 80:80
-    networks:
-      - public
-      - service_mesh
+  # haproxy:
+  #   image: isa-haproxy
+  #   container_name: haproxy
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - public
+  #     - service_mesh
     
   models:
     image: tp33/django
@@ -39,8 +39,8 @@ services:
   services:
     image: tp33/django
     container_name: services
-    logging:
-      driver: "none"
+    # logging:
+    #   driver: "none"
     networks:
       - service_mesh
       - public
@@ -69,39 +69,39 @@ services:
       && pip install Pillow
       && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  frontend1:
-    image: tp33/django
-    container_name: frontend1
-    networks:
-      - public
-    ports:
-      - "8003:8000"
-    volumes:
-      - ./frontend:/app
-    command: bash -c "pip install whitenoise
-      && pip install django-crispy-forms
-      && pip install Pillow
-      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  # frontend1:
+  #   image: tp33/django
+  #   container_name: frontend1
+  #   networks:
+  #     - public
+  #   ports:
+  #     - "8003:8000"
+  #   volumes:
+  #     - ./frontend:/app
+  #   command: bash -c "pip install whitenoise
+  #     && pip install django-crispy-forms
+  #     && pip install Pillow
+  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  frontend2:
-    image: tp33/django
-    container_name: frontend2
-    networks:
-      - public
-    ports:
-      - "8005:8000"
-    volumes:
-      - ./frontend:/app
-    command: bash -c "pip install whitenoise
-      && pip install django-crispy-forms
-      && pip install Pillow
-      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  # frontend2:
+  #   image: tp33/django
+  #   container_name: frontend2
+  #   networks:
+  #     - public
+  #   ports:
+  #     - "8005:8000"
+  #   volumes:
+  #     - ./frontend:/app
+  #   command: bash -c "pip install whitenoise
+  #     && pip install django-crispy-forms
+  #     && pip install Pillow
+  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
   kafka:
     image: spotify/kafka
     container_name: kafka
-    logging:
-      driver: "none"
+    # logging:
+    #   driver: "none"
     networks:
         - batch_network
         - service_mesh
@@ -113,8 +113,8 @@ services:
   es:
     image: elasticsearch:7.4.0
     container_name: es
-    logging:
-      driver: "none"
+    # logging:
+    #   driver: "none"
     environment:
         - discovery.type=single-node
     networks:
@@ -126,8 +126,8 @@ services:
   batch:
     image: tp33/django
     container_name: batch
-    logging:
-      driver: "none"
+    # logging:
+    #   driver: "none"
     networks:
         - batch_network
     depends_on: 
@@ -147,28 +147,28 @@ services:
     volumes:
       - ./batch:/app
 
-  selenium-chrome:
-    image: selenium/standalone-chrome
-    logging:
-      driver: "none"
-    container_name: selenium-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-    networks:
-    - service_mesh
-    - public
-    ports:
-    - "4444:4444"
+  # selenium-chrome:
+  #   image: selenium/standalone-chrome
+  #   logging:
+  #     driver: "none"
+  #   container_name: selenium-chrome
+  #   volumes:
+  #     - /dev/shm:/dev/shm
+  #   networks:
+  #   - service_mesh
+  #   - public
+  #   ports:
+  #   - "4444:4444"
 
-  selenium-test:
-    image: tp33/django
-    logging:
-      driver: "none" 
-    container_name: selenium-test
-    networks:
-    - service_mesh
-    volumes:
-    - ./selenium:/app
+  # selenium-test:
+  #   image: tp33/django
+  #   logging:
+  #     driver: "none" 
+  #   container_name: selenium-test
+  #   networks:
+  #   - service_mesh
+  #   volumes:
+  #   - ./selenium:/app
 
 networks:
   backend:
