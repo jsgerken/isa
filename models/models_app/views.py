@@ -23,10 +23,11 @@ def selenium(request):
     return JsonResponse({'status': 'cleared selenium test data'})
 
 def get_recommendations(request, id):
-    rec_ids = [1, 2, 3, 4, 5]
+    rec = Recommendation.objects.filter_by(item_id=id).first()
+    rec_list = rec.recommended_items.split(',')
     results = []
-    for id in rec_ids:
-        product = Product.objects.filter(product_id=id)
+    for prod_id in rec_list:
+        product = Product.objects.filter(product_id=int(prod_id))
         results.append(product.values()[0])
     return JsonResponse({'rec_prods': results})
 
