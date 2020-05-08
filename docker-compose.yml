@@ -135,7 +135,6 @@ services:
           python -u count_logs.py & 
           python -u batch.py & 
           wait $$!
-
     volumes:
       - ./batch:/app
 
@@ -147,6 +146,15 @@ services:
     environment:
       MASTER: spark://spark-master:7077
       SPARK_CONF_DIR: /conf
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7006
+      - 7077
+      - 6066
     ports:
       - 4040:4040
       - 6066:6066
@@ -182,28 +190,28 @@ services:
     volumes:
       - ./batch/data:/tmp/data
 
-  selenium-chrome:
-    image: selenium/standalone-chrome
-    container_name: selenium-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-    networks:
-        - backend
-    expose:
-      - 7001
-      - 7002
-      - 7003
-      - 7004
-      - 7005
-      - 7006
-      - 7077
-      - 6066
-    ports:
-      - "4444:4444"
+  # selenium-chrome:
+  #   image: selenium/standalone-chrome
+  #   container_name: selenium-chrome
+  #   volumes:
+  #     - /dev/shm:/dev/shm
+  #   networks:
+  #       - backend
+  #   expose:
+  #     - 7001
+  #     - 7002
+  #     - 7003
+  #     - 7004
+  #     - 7005
+  #     - 7006
+  #     - 7077
+  #     - 6066
+  #   ports:
+  #     - "4444:4444"
 
-  selenium-test:
-    image: tp33/django
-    container_name: selenium-test
+  # selenium-test:
+  #   image: tp33/django
+  #   container_name: selenium-test
 
 networks:
   backend:
