@@ -1,19 +1,19 @@
 version: "3"
 services:
-  haproxy:
-    image: isa-haproxy
-    container_name: haproxy
-    ports:
-      - 80:80
-    networks:
-      - public
-      - service_mesh
+  # haproxy:
+  #   image: isa-haproxy
+  #   container_name: haproxy
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - public
+  #     - service_mesh
     
   models:
     image: tp33/django
     container_name: models
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     environment: 
       - TRAVIS
     external_links:
@@ -69,33 +69,33 @@ services:
       && pip install Pillow
       && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  frontend1:
-    image: tp33/django
-    container_name: frontend1
-    networks:
-      - public
-    ports:
-      - "8003:8000"
-    volumes:
-      - ./frontend:/app
-    command: bash -c "pip install whitenoise
-      && pip install django-crispy-forms
-      && pip install Pillow
-      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  # frontend1:
+  #   image: tp33/django
+  #   container_name: frontend1
+  #   networks:
+  #     - public
+  #   ports:
+  #     - "8003:8000"
+  #   volumes:
+  #     - ./frontend:/app
+  #   command: bash -c "pip install whitenoise
+  #     && pip install django-crispy-forms
+  #     && pip install Pillow
+  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
-  frontend2:
-    image: tp33/django
-    container_name: frontend2
-    networks:
-      - public
-    ports:
-      - "8005:8000"
-    volumes:
-      - ./frontend:/app
-    command: bash -c "pip install whitenoise
-      && pip install django-crispy-forms
-      && pip install Pillow
-      && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
+  # frontend2:
+  #   image: tp33/django
+  #   container_name: frontend2
+  #   networks:
+  #     - public
+  #   ports:
+  #     - "8005:8000"
+  #   volumes:
+  #     - ./frontend:/app
+  #   command: bash -c "pip install whitenoise
+  #     && pip install django-crispy-forms
+  #     && pip install Pillow
+  #     && mod_wsgi-express start-server --reload-on-changes ./frontend/wsgi.py"
 
   kafka:
     image: spotify/kafka
@@ -147,28 +147,82 @@ services:
     volumes:
       - ./batch:/app
 
-  selenium-chrome:
-    image: selenium/standalone-chrome
-    logging:
-      driver: "none"
-    container_name: selenium-chrome
-    volumes:
-      - /dev/shm:/dev/shm
-    networks:
-    - service_mesh
-    - public
-    ports:
-    - "4444:4444"
+  # selenium-chrome:
+  #   image: selenium/standalone-chrome
+  #   logging:
+  #     driver: "none"
+  #   container_name: selenium-chrome
+  #   volumes:
+  #     - /dev/shm:/dev/shm
+  #   networks:
+  #   - service_mesh
+  #   - public
+  #   ports:
+  #   - "4444:4444"
 
-  selenium-test:
-    image: tp33/django
-    logging:
-      driver: "none" 
-    container_name: selenium-test
+  # selenium-test:
+  #   image: tp33/django
+  #   logging:
+  #     driver: "none" 
+  #   container_name: selenium-test
+  #   networks:
+  #   - service_mesh
+  #   volumes:
+  #   - ./selenium:/app
+
+  spark-master:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    container_name: spark-master
+    hostname: spark-master
+    environment:
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf
     networks:
-    - service_mesh
+        - backend
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7006
+      - 7077
+      - 6066
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
     volumes:
-    - ./selenium:/app
+      - ./batch/data:/tmp/data
+  
+  spark-worker:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    container_name: spark-worker
+    hostname: spark-worker
+    networks:
+      - backend 
+    environment:
+      SPARK_CONF_DIR: /conf
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 512m
+      SPARK_WORKER_PORT: 8881
+      SPARK_WORKER_WEBUI_PORT: 8081
+    links:
+      - spark-master
+    expose:
+      - 7012
+      - 7013
+      - 7014
+      - 7015
+      - 7016
+      - 8881
+    ports:
+      - 8081:8081
+    volumes:
+      - ./batch/data:/tmp/data
 
 networks:
   backend:

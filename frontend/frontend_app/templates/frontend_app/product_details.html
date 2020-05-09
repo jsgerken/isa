@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block base %}
+{% load static %}
 
 <body>
     {% if not error %}
     <div class="container d-flex flex-column justify-content-center align-items-center">
-        <div class="card my-5 w-75 ">
+        <div class="card mt-5 w-100">
             <div class="card-body d-flex flex-column justify-content-center">
-                <h2 name="prodName" style="color: black; font-weight: bold" class="card-title text-center">{{resp_product.name}}</h2>
-                <h2 style="color: black; font-weight: bold" class="text-center text-muted">${{resp_product.price}}.00</h2>
-                <img class="img-fluid align-self-center" src="{{resp_product.img_url}}" alt="" style="width:400px;height:250px;">
+                <h2 name="prodName" style="color: black; font-weight: bold" class="card-title text-center">
+                    {{resp_product.name}}</h2>
+                <h2 style="color: black; font-weight: bold" class="text-center text-muted">${{resp_product.price}}.00
+                </h2>
+                <img class="img-fluid align-self-center" src="{{resp_product.img_url}}" alt=""
+                    style="width:400px;height:250px;">
                 <h6 class="card-subtitle mb-2 text-muted">Product Details</h6>
                 <ul>
                     {%for desp in resp_product.description%}
@@ -27,18 +31,71 @@
                 </ul>
             </div>
         </div>
-    </div>
-    {% else %}
-    <div>
-        <h2 name="prodName">No details for this product.</h2>
-    </div>
-    {% endif %}
+        <div class="card my-5 w-100">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="text-center">
+                    {% if rec_groups %}
+                    <h2 style="color: black; font-weight: bold" class="card-title text-center">Recommended Items</h2>
+                    <div class="d-flex flex-row align-items-center">
+                        <a class="btn btn-outline-secondary prev" href="" title="go back">
+                            <i class="fa fa-lg fa-chevron-left"></i>
+                        </a>
+                        <div class="carousel slide ml-4" id="postsCarousel">
+                            <div class="container carousel-inner">
+                                {% for group in rec_groups %}
+                                {% if forloop.first %}
+                                <div class="row row-equal carousel-item active card-deck">
+                                    {% else %}
+                                    <div class="row row-equal carousel-item card-deck">
+                                        {% endif %}
+                                        {% for object in group %}
+                                        <div class="card-group col-md-3">
+                                            <div class="card"
+                                                style="width: 50rem; height: 22rem;border: 1px solid black;">
+                                                <div class="card-img-top card-img-top-250">
+                                                    <img class="img-fluid img-thumbnail" src="{{object.img_url}}"
+                                                        alt="Carousel 1">
+                                                </div>
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title">{{object.name}}</h6>
+                                                    <h6 class="card-subtitle mb-2 text-muted">{{object.type}}</h6>
+                                                    <h4 class="card-title">${{object.price}}.00</h4>
+                                                    <a href="{%url 'productDetails' id=object.product_id%}"
+                                                        class="btn btn-sm btn-outline-secondary">
+                                                        View Details
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <a class="btn btn-outline-secondary next" href="" title="more">
+                                <i class="fa fa-lg fa-chevron-right"></i>
+                            </a>
+                        </div>
+                        {% else %}
+                        <h2 style="color: black; font-weight: bold" class="card-title text-center">Recommended Items
+                        </h2>
+                        <p>There are currently no recommendedations for this item.</p>
+                        {% endif%}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div>
+            <h2 name="prodName">No details for this product.</h2>
+        </div>
+        {% endif %}
 </body>
 
 {% endblock base %}
 {% block scripts %}
+<script src="{% static 'frontend_app/app.js' %}"></script>
 {% endblock scripts %}
-
 
 <!-- <div class="row mx-5">
     <div class="col-md-8 text-right">
