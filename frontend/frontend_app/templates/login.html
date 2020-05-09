@@ -17,7 +17,13 @@
                     <h3 class="text-danger">Incorrect username/password, please try again.</h3>
                     {% endif %}
                     {% if error %}
-                    <h3 name="error" class="text-danger">There was an error logging you in, please try again.</h3>
+                    <!-- <h3 name="error" class="text-danger">There was an error logging you in, please try again.</h3> -->
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Holy guacamole!</strong> <br> You should check in on some of those fields below.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
                     {% endif %}
                     {% csrf_token %}
                     {{ form|crispy }}

@@ -11,7 +11,7 @@ urlpatterns = [
     path('create-manufacturer', views.create_man),
     path('create-user', views.create_user),
     path('forgot-password', views.forgot_password, name='forgot-password'),
-    path('logout', views.logout),
+    path('logout', views.logout, name='logout'),
     path('password-reset-confirm/<uidb64>/<token>/<is_man>/', views.password_reset_confirm, name='password_reset_confirm'),
     path('search', views.search)
 ]

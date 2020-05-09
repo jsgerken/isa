@@ -1,13 +1,36 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 {% block base %}
+{% load crispy_forms_tags %}
 
 <div class="flex-column d-flex justify-content-center align-items-center pt-1 pb-5">
     <h1 class="text-center mt-5">Create Listing</h1>
     <form action="/create-listing" method="post" class="bg-light px-5 py-3 rounded w-75" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="my-3">
-            {{ form|crispy }}
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ form.name|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-3 mb-0">
+                {{ form.type|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-3 mb-0">
+                {{ form.price|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12 mb-0">
+                {{ form.description|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12 mb-0">
+                {{ form.warranty|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12 mb-0">
+                {{ form.product_img|as_crispy_field }}
+            </div>
         </div>
         <div class="text-center pb-3">
             <button name="createListing" type="submit" class="btn btn-dark btn-block">Create Listing</button>

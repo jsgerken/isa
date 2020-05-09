@@ -4,8 +4,19 @@ from django import forms
 class CreateListing(forms.Form):
     name = forms.CharField(max_length=200, widget=forms.TextInput(
         attrs={'placeholder': 'Intel Core i5-9600K'}))
-    type = forms.CharField(max_length=50, widget=forms.TextInput(
-        attrs={'placeholder': 'CPU'}))
+    # type = forms.CharField(max_length=50, widget=forms.TextInput(
+    #     attrs={'placeholder': 'CPU'}))
+    type= forms.CharField(label='Type', widget=forms.Select(choices=[
+        ("CPU","CPU"),
+        ("GPU","GPU"),
+        ("Motherboard","Motherboard"),
+        ("Cases","Cases"),
+        ("Fans","Fans"),
+        ("PSU","Power Supply Unit"),
+        ("Monitor","Monitor"),
+        ("MnK","Mice and Keyboards"),
+        ("Cables","Cables"),
+    ]))
     description = forms.CharField(max_length=2000, widget=forms.TextInput(
         attrs={'placeholder': '9th Gen Intel Processor|Intel UHD Graphics 630'}))
     price = forms.IntegerField(widget=forms.NumberInput(
@@ -39,10 +50,20 @@ class Login(forms.Form):
 class CreateUser(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput)
     email = forms.CharField(max_length=100)
     phone_number = forms.CharField(max_length=14)
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+        if password and confirm_password and password != confirm_password:
+            self.add_error('password', forms.ValidationError(
+                "Password and confirm password do not match"))
+            self.add_error('confirm_password',forms.ValidationError(""))
 
 
 class CreateManufacturer(forms.Form):
@@ -51,6 +72,16 @@ class CreateManufacturer(forms.Form):
     web_url = forms.CharField(max_length=50)
     phone_number = forms.CharField(max_length=14)
     password = forms.CharField(max_length=100, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+        if password and confirm_password and password != confirm_password:
+            self.add_error('password', forms.ValidationError(
+                "Password and confirm password do not match"))
+            self.add_error('confirm_password',forms.ValidationError(""))
 
 
 class Profile(forms.Form):

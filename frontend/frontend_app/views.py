@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import CreateListing, CreateManufacturer, CreateUser, Login, Profile, ForgotPassword, ResetPassword
 from django import forms
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import urllib.request
 import urllib.parse
 import json
@@ -17,6 +18,7 @@ def home(request):
     top_dict = fetch('http://services:8000/api/v1/top/')
     new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
+    top_dict['uname']= request.get_signed_cookie('uname')
     if request.get_signed_cookie('is_man', 'False') == 'True':
         top_dict['is_man'] = True
     return render(request, 'home.html', top_dict)
@@ -26,6 +28,10 @@ def home(request):
 def search(request):
     form_data = request.POST.dict()
     resp = post(form_data, 'http://services:8000/api/v1/search/')
+    paginator = Paginator(resp['results'], 10)
+    page_number = request.GET.get('page')
+    resp['page_obj'] = paginator.get_page(page_number)
+    # return JsonResponse({'hello':str(resp)})
     if request.get_signed_cookie('is_man', 'False') == 'True':
         resp['is_man'] = True
     return render(request, 'search.html', resp)
@@ -100,7 +106,7 @@ def create_listing(request):
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')
             form = CreateListing()
-            return render(request, 'create_listing.html', {'form': form})
+            return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id')})
     except Exception as e:
         return JsonResponse({
             'error': "error in create Listing " + str(e),
@@ -111,12 +117,18 @@ def create_listing(request):
 def create_man(request):
     if request.method == 'POST':
         form = CreateManufacturer(request.POST)
-        if not form.is_valid():
-            return HttpResponseRedirect('/create-manufacturer')
-        form_data = form.cleaned_data
-        form_data['is_man'] = 'true'
-        post(form_data, 'http://services:8000/api/v1/create-account')
-        return HttpResponseRedirect('/')
+        if form.is_valid():
+            form_data = form.cleaned_data
+            form_data.pop('confirm_password')
+            form_data['is_man'] = 'true'
+            req_data = post(form_data, 'http://services:8000/api/v1/create-account')
+            if "error" in req_data:
+                form.add_error('man_name', forms.ValidationError(
+                        "This company name or email is already taken."))
+                form.add_error('email', forms.ValidationError(
+                        ""))
+                return render(request, 'create_man.html', {'form': form})
+            return HttpResponseRedirect('/')
     else:
         form = CreateManufacturer()
     return render(request, 'create_man.html', {'form': form})
@@ -125,12 +137,18 @@ def create_man(request):
 def create_user(request):
     if request.method == 'POST':
         form = CreateUser(request.POST)
-        if not form.is_valid():
-            return HttpResponseRedirect('/create-user')
-        form_data = form.cleaned_data
-        form_data['is_man'] = 'false'
-        post(form_data, 'http://services:8000/api/v1/create-account')
-        return HttpResponseRedirect('/')
+        if form.is_valid():
+            form_data = form.cleaned_data
+            form_data.pop('confirm_password')
+            form_data['is_man'] = 'false'
+            req_data = post(form_data, 'http://services:8000/api/v1/create-account')
+            if "error" in req_data:
+                form.add_error('username', forms.ValidationError(
+                        "This username or email is already taken."))
+                form.add_error('email', forms.ValidationError(
+                        ""))
+                return render(request, 'create_user.html', {'form': form})
+            return HttpResponseRedirect('/')
     else:
         form = CreateUser()
     return render(request, 'create_user.html', {'form': form})
@@ -220,6 +238,7 @@ def login(request):
 
         try:
             resp = post(login_data, 'http://services:8000/api/v1/login')
+            
             if not resp['code'] == 'success':
                 return render(request, 'login.html', {'form': form, 'failed': 'true'})
         except:
@@ -229,11 +248,14 @@ def login(request):
         response.set_signed_cookie('auth', resp['auth'])
         response.set_signed_cookie('is_man', login_data['is_man'])
 
+
         if login_data['is_man']:
             response.set_signed_cookie('man_id', resp['auth_id'])
+            response.set_signed_cookie('uname', login_data['man_name'])
         else:
             response.set_signed_cookie('user_id', resp["auth_id"])
-
+            response.set_signed_cookie('uname', login_data['username'])
+        
         return response
     else:
         # fix = fetch('http://services:8000/index-fixtures/')
@@ -261,6 +283,7 @@ def logout(request):
     response.delete_cookie('user_id')
     response.delete_cookie('auth')
     response.delete_cookie('is_man')
+    response.delete_cookie('uname')
     return response
 
 

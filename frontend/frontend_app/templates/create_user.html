@@ -4,16 +4,55 @@
 
 <div class="flex-column d-flex justify-content-center align-items-center pt-1 pb-5">
     <h1 name="createUserTitle" class="text-center mt-5">User Signup</h1>
-    <h3 class="text-center">
+    <!-- <h3 class="text-center">
         NOTE: Normal users cannot post new products, please <a href="/create-manufacturer">sign up as a manufacturer</a>
         if
         you
         wish to do so.
-    </h3>
+    </h3> -->
+    <div class="alert alert-info" role="alert">
+        NOTE: Normal users cannot post new products, please <a href="/create-manufacturer" class = "alert-link">sign up as a manufacturer</a>
+        if
+        you
+        wish to do so.
+    </div>
+    {% if password != confirm_password %}
+        <!-- <h3 name="error" class="text-danger">There was an error logging you in, please try again.</h3> -->
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Woah!</strong> <br> Your passwords didn't match!.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
     <form name="userForm" action="/create-user" method="post" class="bg-light px-5 py-3 rounded w-75">
         {% csrf_token %}
-        <div class="my-3">
-            {{ form|crispy }}
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ form.first_name|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+                {{ form.last_name|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ form.password|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+                {{ form.confirm_password|as_crispy_field }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4 mb-0">
+                {{ form.username|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-4 mb-0">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-4 mb-0">
+                {{ form.phone_number|as_crispy_field }}
+            </div>
         </div>
         <div class="text-center pb-3">
             <button name="createUser" type="submit" class="btn btn-dark btn-block">Create Account</button>
