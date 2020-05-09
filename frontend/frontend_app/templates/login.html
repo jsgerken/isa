@@ -13,17 +13,14 @@
             </div>
             <div class="d-flex justify-content-center form_container">
                 <form action="/" method="post" class="w-100 text-center">
-                    {% if failed %}
-                    <h3 class="text-danger">Incorrect username/password, please try again.</h3>
-                    {% endif %}
-                    {% if error %}
+                    {% if error or failed %}
                     <!-- <h3 name="error" class="text-danger">There was an error logging you in, please try again.</h3> -->
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Holy guacamole!</strong> <br> You should check in on some of those fields below.
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">&times;</span>
                         </button>
-                      </div>
+                    </div>
                     {% endif %}
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -39,7 +36,8 @@
                 <a role="button" href="/create-user" type="submit" name="createUser" class="btn btn-dark btn-block">
                     Sign up as a normal user
                 </a>
-                <a role="button" href="/create-manufacturer" type="submit" name="createMan" class="btn btn-dark btn-block">
+                <a role="button" href="/create-manufacturer" type="submit" name="createMan"
+                    class="btn btn-dark btn-block">
                     Sign up as manufacturer
                 </a>
             </div>

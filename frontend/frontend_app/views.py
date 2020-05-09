@@ -11,13 +11,14 @@ import json
 import re
 import base64
 
+
 def home(request):
     if request.get_signed_cookie('auth', -1) == -1:
         return HttpResponseRedirect('/')
     top_dict = fetch('http://services:8000/api/v1/top/')
     new_dict = fetch('http://services:8000/api/v1/newly-added/')
     top_dict['newlyAddedGrouped'] = group(new_dict['newlyAddedSorted'], 4)
-    top_dict['uname']= request.get_signed_cookie('uname')
+    top_dict['uname'] = request.get_signed_cookie('uname')
     if request.get_signed_cookie('is_man', 'False') == 'True':
         top_dict['is_man'] = True
     return render(request, 'home.html', top_dict)
@@ -27,11 +28,13 @@ def home(request):
 def search(request):
     form_data = request.POST.dict()
     resp = post(form_data, 'http://services:8000/api/v1/search/')
+    if 'error' in resp:
+        return render(request, 'search.html', resp)
     paginator = Paginator(resp['results'], 100)
     page_number = request.GET.get('page')
     resp['page_obj'] = paginator.get_page(page_number)
     # return JsonResponse({'hello':str(resp)})
-    resp['uname']= request.get_signed_cookie('uname')
+    resp['uname'] = request.get_signed_cookie('uname')
     if request.get_signed_cookie('is_man', 'False') == 'True':
         resp['is_man'] = True
     return render(request, 'search.html', resp)
@@ -44,10 +47,11 @@ def product_details(request, id):
     get_user_id = request.get_signed_cookie('user_id', False)
     if get_user_id:
         post_data = {'user_id': get_user_id}
-    product_dict = post(post_data, 'http://services:8000/api/v1/product-details/' + str(id))
+    product_dict = post(
+        post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
-    product_dict['uname']= request.get_signed_cookie('uname')
+    product_dict['uname'] = request.get_signed_cookie('uname')
     if len(product_dict['rec_prods']) == 0:
         product_dict['rec_groups'] = product_dict['rec_prods']
     else:
@@ -61,7 +65,7 @@ def user_profile(request):
     if user_id == -1:
         return HttpResponseRedirect('/')
     resp = fetch('http://services:8000/api/v1/users/' + str(user_id))
-    resp['uname']= request.get_signed_cookie('uname')
+    resp['uname'] = request.get_signed_cookie('uname')
     return render(request, 'user_profile.html', resp)
 
 
@@ -102,16 +106,16 @@ def create_listing(request):
                     # error checking for Will to implement
                     form.add_error(None, forms.ValidationError(
                         "Failed to submit listing. Please try again."))
-                    return render(request, 'create_listing.html', {'form': form})
+                    return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id'), 'uname': request.get_signed_cookie('uname')})
                 else:
                     return HttpResponseRedirect('/product-details/' + str(resp['product_id']))
             else:
-                return render(request, 'create_listing.html', {'form': form})
+                return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id'), 'uname': request.get_signed_cookie('uname')})
         else:
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')
             form = CreateListing()
-            return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id'), 'uname' : request.get_signed_cookie('uname')})
+            return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id'), 'uname': request.get_signed_cookie('uname')})
     except Exception as e:
         return JsonResponse({
             'error': "error in create Listing " + str(e),
@@ -126,12 +130,13 @@ def create_man(request):
             form_data = form.cleaned_data
             form_data.pop('confirm_password')
             form_data['is_man'] = 'true'
-            req_data = post(form_data, 'http://services:8000/api/v1/create-account')
+            req_data = post(
+                form_data, 'http://services:8000/api/v1/create-account')
             if "error" in req_data:
                 form.add_error('man_name', forms.ValidationError(
-                        "This company name or email is already taken."))
+                    "This company name or email is already taken."))
                 form.add_error('email', forms.ValidationError(
-                        ""))
+                    ""))
                 return render(request, 'create_man.html', {'form': form})
             return HttpResponseRedirect('/')
     else:
@@ -146,12 +151,13 @@ def create_user(request):
             form_data = form.cleaned_data
             form_data.pop('confirm_password')
             form_data['is_man'] = 'false'
-            req_data = post(form_data, 'http://services:8000/api/v1/create-account')
+            req_data = post(
+                form_data, 'http://services:8000/api/v1/create-account')
             if "error" in req_data:
                 form.add_error('username', forms.ValidationError(
-                        "This username or email is already taken."))
+                    "This username or email is already taken."))
                 form.add_error('email', forms.ValidationError(
-                        ""))
+                    ""))
                 return render(request, 'create_user.html', {'form': form})
             return HttpResponseRedirect('/')
     else:
@@ -243,7 +249,7 @@ def login(request):
 
         try:
             resp = post(login_data, 'http://services:8000/api/v1/login')
-            
+
             if not resp['code'] == 'success':
                 return render(request, 'login.html', {'form': form, 'failed': 'true'})
         except:
@@ -253,14 +259,13 @@ def login(request):
         response.set_signed_cookie('auth', resp['auth'])
         response.set_signed_cookie('is_man', login_data['is_man'])
 
-
         if login_data['is_man']:
             response.set_signed_cookie('man_id', resp['auth_id'])
             response.set_signed_cookie('uname', login_data['man_name'])
         else:
             response.set_signed_cookie('user_id', resp["auth_id"])
             response.set_signed_cookie('uname', login_data['username'])
-        
+
         return response
     else:
         # fix = fetch('http://services:8000/index-fixtures/')
