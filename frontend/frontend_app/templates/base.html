@@ -31,18 +31,10 @@
             <div class="collapse navbar-collapse" id="navbarResponsive"></div>
             <ul class="navbar-nav mr-auto" >
                 {% if is_man %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{%url 'createListing'%}">Create Listing</a>
-                </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{%url 'createListing'%}">Create Listing</a>
+                    </li>
                 {% endif %}
-                {% if not is_man %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{%url 'userProfile'%}">Profile</a>
-                </li>
-                {% endif %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout">Sign Out</a>
-                </li>
             </ul>
             <form action="/search" method="post" class="form-inline text-center ml-auto">
                 <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
@@ -52,8 +44,24 @@
                 </select>
                 <button name="searchButton" class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
             </form>
+            <ul class="nav-item dropdown align-baseline">
+                <a class="nav-link dropdown-toggle mt-3" data-toggle="dropdown" data-target="dropdown_me" href="#">
+                    <img class="user-img-nav ml-auto text-dark" src="https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+                    width="40" height="40"> 
+                    <b class = "text-dark">
+                        {{uname}}
+                    </b>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown_me">
+                    {% if not is_man %}
+                        <a class="dropdown-item" href="{%url 'userProfile'%}">Profile</a>
+                        <a class="dropdown-item" href="{%url 'editUser'%}">Edit Profile</a>
+                    {% endif %}
+                    <a class="dropdown-item" href="{%url 'logout'%}">Log Out</a>
+                </div>
+            </ul>
         </div>
-        </div>
+        
     </nav>
     {% block base %}
     {% endblock base %}

@@ -14,62 +14,62 @@
                     {% for group in newlyAddedGrouped %}
                     {% if forloop.first %}
                     <div class="row row-equal carousel-item active card-deck">
-                    {% else %}
-                    <div class="row row-equal carousel-item card-deck">
-                    {% endif %}
-                        {% for object in group %}
-                        <div class="card-group col-md-3">
-                            <div class="card" style="width: 300rem; height: 22rem;">
-                                <div class="card-img-top card-img-top-250">
-                                    <img class="img-fluid img-thumbnail p-2" src="{{object.img_url}}" alt="Carousel 1">
+                        {% else %}
+                        <div class="row row-equal carousel-item card-deck">
+                            {% endif %}
+                            {% for object in group %}
+                            <div class="card-group col-md-3">
+                                <div class="card" style="width: 300rem; height: 22rem;">
+                                    <div class="card-img-top card-img-top-250">
+                                        <img class="img-fluid img-thumbnail p-2" src="{{object.img_url}}"
+                                            alt="Carousel 1" style='max-height:11rem; width: 100%;'>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">{{object.name}}</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{object.type}}</h6>
+                                        <h4 class="card-title">${{object.price}}.00</h4>
+                                        <a href="{%url 'productDetails' id=object.product_id%}"
+                                            class="btn btn-sm btn-outline-secondary">
+                                            View Details
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="card-body text-center">
-                                    <h6 class="card-title">{{object.name}}</h6>
-                                    <h6 class="card-subtitle mb-2 text-muted">{{object.type}}</h6>
-                                    <h4 class="card-title">${{object.price}}.00</h4>
-                                    <a 
-                                        href="{%url 'productDetails' id=object.product_id%}"
-                                        class="btn btn-sm btn-outline-secondary"
-                                    >
-                                        View Details
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <a class="btn btn-outline-secondary next" href="" title="more">
+                    <i class="fa fa-lg fa-chevron-right"></i>
+                </a>
+            </div>
+            <h1 class="text-center mt-5">Top 10 Most Viewed Products</h1>
+            <div class="row d-flex justify-content-center">
+                {% for product in products %}
+                <div class="card my-2 w-75">
+                    <div class="card-body ">
+                        <div class="d-flex flex-row">
+                            <img width="100" height="80" src="{{product.img_url}}" />
+                            <div class="d-flex flex-column">
+                                <h4 class="name jumbotron-heading mx-5">{{product.name}}</h4>
+                                <h3 class="mx-5 text-muted">{{product.type}}</h3>
+                            </div>
+                            <div class="d-flex flex-column ml-auto text-center">
+                                <h5>${{product.price}}.00</h5>
+                                <div class="btn-group ">
+                                    <a href="{%url 'productDetails' id=product.product_id %}">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">View
+                                            Details</button>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <a class="btn btn-outline-secondary next" href="" title="more">
-                <i class="fa fa-lg fa-chevron-right"></i>
-            </a>
-        </div>
-        <h1 class="text-center mt-5">Top 10 Most Viewed Products</h1>
-        <div class="row d-flex justify-content-center">
-            {% for product in products %}
-            <div class="card my-2 w-75">
-                <div class="card-body ">
-                    <div class="d-flex flex-row">
-                        <img width="100" height="80" src="{{product.img_url}}" />
-                        <div class="d-flex flex-column">
-                            <h4 class="name jumbotron-heading mx-5">{{product.name}}</h4>
-                            <h3 class="mx-5 text-muted">{{product.type}}</h3>
-                        </div>
-                        <div class="d-flex flex-column ml-auto text-center">
-                            <h5>${{product.price}}.00</h5>
-                            <div class="btn-group ">
-                                <a href="{%url 'productDetails' id=product.product_id %}">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary">View Details</button>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
 </body>
 
 
