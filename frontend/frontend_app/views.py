@@ -28,10 +28,11 @@ def home(request):
 def search(request):
     form_data = request.POST.dict()
     resp = post(form_data, 'http://services:8000/api/v1/search/')
-    paginator = Paginator(resp['results'], 10)
+    paginator = Paginator(resp['results'], 100)
     page_number = request.GET.get('page')
     resp['page_obj'] = paginator.get_page(page_number)
     # return JsonResponse({'hello':str(resp)})
+    resp['uname']= request.get_signed_cookie('uname')
     if request.get_signed_cookie('is_man', 'False') == 'True':
         resp['is_man'] = True
     return render(request, 'search.html', resp)
@@ -48,6 +49,7 @@ def product_details(request, id):
         post_data, 'http://services:8000/api/v1/product-details/' + str(id))
     if request.get_signed_cookie('is_man', 'False') == 'True':
         product_dict['is_man'] = True
+    product_dict['uname']= request.get_signed_cookie('uname')
     # return JsonResponse(product_dict)
     return render(request, 'frontend_app/product_details.html', product_dict)
 
@@ -57,6 +59,7 @@ def user_profile(request):
     if user_id == -1:
         return HttpResponseRedirect('/')
     resp = fetch('http://services:8000/api/v1/users/' + str(user_id))
+    resp['uname']= request.get_signed_cookie('uname')
     return render(request, 'user_profile.html', resp)
 
 
@@ -75,7 +78,7 @@ def edit_user(request):
         return HttpResponseRedirect('/users')
     else:
         profile = Profile()
-        return render(request, 'edit_user.html', {'profile': profile})
+        return render(request, 'edit_user.html', {'profile': profile, 'uname': request.get_signed_cookie('uname')})
 
 
 def create_listing(request):
@@ -106,7 +109,7 @@ def create_listing(request):
             if request.get_signed_cookie('is_man', 'False') == 'False':
                 return HttpResponseRedirect('/')
             form = CreateListing()
-            return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id')})
+            return render(request, 'create_listing.html', {'form': form, 'is_man': request.get_signed_cookie('man_id'), 'uname' : request.get_signed_cookie('uname')})
     except Exception as e:
         return JsonResponse({
             'error': "error in create Listing " + str(e),
