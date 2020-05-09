@@ -135,7 +135,7 @@ def main():
             spark_output = run_spark(sc)
             sc.stop()
             print('Saving output to output.log!')
-            with open('/tmp/data/output.log', 'w') as logfile:
+            with open('/tmp/data/output.txt', 'w') as logfile:
                 csvwriter = csv.writer(logfile)
                 for pairs in spark_output:
                     csvwriter.writerow([pairs])
